@@ -14,25 +14,34 @@ namespace Sample
         public DataTable GetDataTable(string filePath, string encoding)
         {
             DataTable dt = new DataTable();
-            IEnumerable<string[]> list = CsvFileRead(filePath, encoding);
-
-            // ヘッダ設定
-            foreach (string text in list.First())
+            try
             {
-                Debug.WriteLine($"Columns.Add({text})");
-                dt.Columns.Add(text);
-            }
+                // csvファイル読込
+                IEnumerable<string[]> list = CsvFileRead(filePath, encoding);
 
-            foreach (string[] texts in list.Skip(1))
-            {
-                // データ設定
-                DataRow row = dt.NewRow();
-                for (int colIdx = 0; colIdx < dt.Columns.Count; colIdx++)
+                // ヘッダ設定
+                foreach (string text in list.First())
                 {
-                    Debug.WriteLine($"Rows[{colIdx}].Add({texts[colIdx]})");
-                    row[colIdx] = texts[colIdx];
+                    Debug.WriteLine($"Columns.Add({text})");
+                    dt.Columns.Add(text);
                 }
-                dt.Rows.Add(row);
+
+                // データ設定
+                foreach (string[] texts in list.Skip(1))
+                {
+                    DataRow row = dt.NewRow();
+                    for (int colIdx = 0; colIdx < dt.Columns.Count; colIdx++)
+                    {
+                        Debug.WriteLine($"Rows[{colIdx}].Add({texts[colIdx]})");
+                        row[colIdx] = texts[colIdx];
+                    }
+                    dt.Rows.Add(row);
+                }
+            }
+            catch (Exception ex)
+            {
+                // csvファイルのデータが0件・1件の場合 ArgumentNullException
+                Debug.WriteLine(ex.Message);
             }
             return dt;
         }
