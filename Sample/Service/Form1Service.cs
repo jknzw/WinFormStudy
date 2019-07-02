@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,32 +11,29 @@ namespace Sample
 {
     class Form1Service : CsvFileService
     {
-        public DataTable GetDataTable(string filePath,string encoding)
+        public DataTable GetDataTable(string filePath, string encoding)
         {
-            List<string[]> list = CsvFileRead(filePath,encoding);
-
             DataTable dt = new DataTable();
+            IEnumerable<string[]> list = CsvFileRead(filePath, encoding);
 
-            // ヘッダ取得
-            if (list.Count > 0)
+            // ヘッダ設定
+            foreach (string text in list.First())
             {
-                foreach (string text in list[0])
-                {
-                    dt.Columns.Add(text);
-                }
+                Debug.WriteLine($"Columns.Add({text})");
+                dt.Columns.Add(text);
             }
 
-            // データ設定
-            for (int rowIdx = 1; rowIdx < list.Count; rowIdx++)
+            foreach (string[] texts in list.Skip(1))
             {
+                // データ設定
                 DataRow row = dt.NewRow();
                 for (int colIdx = 0; colIdx < dt.Columns.Count; colIdx++)
                 {
-                    row[colIdx] = list[rowIdx][colIdx];
+                    Debug.WriteLine($"Rows[{colIdx}].Add({texts[colIdx]})");
+                    row[colIdx] = texts[colIdx];
                 }
                 dt.Rows.Add(row);
             }
-
             return dt;
         }
         public int Insert()
