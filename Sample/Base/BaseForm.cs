@@ -18,24 +18,24 @@ namespace Sample
         {
             InitializeComponent();
         }
-        private void Button_Click(object sender, EventArgs e)
+        protected void BaseButton_Click(object sender, EventArgs e)
         {
             Debug.WriteLine(MethodBase.GetCurrentMethod().Name);
-            switch (((Button)sender).Text)
+            switch (((Button)sender).Name)
             {
-                case "検索":
+                case nameof(buttonSearch):
                     SearchButton_Click(sender, e);
                     break;
-                case "更新":
+                case nameof(buttonClear):
+                    ClearButton_Click(sender, e);
+                    break;
+                case nameof(buttonUpdate):
                     UpdateButton_Click(sender, e);
                     break;
-                case "削除":
+                case nameof(buttonDelete):
                     DeleteButton_Click(sender, e);
                     break;
-                case "選択":
-                    SelectButton_Click(sender, e);
-                    break;
-                case "終了":
+                case nameof(buttonEnd):
                 default:
                     ExitButton_Click(sender, e);
                     break;
@@ -46,7 +46,10 @@ namespace Sample
         {
             Debug.WriteLine(MethodBase.GetCurrentMethod().Name);
         }
-
+        public virtual void ClearButton_Click(object sender, EventArgs e)
+        {
+            Debug.WriteLine(MethodBase.GetCurrentMethod().Name);
+        }
         public virtual void UpdateButton_Click(object sender, EventArgs e)
         {
             Debug.WriteLine(MethodBase.GetCurrentMethod().Name);
@@ -55,15 +58,34 @@ namespace Sample
         {
             Debug.WriteLine(MethodBase.GetCurrentMethod().Name);
         }
-        public virtual void SelectButton_Click(object sender, EventArgs e)
-        {
-            Debug.WriteLine(MethodBase.GetCurrentMethod().Name);
-        }
-
         public virtual void ExitButton_Click(object sender, EventArgs e)
         {
             Debug.WriteLine(MethodBase.GetCurrentMethod().Name);
             Close();
+        }
+
+        private void DataGridView1_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            //列ヘッダーかどうか調べる
+            if (e.ColumnIndex < 0 && e.RowIndex >= 0)
+            {
+                //セルを描画する
+                e.Paint(e.ClipBounds, DataGridViewPaintParts.All);
+
+                //行番号を描画する範囲を決定する
+                //e.AdvancedBorderStyleやe.CellStyle.Paddingは無視しています
+                Rectangle indexRect = e.CellBounds;
+                indexRect.Inflate(-2, -2);
+                //行番号を描画する
+                TextRenderer.DrawText(e.Graphics,
+                    (e.RowIndex + 1).ToString(),
+                    e.CellStyle.Font,
+                    indexRect,
+                    e.CellStyle.ForeColor,
+                    TextFormatFlags.Right | TextFormatFlags.VerticalCenter);
+                //描画が完了したことを知らせる
+                e.Handled = true;
+            }
         }
     }
 }

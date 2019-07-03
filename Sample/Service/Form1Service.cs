@@ -6,11 +6,22 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Sample
 {
     class Form1Service : CsvFileService
     {
+        private Form1Service()
+        {
+
+        }
+
+        public static Form1Service GetInstance()
+        {
+            return new Form1Service();
+        }
+
         public DataTable GetDataTable(string filePath, string encoding)
         {
             DataTable dt = new DataTable();
@@ -45,17 +56,49 @@ namespace Sample
             }
             return dt;
         }
-        public int Insert()
+
+        public BindingSource Search(BindingSource bs, string colName, string searchText)
         {
-            return 0;
+            if (string.IsNullOrEmpty(colName) || string.IsNullOrEmpty(searchText))
+            {
+                bs = Clear(bs);
+            }
+            else
+            {
+                bs.Filter = $"{colName} like '%{searchText}%'";
+            }
+            return bs;
         }
-        public int Update()
+
+        public BindingSource Clear(BindingSource bs)
         {
-            return 0;
+            bs.Filter = string.Empty;
+            return bs;
         }
-        public int Delete()
+
+        public int Update(string filePath, string encoding, DataTable dt)
         {
-            return 0;
+            List<string> writeData = new List<string>();
+            // header
+            string header = string.Empty;
+            foreach (DataColumn col in dt.Columns)
+            {
+                header += col + ",";
+            }
+            writeData.Add(header.Remove(header.Length - 1));
+
+            // data
+            foreach (DataRow row in dt.Rows)
+            {
+                string data = string.Empty;
+                for (int colIdx = 0; colIdx < dt.Columns.Count; colIdx++)
+                {
+                    data += row[colIdx]?.ToString() + ",";
+                }
+                writeData.Add(data.Remove(data.Length - 1));
+            }
+
+            return FileWrite(filePath, encoding, writeData.ToArray());
         }
     }
 }

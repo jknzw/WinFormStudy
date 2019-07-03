@@ -29,46 +29,69 @@
         private void InitializeComponent()
         {
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.buttonSelect = new System.Windows.Forms.Button();
+            this.comboBoxSelect = new System.Windows.Forms.ComboBox();
+            this.textBoxSelect = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // buttonSearch
+            // buttonUpdate
             // 
-            this.buttonSearch.Text = "選択";
+            this.buttonUpdate.Text = "保存";
+            // 
+            // buttonDelete
+            // 
+            this.buttonDelete.Location = new System.Drawing.Point(99, 429);
+            this.buttonDelete.Size = new System.Drawing.Size(85, 23);
+            this.buttonDelete.Text = "選択行削除";
             // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // textBox1
+            // buttonSelect
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.buttonSelect.Location = new System.Drawing.Point(15, 12);
+            this.buttonSelect.Name = "buttonSelect";
+            this.buttonSelect.Size = new System.Drawing.Size(75, 23);
+            this.buttonSelect.TabIndex = 7;
+            this.buttonSelect.Text = "CSV選択";
+            this.buttonSelect.UseVisualStyleBackColor = true;
+            this.buttonSelect.Click += new System.EventHandler(this.SelectButton_Click);
+            // 
+            // comboBoxSelect
+            // 
+            this.comboBoxSelect.FormattingEnabled = true;
+            this.comboBoxSelect.Location = new System.Drawing.Point(96, 14);
+            this.comboBoxSelect.Name = "comboBoxSelect";
+            this.comboBoxSelect.Size = new System.Drawing.Size(128, 20);
+            this.comboBoxSelect.TabIndex = 8;
+            // 
+            // textBoxSelect
+            // 
+            this.textBoxSelect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(77, 10);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(630, 19);
-            this.textBox1.TabIndex = 5;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 13);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(58, 12);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "ファイルパス";
+            this.textBoxSelect.Location = new System.Drawing.Point(230, 14);
+            this.textBoxSelect.Name = "textBoxSelect";
+            this.textBoxSelect.Size = new System.Drawing.Size(396, 19);
+            this.textBoxSelect.TabIndex = 5;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.ClientSize = new System.Drawing.Size(800, 464);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.comboBoxSelect);
+            this.Controls.Add(this.buttonSelect);
+            this.Controls.Add(this.textBoxSelect);
             this.Name = "Form1";
+            this.Text = "Form1";
+            this.Controls.SetChildIndex(this.buttonClear, 0);
+            this.Controls.SetChildIndex(this.buttonUpdate, 0);
+            this.Controls.SetChildIndex(this.buttonDelete, 0);
+            this.Controls.SetChildIndex(this.buttonEnd, 0);
             this.Controls.SetChildIndex(this.buttonSearch, 0);
-            this.Controls.SetChildIndex(this.textBox1, 0);
-            this.Controls.SetChildIndex(this.label1, 0);
+            this.Controls.SetChildIndex(this.textBoxSelect, 0);
+            this.Controls.SetChildIndex(this.buttonSelect, 0);
+            this.Controls.SetChildIndex(this.comboBoxSelect, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -77,7 +100,8 @@
         #endregion
 
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button buttonSelect;
+        private System.Windows.Forms.ComboBox comboBoxSelect;
+        private System.Windows.Forms.TextBox textBoxSelect;
     }
 }
