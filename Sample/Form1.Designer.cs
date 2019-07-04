@@ -38,28 +38,22 @@
             // 
             // buttonSearch
             // 
-            this.buttonSearch.Location = new System.Drawing.Point(456, 12);
             this.buttonSearch.TabIndex = 4;
             // 
             // buttonUpdate
             // 
-            this.buttonUpdate.Location = new System.Drawing.Point(15, 406);
+            this.buttonUpdate.TabIndex = 21;
             this.buttonUpdate.Text = "保存";
             // 
             // buttonDelete
             // 
             this.buttonDelete.Location = new System.Drawing.Point(99, 406);
             this.buttonDelete.Size = new System.Drawing.Size(85, 23);
-            this.buttonDelete.TabIndex = 21;
+            this.buttonDelete.TabIndex = 22;
             this.buttonDelete.Text = "選択行削除";
-            // 
-            // buttonEnd
-            // 
-            this.buttonEnd.Location = new System.Drawing.Point(537, 406);
             // 
             // buttonClear
             // 
-            this.buttonClear.Location = new System.Drawing.Point(537, 12);
             this.buttonClear.TabIndex = 5;
             // 
             // openFileDialog1
@@ -106,7 +100,7 @@
             this.dataGridView1.RowTemplate.Height = 21;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(597, 359);
-            this.dataGridView1.TabIndex = 4;
+            this.dataGridView1.TabIndex = 11;
             // 
             // Form1
             // 
