@@ -1,4 +1,5 @@
-﻿namespace Sample
+﻿
+namespace Sample
 {
     partial class BaseForm
     {
@@ -28,12 +29,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonSearch = new System.Windows.Forms.Button();
+            this.buttonSearch = new WindowsFormsControlLibrary.CustomButton();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.buttonUpdate = new System.Windows.Forms.Button();
-            this.buttonDelete = new System.Windows.Forms.Button();
-            this.buttonEnd = new System.Windows.Forms.Button();
-            this.buttonClear = new System.Windows.Forms.Button();
+            this.buttonUpdate = new WindowsFormsControlLibrary.CustomButton();
+            this.buttonDelete = new WindowsFormsControlLibrary.CustomButton();
+            this.buttonEnd = new WindowsFormsControlLibrary.CustomButton();
+            this.buttonClear = new WindowsFormsControlLibrary.CustomButton();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -126,12 +127,12 @@
         }
 
         #endregion
-        protected System.Windows.Forms.Button buttonSearch;
-        protected System.Windows.Forms.Button buttonUpdate;
-        protected System.Windows.Forms.Button buttonDelete;
-        protected System.Windows.Forms.Button buttonEnd;
+        protected WindowsFormsControlLibrary.CustomButton buttonSearch;
+        protected WindowsFormsControlLibrary.CustomButton buttonUpdate;
+        protected WindowsFormsControlLibrary.CustomButton buttonDelete;
+        protected WindowsFormsControlLibrary.CustomButton buttonEnd;
+        protected WindowsFormsControlLibrary.CustomButton buttonClear;
         protected System.Windows.Forms.DataGridView dataGridView1;
-        protected System.Windows.Forms.Button buttonClear;
     }
 }
 

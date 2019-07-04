@@ -29,10 +29,14 @@
         private void InitializeComponent()
         {
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.buttonSelect = new System.Windows.Forms.Button();
+            this.buttonSelect = new WindowsFormsControlLibrary.CustomButton();
             this.comboBoxSelect = new System.Windows.Forms.ComboBox();
             this.textBoxSelect = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
+            // 
+            // buttonSearch
+            // 
+            this.buttonSearch.TabIndex = 4;
             // 
             // buttonUpdate
             // 
@@ -42,7 +46,12 @@
             // 
             this.buttonDelete.Location = new System.Drawing.Point(99, 429);
             this.buttonDelete.Size = new System.Drawing.Size(85, 23);
+            this.buttonDelete.TabIndex = 21;
             this.buttonDelete.Text = "選択行削除";
+            // 
+            // buttonClear
+            // 
+            this.buttonClear.TabIndex = 5;
             // 
             // openFileDialog1
             // 
@@ -53,7 +62,7 @@
             this.buttonSelect.Location = new System.Drawing.Point(15, 12);
             this.buttonSelect.Name = "buttonSelect";
             this.buttonSelect.Size = new System.Drawing.Size(75, 23);
-            this.buttonSelect.TabIndex = 7;
+            this.buttonSelect.TabIndex = 1;
             this.buttonSelect.Text = "CSV選択";
             this.buttonSelect.UseVisualStyleBackColor = true;
             this.buttonSelect.Click += new System.EventHandler(this.SelectButton_Click);
@@ -64,7 +73,7 @@
             this.comboBoxSelect.Location = new System.Drawing.Point(96, 14);
             this.comboBoxSelect.Name = "comboBoxSelect";
             this.comboBoxSelect.Size = new System.Drawing.Size(128, 20);
-            this.comboBoxSelect.TabIndex = 8;
+            this.comboBoxSelect.TabIndex = 2;
             // 
             // textBoxSelect
             // 
@@ -73,7 +82,7 @@
             this.textBoxSelect.Location = new System.Drawing.Point(230, 14);
             this.textBoxSelect.Name = "textBoxSelect";
             this.textBoxSelect.Size = new System.Drawing.Size(396, 19);
-            this.textBoxSelect.TabIndex = 5;
+            this.textBoxSelect.TabIndex = 3;
             // 
             // Form1
             // 
@@ -100,7 +109,7 @@
         #endregion
 
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.Button buttonSelect;
+        private WindowsFormsControlLibrary.CustomButton buttonSelect;
         private System.Windows.Forms.ComboBox comboBoxSelect;
         private System.Windows.Forms.TextBox textBoxSelect;
     }

@@ -94,6 +94,10 @@
       <Project>{8468f120-9746-4b53-a9c9-9ca304887915}</Project>
       <Name>SampleLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WindowsFormsControlLibrary\WindowsFormsControlLibrary.csproj">
+      <Project>{2ccf6ddb-7341-419b-8f6e-36becd367074}</Project>
+      <Name>WindowsFormsControlLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
