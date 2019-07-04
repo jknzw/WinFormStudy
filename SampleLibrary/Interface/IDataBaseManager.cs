@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SampleLibrary
 {
-    interface IDataBaseManager : ICloneable
+    interface IDataBaseManager : IDisposable
     {
         int Connect();
 
