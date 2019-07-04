@@ -32,6 +32,8 @@
             this.buttonSelect = new WindowsFormsControlLibrary.CustomButton();
             this.comboBoxSelect = new System.Windows.Forms.ComboBox();
             this.textBoxSelect = new System.Windows.Forms.TextBox();
+            this.dataGridView1 = new WindowsFormsControlLibrary.CustomDataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonSearch
@@ -84,10 +86,25 @@
             this.textBoxSelect.Size = new System.Drawing.Size(396, 19);
             this.textBoxSelect.TabIndex = 3;
             // 
+            // dataGridView1
+            // 
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(15, 41);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowTemplate.Height = 21;
+            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dataGridView1.Size = new System.Drawing.Size(773, 382);
+            this.dataGridView1.TabIndex = 4;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.ClientSize = new System.Drawing.Size(800, 464);
+            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.comboBoxSelect);
             this.Controls.Add(this.buttonSelect);
             this.Controls.Add(this.textBoxSelect);
@@ -101,6 +118,8 @@
             this.Controls.SetChildIndex(this.textBoxSelect, 0);
             this.Controls.SetChildIndex(this.buttonSelect, 0);
             this.Controls.SetChildIndex(this.comboBoxSelect, 0);
+            this.Controls.SetChildIndex(this.dataGridView1, 0);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -112,5 +131,6 @@
         private WindowsFormsControlLibrary.CustomButton buttonSelect;
         private System.Windows.Forms.ComboBox comboBoxSelect;
         private System.Windows.Forms.TextBox textBoxSelect;
+        private WindowsFormsControlLibrary.CustomDataGridView dataGridView1;
     }
 }

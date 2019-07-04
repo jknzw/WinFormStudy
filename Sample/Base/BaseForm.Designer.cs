@@ -30,12 +30,10 @@ namespace Sample
         private void InitializeComponent()
         {
             this.buttonSearch = new WindowsFormsControlLibrary.CustomButton();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.buttonUpdate = new WindowsFormsControlLibrary.CustomButton();
             this.buttonDelete = new WindowsFormsControlLibrary.CustomButton();
             this.buttonEnd = new WindowsFormsControlLibrary.CustomButton();
             this.buttonClear = new WindowsFormsControlLibrary.CustomButton();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonSearch
@@ -48,21 +46,6 @@ namespace Sample
             this.buttonSearch.Text = "検索";
             this.buttonSearch.UseVisualStyleBackColor = true;
             this.buttonSearch.Click += new System.EventHandler(this.BaseButton_Click);
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(15, 41);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowTemplate.Height = 21;
-            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(773, 382);
-            this.dataGridView1.TabIndex = 10;
-            this.dataGridView1.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.DataGridView1_CellPainting);
             // 
             // buttonUpdate
             // 
@@ -113,7 +96,6 @@ namespace Sample
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 464);
-            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.buttonEnd);
             this.Controls.Add(this.buttonDelete);
             this.Controls.Add(this.buttonUpdate);
@@ -121,7 +103,6 @@ namespace Sample
             this.Controls.Add(this.buttonSearch);
             this.Name = "BaseForm";
             this.Text = "BaseForm";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -132,7 +113,6 @@ namespace Sample
         protected WindowsFormsControlLibrary.CustomButton buttonDelete;
         protected WindowsFormsControlLibrary.CustomButton buttonEnd;
         protected WindowsFormsControlLibrary.CustomButton buttonClear;
-        protected System.Windows.Forms.DataGridView dataGridView1;
     }
 }
 
