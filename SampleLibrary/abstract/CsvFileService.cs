@@ -30,8 +30,17 @@ namespace SampleLibrary
             foreach (string text in texts)
             {
                 Debug.WriteLine($"yield return [{text}]");
-                yield return text.Split(',');
+                yield return text.Replace("<br>", "\n").Split(',');
             }
+        }
+        public int CsvFileWrite(string filePath, string encoding = "UTF-8", params string[] text)
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                text[i] = text[i].Replace("\n", "<br>");
+            }
+            File.WriteAllLines(filePath, text, Encoding.GetEncoding(encoding));
+            return 0;
         }
     }
 }

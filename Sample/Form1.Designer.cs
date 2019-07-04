@@ -38,21 +38,28 @@
             // 
             // buttonSearch
             // 
+            this.buttonSearch.Location = new System.Drawing.Point(456, 12);
             this.buttonSearch.TabIndex = 4;
             // 
             // buttonUpdate
             // 
+            this.buttonUpdate.Location = new System.Drawing.Point(15, 406);
             this.buttonUpdate.Text = "保存";
             // 
             // buttonDelete
             // 
-            this.buttonDelete.Location = new System.Drawing.Point(99, 429);
+            this.buttonDelete.Location = new System.Drawing.Point(99, 406);
             this.buttonDelete.Size = new System.Drawing.Size(85, 23);
             this.buttonDelete.TabIndex = 21;
             this.buttonDelete.Text = "選択行削除";
             // 
+            // buttonEnd
+            // 
+            this.buttonEnd.Location = new System.Drawing.Point(537, 406);
+            // 
             // buttonClear
             // 
+            this.buttonClear.Location = new System.Drawing.Point(537, 12);
             this.buttonClear.TabIndex = 5;
             // 
             // openFileDialog1
@@ -83,7 +90,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSelect.Location = new System.Drawing.Point(230, 14);
             this.textBoxSelect.Name = "textBoxSelect";
-            this.textBoxSelect.Size = new System.Drawing.Size(396, 19);
+            this.textBoxSelect.Size = new System.Drawing.Size(220, 19);
             this.textBoxSelect.TabIndex = 3;
             // 
             // dataGridView1
@@ -91,19 +98,20 @@
             this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(15, 41);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 21;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(773, 382);
+            this.dataGridView1.Size = new System.Drawing.Size(597, 359);
             this.dataGridView1.TabIndex = 4;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-            this.ClientSize = new System.Drawing.Size(800, 464);
+            this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.comboBoxSelect);
             this.Controls.Add(this.buttonSelect);
