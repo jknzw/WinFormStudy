@@ -18,7 +18,7 @@ namespace SampleLibrary
         /// <param name="filePath">ファイルパス</param>
         /// <param name="encoding">文字コード</param>
         /// <returns>読込データ</returns>
-        string[] FileRead(string filePath, string encoding);
+        IEnumerable<string> FileRead(string filePath, string encoding);
 
         /// <summary>
         /// ファイル書込

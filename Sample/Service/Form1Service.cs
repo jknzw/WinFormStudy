@@ -98,7 +98,7 @@ namespace Sample
                 writeData.Add(data.Remove(data.Length - 1));
             }
 
-            return FileWrite(filePath, encoding, writeData.ToArray());
+            return CsvFileWrite(filePath, writeData, encoding);
         }
     }
 }

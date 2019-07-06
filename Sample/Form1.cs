@@ -75,6 +75,7 @@ namespace Sample
 
                 for (int colIdx = 0; colIdx < dataGridView1.Columns.Count; colIdx++)
                 {
+                    // テキストを折り返して表示する
                     dataGridView1.Columns[colIdx].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
                 }
 
@@ -107,6 +108,8 @@ namespace Sample
         {
             base.DeleteButton_Click(sender, e);
 
+            dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
+
             DialogResult result = MessageBox.Show("選択行を削除します。よろしいですか？", "削除確認", MessageBoxButtons.OKCancel);
             if (DialogResult.OK.Equals(result))
             {
@@ -116,12 +119,31 @@ namespace Sample
                     return;
                 }
 
+                int delCount = 0;
                 foreach (DataGridViewRow row in dataGridView1.SelectedRows)
                 {
-                    dataGridView1.Rows.Remove(row);
+                    if(row.IsNewRow)
+                    {
+                        // 新規行は何もしない
+                        continue;
+                    }
+                    else
+                    {
+                        // 新規行以外は削除する
+                        dataGridView1.Rows.Remove(row);
+                        delCount++;
+                    }
                 }
 
-                MessageBox.Show("選択行を削除しました");
+                if(delCount > 0)
+                {
+                    MessageBox.Show($"選択行を{delCount}行削除しました");
+                }
+                else
+                {
+                    // 新規行のみの場合
+                    MessageBox.Show($"選択行は削除出来ません");
+                }
             }
         }
 

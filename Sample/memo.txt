@@ -1,0 +1,17 @@
+﻿名前付けのガイドライン
+https://docs.microsoft.com/ja-jp/previous-versions/dotnet/netframework-1.1/cc433292%28v%3dvs.71%29
+
+マイルール(とりあえず。)
+↓service 取り扱い
+↓　対象を操作するためのクラス
+↓manager 管理者
+↓　対象を管理するためのクラス
+↓utility 役に立つ
+↓　対象を操作するのに便利な処理を記載したクラス
+↓common  一般・共通
+↓　対象の共通処理を記載したクラス
+
+インターフェイス
+　Iから開始する
+
+Base 継承元(基底クラス)
