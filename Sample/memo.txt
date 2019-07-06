@@ -1,17 +1,24 @@
 ﻿名前付けのガイドライン
 https://docs.microsoft.com/ja-jp/previous-versions/dotnet/netframework-1.1/cc433292%28v%3dvs.71%29
 
-マイルール(とりあえず。)
+クラス命名マイルールのイメージ(とりあえず。)
 ↓service 取り扱い
 ↓　対象を操作するためのクラス
 ↓manager 管理者
 ↓　対象を管理するためのクラス
 ↓utility 役に立つ
-↓　対象を操作するのに便利な処理を記載したクラス
-↓common  一般・共通
-↓　対象の共通処理を記載したクラス
+↓　対象を操作するのに便利な処理を記載した動的なクラス
+↓common  一般・共通 (staticクラス)
+↓　対象の共通処理を記載した静的なクラス
 
 インターフェイス
 　Iから開始する
 
 Base 継承元(基底クラス)
+
+戻り値に配列やリストを返す時は出来るだけyieldとIEnumerableで返し遅延実行する
+　メリット
+　　https://qiita.com/Tadahiro_Yamamura/items/26a925d9a670f01bf497
+　デメリット
+　　可読性が多少落ちる
+　　使い方によって処理速度が変わる(ToList、ToArray、Countとか乱用しないように・・・)

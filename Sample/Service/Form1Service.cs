@@ -28,7 +28,8 @@ namespace Sample
             try
             {
                 // csvファイル読込
-                IEnumerable<string[]> list = CsvFileRead(filePath, encoding);
+                // ToListで読み込み処理を終わらせる
+                List<string[]> list = CsvFileRead(filePath, encoding).ToList();
 
                 // ヘッダ設定
                 foreach (string text in list.First())
