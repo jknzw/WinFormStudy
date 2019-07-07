@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SampleLibrary
 {
-    public interface IDataBaseService
+    public interface ISQLService
     {
         DataTable Search(string sql, List<(string key, dynamic value)> param);
         int Insert(string sql, List<(string key, dynamic value)> param);

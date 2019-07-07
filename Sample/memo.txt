@@ -1,15 +1,45 @@
 ﻿名前付けのガイドライン
 https://docs.microsoft.com/ja-jp/previous-versions/dotnet/netframework-1.1/cc433292%28v%3dvs.71%29
 
-クラス命名マイルールのイメージ(とりあえず。)
+マイルールのイメージ(とりあえず。)
+=== Sample 業務画面 === 
+↓Form View+Controller
+↓　画面＋イベント
 ↓service 取り扱い
 ↓　対象を操作するためのクラス
+↓　　基本的に画面名＋Service
 ↓manager 管理者
 ↓　対象を管理するためのクラス
-↓utility 役に立つ
-↓　対象を操作するのに便利な処理を記載した動的なクラス
-↓common  一般・共通 (staticクラス)
-↓　対象の共通処理を記載した静的なクラス
+
+　※Baseは他のライブラリに切り出す方が良い？
+
+=== XXXLibrary 業務ライブラリ ===
+↓  もう1つ間にライブラリを入れて使われたくないpublicなメソッドを隠蔽する
+
+　※今回は未使用とした。直接共通ライブラリを呼び出す
+
+=== SampleLibrary 共通ライブラリ ===
+↓service 取り扱い
+↓　クラス・抽象クラス ←ここなんかわけたい気がするけど思いつかない
+↓  画面のServiceで継承したりインスタンスを生成して利用する
+↓    (例)SQLService:SQLを扱うためのクラス Insert Select Update 等
+↓manager 管理者
+↓　対象を管理するためのクラス
+↓    (例)DataBaseManager:DataBaseを管理するためのクラス Connect Close等
+↓common  一般・共通 
+↓　対象の共通処理を記載したクラス
+
+プロジェクト運用
+　Sample
+　　フォームアプリケーション
+　　　System.Windows.Formをusingする場合はこっちで行う
+　SampleLibrary
+　　動的ライブラリ
+　　　System.Windows.Formをusingする事は禁止する
+　　　　※ASP.NET等、他のフレームワークで再利用する時に不要コードを持ち込まないようにするため
+
+utility 役に立つ
+　対象を操作するのに便利な処理を記載した静的なクラス
 
 インターフェイス
 　Iから開始する

@@ -28,7 +28,7 @@ namespace Sample
             try
             {
                 // csvファイル読込
-                // ToListで読み込み処理を終わらせる
+                // ToListで読み込み処理を確定させる
                 List<string[]> list = CsvFileRead(filePath, encoding).ToList();
 
                 // ヘッダ設定
@@ -66,7 +66,7 @@ namespace Sample
             }
             else
             {
-                bs.Filter = $"{colName} like '%{searchText}%'";
+                bs.SetFilter(colName, searchText);
             }
             return bs;
         }

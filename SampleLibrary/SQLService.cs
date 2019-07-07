@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SampleLibrary
 {
-    class DataBaseService : IDataBaseService
+    public class SQLService : ISQLService
     {
         public int Delete(string sql, List<(string key, dynamic value)> param)
         {
