@@ -49,45 +49,73 @@ namespace Sample
             int.TryParse(textBoxX2.Text, out int marginX2);
             int.TryParse(textBoxY2.Text, out int marginY2);
 
+            //int.TryParse(textBox3.Text, out int hosei);
+
             int width = Math.Max(bmp1.Width + marginX1, bmp2.Width + marginX2);
             int height = Math.Max(bmp1.Height + marginY1, bmp2.Height + marginY2);
 
             Bitmap diffBmp = new Bitmap(width, height);         // 返却する差分の画像。
             Color diffColor = Color.Red;                        // 画像の差分に付ける色。
 
-            progressBar1.Maximum = width;
+            toolStripProgressBar1.Maximum = width;
 
             // 全ピクセルを総当りで比較し、違う部分があればfalseを返す。
-            for (int i = 0; i < width; i++)
+            for (int i = 0; i < width - marginX1; i++)
             {
-                for (int j = 0; j < height; j++)
+                for (int j = 0; j < height - marginY1; j++)
                 {
-                    if (i + marginX1 >= bmp1.Width || i + marginX2 >= bmp2.Width
+                    if (i < marginX1 || j < marginY1)
+                    {
+                        // マージン
+                        diffBmp.SetPixel(i, j, diffColor);
+                    }
+                    else if (i + marginX1 >= bmp1.Width || i + marginX2 >= bmp2.Width
                         || j + marginY1 >= bmp1.Height || j + marginY2 >= bmp2.Height)
                     {
                         // 縦横オーバー
-                        diffBmp.SetPixel(i, j, diffColor);
+                        diffBmp.SetPixel(i + marginX1, j + marginY1, diffColor);
                     }
                     else
                     {
-                        Color color1 = bmp1.GetPixel(i + marginX1, j + marginY1);
-                        if (color1 == bmp2.GetPixel(i + marginX2, j + marginY2))
+                        //Color color1 = bmp1.GetPixel(i + marginX1, j + marginY1);
+                        //if (color1 == bmp2.GetPixel(i + marginX2, j + marginY2))
+                        if (CompareBmp(bmp1, bmp2, i + marginX1, j + marginY1, i + marginX2, j + marginY2))
                         {
-                            diffBmp.SetPixel(i, j, color1);
+                            diffBmp.SetPixel(i + marginX1, j + marginY1, bmp1.GetPixel(i + marginX1, j + marginY1));
                         }
                         else
                         {
-                            diffBmp.SetPixel(i, j, diffColor);
+                            diffBmp.SetPixel(i + marginX1, j + marginY1, diffColor);
                         }
                     }
                 }
 
-                progressBar1.Value = i;
+                toolStripProgressBar1.Value = i;
             }
             //diffBmp.Save(path, ImageFormat.Png);
             pictureBox1.Image = diffBmp;
 
-            progressBar1.Value = 0;
+            toolStripProgressBar1.Value = 0;
+        }
+
+        private bool CompareBmp(Bitmap bmp1, Bitmap bmp2, int x1, int y1, int x2, int y2, int correction = 0)
+        {
+            Color color1 = bmp1.GetPixel(x1, y1);
+            if (color1 == bmp2.GetPixel(x2, y2))
+            {
+                return true;
+            }
+            else
+            {
+                for (int i = 0; i < correction; i++)
+                {
+                    //　□□□
+                    //　□　□
+                    //　□□□
+
+                }
+                return false;
+            }
         }
     }
 }

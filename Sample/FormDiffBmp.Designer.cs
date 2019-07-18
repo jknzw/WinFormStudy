@@ -43,35 +43,34 @@
             this.label4 = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
-            // buttonSearch
+            // buttonF1
             // 
-            this.buttonSearch.Location = new System.Drawing.Point(537, 12);
-            this.buttonSearch.Text = "比較";
+            this.buttonF1.Text = "比較";
             // 
-            // buttonUpdate
+            // buttonF2
             // 
-            this.buttonUpdate.Visible = false;
+            this.buttonF2.Visible = false;
             // 
-            // buttonDelete
+            // buttonF3
             // 
-            this.buttonDelete.Visible = false;
-            // 
-            // buttonClear
-            // 
-            this.buttonClear.Location = new System.Drawing.Point(537, 41);
+            this.buttonF3.Visible = false;
             // 
             // pictureBox1
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.Location = new System.Drawing.Point(15, 74);
+            this.pictureBox1.Location = new System.Drawing.Point(10, 70);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(597, 326);
+            this.pictureBox1.Size = new System.Drawing.Size(480, 625);
             this.pictureBox1.TabIndex = 100;
             this.pictureBox1.TabStop = false;
             // 
@@ -101,7 +100,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.Location = new System.Drawing.Point(96, 14);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(307, 19);
+            this.textBox1.Size = new System.Drawing.Size(753, 19);
             this.textBox1.TabIndex = 102;
             // 
             // textBox2
@@ -110,13 +109,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox2.Location = new System.Drawing.Point(96, 43);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(307, 19);
+            this.textBox2.Size = new System.Drawing.Size(753, 19);
             this.textBox2.TabIndex = 102;
             // 
             // textBoxY1
             // 
             this.textBoxY1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxY1.Location = new System.Drawing.Point(491, 14);
+            this.textBoxY1.Location = new System.Drawing.Point(937, 16);
             this.textBoxY1.Name = "textBoxY1";
             this.textBoxY1.Size = new System.Drawing.Size(40, 19);
             this.textBoxY1.TabIndex = 103;
@@ -124,7 +123,7 @@
             // textBoxX1
             // 
             this.textBoxX1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxX1.Location = new System.Drawing.Point(427, 14);
+            this.textBoxX1.Location = new System.Drawing.Point(873, 16);
             this.textBoxX1.Name = "textBoxX1";
             this.textBoxX1.Size = new System.Drawing.Size(40, 19);
             this.textBoxX1.TabIndex = 103;
@@ -133,7 +132,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(473, 17);
+            this.label1.Location = new System.Drawing.Point(919, 19);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(12, 12);
             this.label1.TabIndex = 104;
@@ -143,7 +142,7 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(409, 17);
+            this.label2.Location = new System.Drawing.Point(855, 19);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(12, 12);
             this.label2.TabIndex = 104;
@@ -152,7 +151,7 @@
             // textBoxY2
             // 
             this.textBoxY2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxY2.Location = new System.Drawing.Point(491, 43);
+            this.textBoxY2.Location = new System.Drawing.Point(937, 45);
             this.textBoxY2.Name = "textBoxY2";
             this.textBoxY2.Size = new System.Drawing.Size(40, 19);
             this.textBoxY2.TabIndex = 103;
@@ -160,7 +159,7 @@
             // textBoxX2
             // 
             this.textBoxX2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxX2.Location = new System.Drawing.Point(427, 43);
+            this.textBoxX2.Location = new System.Drawing.Point(873, 45);
             this.textBoxX2.Name = "textBoxX2";
             this.textBoxX2.Size = new System.Drawing.Size(40, 19);
             this.textBoxX2.TabIndex = 103;
@@ -169,7 +168,7 @@
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(473, 46);
+            this.label3.Location = new System.Drawing.Point(919, 48);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(12, 12);
             this.label3.TabIndex = 104;
@@ -179,7 +178,7 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(409, 46);
+            this.label4.Location = new System.Drawing.Point(855, 48);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(12, 12);
             this.label4.TabIndex = 104;
@@ -193,21 +192,37 @@
             // 
             this.openFileDialog2.FileName = "openFileDialog2";
             // 
-            // progressBar1
+            // statusStrip1
             // 
-            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripProgressBar1});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 739);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(984, 22);
+            this.statusStrip1.TabIndex = 106;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripProgressBar1
+            // 
+            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(15, 406);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(516, 23);
-            this.progressBar1.Step = 1;
-            this.progressBar1.TabIndex = 105;
+            this.pictureBox2.Location = new System.Drawing.Point(497, 70);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(480, 625);
+            this.pictureBox2.TabIndex = 100;
+            this.pictureBox2.TabStop = false;
             // 
-            // Form2
+            // FormDiffBmp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-            this.ClientSize = new System.Drawing.Size(624, 441);
-            this.Controls.Add(this.progressBar1);
+            this.ClientSize = new System.Drawing.Size(984, 761);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label3);
@@ -220,14 +235,23 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
+            this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
-            this.Name = "Form2";
-            this.Controls.SetChildIndex(this.buttonSearch, 0);
-            this.Controls.SetChildIndex(this.buttonClear, 0);
-            this.Controls.SetChildIndex(this.buttonUpdate, 0);
-            this.Controls.SetChildIndex(this.buttonDelete, 0);
-            this.Controls.SetChildIndex(this.buttonEnd, 0);
+            this.Name = "FormDiffBmp";
+            this.Controls.SetChildIndex(this.buttonF4, 0);
+            this.Controls.SetChildIndex(this.buttonF7, 0);
+            this.Controls.SetChildIndex(this.buttonF10, 0);
+            this.Controls.SetChildIndex(this.buttonF5, 0);
+            this.Controls.SetChildIndex(this.buttonF8, 0);
+            this.Controls.SetChildIndex(this.buttonF6, 0);
+            this.Controls.SetChildIndex(this.buttonF9, 0);
+            this.Controls.SetChildIndex(this.buttonF1, 0);
+            this.Controls.SetChildIndex(this.buttonF11, 0);
+            this.Controls.SetChildIndex(this.buttonF2, 0);
+            this.Controls.SetChildIndex(this.buttonF3, 0);
+            this.Controls.SetChildIndex(this.buttonF12, 0);
             this.Controls.SetChildIndex(this.pictureBox1, 0);
+            this.Controls.SetChildIndex(this.pictureBox2, 0);
             this.Controls.SetChildIndex(this.button1, 0);
             this.Controls.SetChildIndex(this.button2, 0);
             this.Controls.SetChildIndex(this.textBox1, 0);
@@ -240,8 +264,11 @@
             this.Controls.SetChildIndex(this.label3, 0);
             this.Controls.SetChildIndex(this.label2, 0);
             this.Controls.SetChildIndex(this.label4, 0);
-            this.Controls.SetChildIndex(this.progressBar1, 0);
+            this.Controls.SetChildIndex(this.statusStrip1, 0);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -264,6 +291,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.OpenFileDialog openFileDialog2;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
+        private System.Windows.Forms.PictureBox pictureBox2;
     }
 }

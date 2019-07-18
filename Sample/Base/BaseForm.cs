@@ -21,23 +21,27 @@ namespace Sample
         protected void BaseButton_Click(object sender, EventArgs e)
         {
             Debug.WriteLine(MethodBase.GetCurrentMethod().Name);
-            switch (((Button)sender).Name)
+            switch (((Button)sender).Text)
             {
-                case nameof(buttonSearch):
+                case "検索":
                     SearchButton_Click(sender, e);
                     break;
-                case nameof(buttonClear):
+                case "クリア":
                     ClearButton_Click(sender, e);
                     break;
-                case nameof(buttonUpdate):
+                case "追加":
+                    InsertButton_Click(sender, e);
+                    break;
+                case "更新":
                     UpdateButton_Click(sender, e);
                     break;
-                case nameof(buttonDelete):
+                case "削除":
                     DeleteButton_Click(sender, e);
                     break;
-                case nameof(buttonEnd):
-                default:
+                case "終了":
                     ExitButton_Click(sender, e);
+                    break;
+                default:
                     break;
             }
         }
@@ -47,6 +51,10 @@ namespace Sample
             Debug.WriteLine(MethodBase.GetCurrentMethod().Name);
         }
         public virtual void ClearButton_Click(object sender, EventArgs e)
+        {
+            Debug.WriteLine(MethodBase.GetCurrentMethod().Name);
+        }
+        public virtual void InsertButton_Click(object sender, EventArgs e)
         {
             Debug.WriteLine(MethodBase.GetCurrentMethod().Name);
         }
@@ -62,6 +70,16 @@ namespace Sample
         {
             Debug.WriteLine(MethodBase.GetCurrentMethod().Name);
             Close();
+        }
+
+        private void BaseForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BaseForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
         }
     }
 }

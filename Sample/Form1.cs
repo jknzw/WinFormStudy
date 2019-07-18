@@ -29,17 +29,17 @@ namespace Sample
             switch (mode)
             {
                 case ActionMode.CsvOpen:
-                    buttonClear.Enabled = true;
-                    buttonSearch.Enabled = true;
-                    buttonUpdate.Enabled = true;
-                    buttonDelete.Enabled = true;
+                    buttonF11.Enabled = true;
+                    buttonF1.Enabled = true;
+                    buttonF2.Enabled = true;
+                    buttonF3.Enabled = true;
                     break;
                 case ActionMode.Init:
                 default:
-                    buttonClear.Enabled = false;
-                    buttonSearch.Enabled = false;
-                    buttonUpdate.Enabled = false;
-                    buttonDelete.Enabled = false;
+                    buttonF11.Enabled = false;
+                    buttonF1.Enabled = false;
+                    buttonF2.Enabled = false;
+                    buttonF3.Enabled = false;
                     break;
             }
         }
