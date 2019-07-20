@@ -15,6 +15,16 @@ namespace Sample
         public Form1()
         {
             InitializeComponent();
+
+            // 使わないボタンを非表示にする
+            buttonF3.Visible = false;
+            buttonF4.Visible = false;
+            buttonF7.Visible = false;
+            buttonF8.Visible = false;
+            buttonF9.Visible = false;
+            buttonF10.Visible = false;
+
+            // ボタンの有効無効を設定
             SetButtonEnabled(ActionMode.Init);
         }
 
@@ -26,25 +36,34 @@ namespace Sample
 
         private void SetButtonEnabled(ActionMode mode)
         {
+            // まず全てのボタンを無効にする
+            SetAllBaseButtonEnabled(false);
+
+            // 必要なボタンのみ有効にする
             switch (mode)
             {
                 case ActionMode.CsvOpen:
-                    buttonF11.Enabled = true;
                     buttonF1.Enabled = true;
                     buttonF2.Enabled = true;
-                    buttonF3.Enabled = true;
+                    buttonF5.Enabled = true;
+                    buttonF6.Enabled = true;
+                    buttonF11.Enabled = true;
+                    buttonF12.Enabled = true;
                     break;
                 case ActionMode.Init:
                 default:
-                    buttonF11.Enabled = false;
-                    buttonF1.Enabled = false;
-                    buttonF2.Enabled = false;
-                    buttonF3.Enabled = false;
+                    buttonF1.Enabled = true;
+                    buttonF12.Enabled = true;
                     break;
             }
         }
 
-        public void SelectButton_Click(object sender, EventArgs e)
+        /// <summary>
+        /// CSV選択
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected override void ButtonF1_Click(object sender, EventArgs e)
         {
             DialogResult result = openFileDialog1.ShowDialog();
             if (result.Equals(DialogResult.OK))
@@ -87,26 +106,44 @@ namespace Sample
             }
         }
 
-        public override void SearchButton_Click(object sender, EventArgs e)
+        /// <summary>
+        /// 検索
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected override void ButtonF2_Click(object sender, EventArgs e)
         {
-            base.SearchButton_Click(sender, e);
+            base.ButtonF1_Click(sender, e);
 
             dataGridView1.DataSource = Form1Service.GetInstance()
                 .Search(dataGridView1.DataSource as BindingSource, comboBoxSelect.Text, textBoxSelect.Text);
         }
 
-        public override void ClearButton_Click(object sender, EventArgs e)
+        /// <summary>
+        /// クリア
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected override void ButtonF11_Click(object sender, EventArgs e)
         {
-            base.ClearButton_Click(sender, e);
+            base.ButtonF11_Click(sender, e);
+
+            // テキストボックスクリア
+            textBoxSelect.Text = string.Empty;
 
             // フィルタクリア
             dataGridView1.DataSource = Form1Service.GetInstance()
                 .Clear(dataGridView1.DataSource as BindingSource);
-
         }
-        public override void DeleteButton_Click(object sender, EventArgs e)
+
+        /// <summary>
+        /// 選択行削除
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected override void ButtonF6_Click(object sender, EventArgs e)
         {
-            base.DeleteButton_Click(sender, e);
+            base.ButtonF6_Click(sender, e);
 
             dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
 
@@ -122,7 +159,7 @@ namespace Sample
                 int delCount = 0;
                 foreach (DataGridViewRow row in dataGridView1.SelectedRows)
                 {
-                    if(row.IsNewRow)
+                    if (row.IsNewRow)
                     {
                         // 新規行は何もしない
                         continue;
@@ -135,7 +172,7 @@ namespace Sample
                     }
                 }
 
-                if(delCount > 0)
+                if (delCount > 0)
                 {
                     MessageBox.Show($"選択行を{delCount}行削除しました");
                 }
@@ -147,9 +184,14 @@ namespace Sample
             }
         }
 
-        public override void UpdateButton_Click(object sender, EventArgs e)
+        /// <summary>
+        /// 更新
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected override void ButtonF5_Click(object sender, EventArgs e)
         {
-            base.UpdateButton_Click(sender, e);
+            base.ButtonF5_Click(sender, e);
 
             DialogResult result = MessageBox.Show("保存します。よろしいですか？", "保存確認", MessageBoxButtons.OKCancel);
             if (DialogResult.OK.Equals(result))

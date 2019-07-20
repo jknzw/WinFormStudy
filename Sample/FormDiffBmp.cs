@@ -37,9 +37,9 @@ namespace Sample
             }
         }
 
-        public override void SearchButton_Click(object sender, EventArgs e)
+        protected override void ButtonF1_Click(object sender, EventArgs e)
         {
-            base.SearchButton_Click(sender, e);
+            base.ButtonF1_Click(sender, e);
 
             Bitmap bmp1 = new Bitmap(textBox1.Text);
             Bitmap bmp2 = new Bitmap(textBox2.Text);

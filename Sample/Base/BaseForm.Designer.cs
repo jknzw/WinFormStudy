@@ -29,19 +29,7 @@ namespace Sample
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonF1 = new WindowsFormsControlLibrary.CustomButton();
-            this.buttonF2 = new WindowsFormsControlLibrary.CustomButton();
-            this.buttonF3 = new WindowsFormsControlLibrary.CustomButton();
-            this.buttonF12 = new WindowsFormsControlLibrary.CustomButton();
-            this.buttonF11 = new WindowsFormsControlLibrary.CustomButton();
             this.label1 = new System.Windows.Forms.Label();
-            this.buttonF4 = new WindowsFormsControlLibrary.CustomButton();
-            this.buttonF5 = new WindowsFormsControlLibrary.CustomButton();
-            this.buttonF6 = new WindowsFormsControlLibrary.CustomButton();
-            this.buttonF7 = new WindowsFormsControlLibrary.CustomButton();
-            this.buttonF8 = new WindowsFormsControlLibrary.CustomButton();
-            this.buttonF9 = new WindowsFormsControlLibrary.CustomButton();
-            this.buttonF10 = new WindowsFormsControlLibrary.CustomButton();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -53,62 +41,19 @@ namespace Sample
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
+            this.buttonF12 = new WindowsFormsControlLibrary.CustomButton();
+            this.buttonF9 = new WindowsFormsControlLibrary.CustomButton();
+            this.buttonF6 = new WindowsFormsControlLibrary.CustomButton();
+            this.buttonF8 = new WindowsFormsControlLibrary.CustomButton();
+            this.buttonF5 = new WindowsFormsControlLibrary.CustomButton();
+            this.buttonF3 = new WindowsFormsControlLibrary.CustomButton();
+            this.buttonF2 = new WindowsFormsControlLibrary.CustomButton();
+            this.buttonF10 = new WindowsFormsControlLibrary.CustomButton();
+            this.buttonF7 = new WindowsFormsControlLibrary.CustomButton();
+            this.buttonF4 = new WindowsFormsControlLibrary.CustomButton();
+            this.buttonF11 = new WindowsFormsControlLibrary.CustomButton();
+            this.buttonF1 = new WindowsFormsControlLibrary.CustomButton();
             this.SuspendLayout();
-            // 
-            // buttonF1
-            // 
-            this.buttonF1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonF1.Location = new System.Drawing.Point(7, 713);
-            this.buttonF1.Name = "buttonF1";
-            this.buttonF1.Size = new System.Drawing.Size(75, 23);
-            this.buttonF1.TabIndex = 1;
-            this.buttonF1.Text = "検索";
-            this.buttonF1.UseVisualStyleBackColor = true;
-            this.buttonF1.Click += new System.EventHandler(this.BaseButton_Click);
-            // 
-            // buttonF2
-            // 
-            this.buttonF2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonF2.Location = new System.Drawing.Point(88, 713);
-            this.buttonF2.Name = "buttonF2";
-            this.buttonF2.Size = new System.Drawing.Size(75, 23);
-            this.buttonF2.TabIndex = 20;
-            this.buttonF2.Text = "F2";
-            this.buttonF2.UseVisualStyleBackColor = true;
-            this.buttonF2.Click += new System.EventHandler(this.BaseButton_Click);
-            // 
-            // buttonF3
-            // 
-            this.buttonF3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonF3.Location = new System.Drawing.Point(169, 713);
-            this.buttonF3.Name = "buttonF3";
-            this.buttonF3.Size = new System.Drawing.Size(75, 23);
-            this.buttonF3.TabIndex = 20;
-            this.buttonF3.Text = "F3";
-            this.buttonF3.UseVisualStyleBackColor = true;
-            this.buttonF3.Click += new System.EventHandler(this.BaseButton_Click);
-            // 
-            // buttonF12
-            // 
-            this.buttonF12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonF12.Location = new System.Drawing.Point(903, 713);
-            this.buttonF12.Name = "buttonF12";
-            this.buttonF12.Size = new System.Drawing.Size(75, 23);
-            this.buttonF12.TabIndex = 99;
-            this.buttonF12.Text = "終了";
-            this.buttonF12.UseVisualStyleBackColor = true;
-            this.buttonF12.Click += new System.EventHandler(this.BaseButton_Click);
-            // 
-            // buttonF11
-            // 
-            this.buttonF11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonF11.Location = new System.Drawing.Point(822, 713);
-            this.buttonF11.Name = "buttonF11";
-            this.buttonF11.Size = new System.Drawing.Size(75, 23);
-            this.buttonF11.TabIndex = 1;
-            this.buttonF11.Text = "クリア";
-            this.buttonF11.UseVisualStyleBackColor = true;
-            this.buttonF11.Click += new System.EventHandler(this.BaseButton_Click);
             // 
             // label1
             // 
@@ -119,83 +64,6 @@ namespace Sample
             this.label1.TabIndex = 100;
             this.label1.Text = "F1";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // buttonF4
-            // 
-            this.buttonF4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonF4.Location = new System.Drawing.Point(250, 713);
-            this.buttonF4.Name = "buttonF4";
-            this.buttonF4.Size = new System.Drawing.Size(75, 23);
-            this.buttonF4.TabIndex = 1;
-            this.buttonF4.Text = "F4";
-            this.buttonF4.UseVisualStyleBackColor = true;
-            this.buttonF4.Click += new System.EventHandler(this.BaseButton_Click);
-            // 
-            // buttonF5
-            // 
-            this.buttonF5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonF5.Location = new System.Drawing.Point(334, 713);
-            this.buttonF5.Name = "buttonF5";
-            this.buttonF5.Size = new System.Drawing.Size(75, 23);
-            this.buttonF5.TabIndex = 20;
-            this.buttonF5.Text = "更新";
-            this.buttonF5.UseVisualStyleBackColor = true;
-            this.buttonF5.Click += new System.EventHandler(this.BaseButton_Click);
-            // 
-            // buttonF6
-            // 
-            this.buttonF6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonF6.Location = new System.Drawing.Point(415, 713);
-            this.buttonF6.Name = "buttonF6";
-            this.buttonF6.Size = new System.Drawing.Size(75, 23);
-            this.buttonF6.TabIndex = 20;
-            this.buttonF6.Text = "削除";
-            this.buttonF6.UseVisualStyleBackColor = true;
-            this.buttonF6.Click += new System.EventHandler(this.BaseButton_Click);
-            // 
-            // buttonF7
-            // 
-            this.buttonF7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonF7.Location = new System.Drawing.Point(496, 713);
-            this.buttonF7.Name = "buttonF7";
-            this.buttonF7.Size = new System.Drawing.Size(75, 23);
-            this.buttonF7.TabIndex = 1;
-            this.buttonF7.Text = "F7";
-            this.buttonF7.UseVisualStyleBackColor = true;
-            this.buttonF7.Click += new System.EventHandler(this.BaseButton_Click);
-            // 
-            // buttonF8
-            // 
-            this.buttonF8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonF8.Location = new System.Drawing.Point(577, 713);
-            this.buttonF8.Name = "buttonF8";
-            this.buttonF8.Size = new System.Drawing.Size(75, 23);
-            this.buttonF8.TabIndex = 20;
-            this.buttonF8.Text = "F8";
-            this.buttonF8.UseVisualStyleBackColor = true;
-            this.buttonF8.Click += new System.EventHandler(this.BaseButton_Click);
-            // 
-            // buttonF9
-            // 
-            this.buttonF9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonF9.Location = new System.Drawing.Point(660, 713);
-            this.buttonF9.Name = "buttonF9";
-            this.buttonF9.Size = new System.Drawing.Size(75, 23);
-            this.buttonF9.TabIndex = 20;
-            this.buttonF9.Text = "F9";
-            this.buttonF9.UseVisualStyleBackColor = true;
-            this.buttonF9.Click += new System.EventHandler(this.BaseButton_Click);
-            // 
-            // buttonF10
-            // 
-            this.buttonF10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonF10.Location = new System.Drawing.Point(741, 713);
-            this.buttonF10.Name = "buttonF10";
-            this.buttonF10.Size = new System.Drawing.Size(75, 23);
-            this.buttonF10.TabIndex = 1;
-            this.buttonF10.Text = "F10";
-            this.buttonF10.UseVisualStyleBackColor = true;
-            this.buttonF10.Click += new System.EventHandler(this.BaseButton_Click);
             // 
             // label2
             // 
@@ -306,6 +174,138 @@ namespace Sample
             this.label12.TabIndex = 100;
             this.label12.Text = "F12";
             this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // buttonF12
+            // 
+            this.buttonF12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonF12.Location = new System.Drawing.Point(903, 713);
+            this.buttonF12.Name = "buttonF12";
+            this.buttonF12.Size = new System.Drawing.Size(75, 23);
+            this.buttonF12.TabIndex = 99;
+            this.buttonF12.Text = "終了";
+            this.buttonF12.UseVisualStyleBackColor = true;
+            this.buttonF12.Click += new System.EventHandler(this.BaseButton_Click);
+            // 
+            // buttonF9
+            // 
+            this.buttonF9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonF9.Location = new System.Drawing.Point(660, 713);
+            this.buttonF9.Name = "buttonF9";
+            this.buttonF9.Size = new System.Drawing.Size(75, 23);
+            this.buttonF9.TabIndex = 96;
+            this.buttonF9.Text = "F9";
+            this.buttonF9.UseVisualStyleBackColor = true;
+            this.buttonF9.Click += new System.EventHandler(this.BaseButton_Click);
+            // 
+            // buttonF6
+            // 
+            this.buttonF6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonF6.Location = new System.Drawing.Point(415, 713);
+            this.buttonF6.Name = "buttonF6";
+            this.buttonF6.Size = new System.Drawing.Size(75, 23);
+            this.buttonF6.TabIndex = 93;
+            this.buttonF6.Text = "削除";
+            this.buttonF6.UseVisualStyleBackColor = true;
+            this.buttonF6.Click += new System.EventHandler(this.BaseButton_Click);
+            // 
+            // buttonF8
+            // 
+            this.buttonF8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonF8.Location = new System.Drawing.Point(577, 713);
+            this.buttonF8.Name = "buttonF8";
+            this.buttonF8.Size = new System.Drawing.Size(75, 23);
+            this.buttonF8.TabIndex = 95;
+            this.buttonF8.Text = "F8";
+            this.buttonF8.UseVisualStyleBackColor = true;
+            this.buttonF8.Click += new System.EventHandler(this.BaseButton_Click);
+            // 
+            // buttonF5
+            // 
+            this.buttonF5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonF5.Location = new System.Drawing.Point(334, 713);
+            this.buttonF5.Name = "buttonF5";
+            this.buttonF5.Size = new System.Drawing.Size(75, 23);
+            this.buttonF5.TabIndex = 92;
+            this.buttonF5.Text = "更新";
+            this.buttonF5.UseVisualStyleBackColor = true;
+            this.buttonF5.Click += new System.EventHandler(this.BaseButton_Click);
+            // 
+            // buttonF3
+            // 
+            this.buttonF3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonF3.Location = new System.Drawing.Point(169, 713);
+            this.buttonF3.Name = "buttonF3";
+            this.buttonF3.Size = new System.Drawing.Size(75, 23);
+            this.buttonF3.TabIndex = 90;
+            this.buttonF3.Text = "F3";
+            this.buttonF3.UseVisualStyleBackColor = true;
+            this.buttonF3.Click += new System.EventHandler(this.BaseButton_Click);
+            // 
+            // buttonF2
+            // 
+            this.buttonF2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonF2.Location = new System.Drawing.Point(88, 713);
+            this.buttonF2.Name = "buttonF2";
+            this.buttonF2.Size = new System.Drawing.Size(75, 23);
+            this.buttonF2.TabIndex = 89;
+            this.buttonF2.Text = "F2";
+            this.buttonF2.UseVisualStyleBackColor = true;
+            this.buttonF2.Click += new System.EventHandler(this.BaseButton_Click);
+            // 
+            // buttonF10
+            // 
+            this.buttonF10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonF10.Location = new System.Drawing.Point(741, 713);
+            this.buttonF10.Name = "buttonF10";
+            this.buttonF10.Size = new System.Drawing.Size(75, 23);
+            this.buttonF10.TabIndex = 97;
+            this.buttonF10.Text = "F10";
+            this.buttonF10.UseVisualStyleBackColor = true;
+            this.buttonF10.Click += new System.EventHandler(this.BaseButton_Click);
+            // 
+            // buttonF7
+            // 
+            this.buttonF7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonF7.Location = new System.Drawing.Point(496, 713);
+            this.buttonF7.Name = "buttonF7";
+            this.buttonF7.Size = new System.Drawing.Size(75, 23);
+            this.buttonF7.TabIndex = 94;
+            this.buttonF7.Text = "F7";
+            this.buttonF7.UseVisualStyleBackColor = true;
+            this.buttonF7.Click += new System.EventHandler(this.BaseButton_Click);
+            // 
+            // buttonF4
+            // 
+            this.buttonF4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonF4.Location = new System.Drawing.Point(250, 713);
+            this.buttonF4.Name = "buttonF4";
+            this.buttonF4.Size = new System.Drawing.Size(75, 23);
+            this.buttonF4.TabIndex = 91;
+            this.buttonF4.Text = "F4";
+            this.buttonF4.UseVisualStyleBackColor = true;
+            this.buttonF4.Click += new System.EventHandler(this.BaseButton_Click);
+            // 
+            // buttonF11
+            // 
+            this.buttonF11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonF11.Location = new System.Drawing.Point(822, 713);
+            this.buttonF11.Name = "buttonF11";
+            this.buttonF11.Size = new System.Drawing.Size(75, 23);
+            this.buttonF11.TabIndex = 98;
+            this.buttonF11.Text = "クリア";
+            this.buttonF11.UseVisualStyleBackColor = true;
+            this.buttonF11.Click += new System.EventHandler(this.BaseButton_Click);
+            // 
+            // buttonF1
+            // 
+            this.buttonF1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonF1.Location = new System.Drawing.Point(7, 713);
+            this.buttonF1.Name = "buttonF1";
+            this.buttonF1.Size = new System.Drawing.Size(75, 23);
+            this.buttonF1.TabIndex = 88;
+            this.buttonF1.Text = "検索";
+            this.buttonF1.UseVisualStyleBackColor = true;
+            this.buttonF1.Click += new System.EventHandler(this.BaseButton_Click);
             // 
             // BaseForm
             // 
