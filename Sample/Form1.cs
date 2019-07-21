@@ -86,8 +86,10 @@ namespace Sample
                     comboBoxSelect.SelectedIndex = 0;
                 }
 
-                BindingSource bs = new BindingSource();
-                bs.DataSource = dt;
+                BindingSource bs = new BindingSource
+                {
+                    DataSource = dt
+                };
                 //bs.Sort = sort.Remove(sort.Length - 1);
 
                 dataGridView1.DataSource = bs;
@@ -198,7 +200,7 @@ namespace Sample
             {
                 int writeCount = Form1Service.GetInstance().Update(CsvFilePath, "UTF-8", (dataGridView1.DataSource as BindingSource).DataSource as DataTable);
 
-                MessageBox.Show("保存しました");
+                MessageBox.Show($"{writeCount}件保存しました");
             }
         }
     }
