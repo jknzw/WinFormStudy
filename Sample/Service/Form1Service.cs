@@ -29,7 +29,7 @@ namespace Sample
             {
                 // csvファイル読込
                 // ToListで読み込み処理を確定させる
-                List<string[]> list = CsvFileRead(filePath, encoding).ToList();
+                List<string[]> list = FileRead(filePath, encoding).ToList();
 
                 // ヘッダ設定
                 foreach (string text in list.First())
@@ -99,7 +99,7 @@ namespace Sample
                 writeData.Add(data.Remove(data.Length - 1));
             }
 
-            return CsvFileWrite(filePath, writeData, encoding);
+            return FileWrite(filePath, writeData, encoding);
         }
     }
 }

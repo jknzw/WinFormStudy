@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -117,8 +118,13 @@ namespace Sample
         {
             base.ButtonF1_Click(sender, e);
 
+            //dataGridView1.DataSource = Form1Service.GetInstance()
+            //    .Search(dataGridView1.DataSource as BindingSource, comboBoxSelect.Text, textBoxSelect.Text);
+
+            // 試しコード
+            Dictionary<string, dynamic> dicControls = this.GetControlDictionary();
             dataGridView1.DataSource = Form1Service.GetInstance()
-                .Search(dataGridView1.DataSource as BindingSource, comboBoxSelect.Text, textBoxSelect.Text);
+                .Search(dataGridView1.DataSource as BindingSource, dicControls[nameof(comboBoxSelect)], dicControls[nameof(textBoxSelect)]);
         }
 
         /// <summary>

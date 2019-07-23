@@ -13,14 +13,14 @@ namespace SampleLibrary
     /// </summary>
     public abstract class CsvFileService : FileService
     {
-        public IEnumerable<string[]> CsvFileRead(string filePath, string encoding = "UTF-8")
+        public new IEnumerable<string[]> FileRead(string filePath, string encoding = "UTF-8")
         {
-            foreach (string text in FileRead(filePath, encoding))
+            foreach (string text in base.FileRead(filePath, encoding))
             {
                 yield return text.Split(',');
             }
         }
-        public int CsvFileWrite(string filePath, List<string> text, string encoding = "UTF-8")
+        public int FileWrite(string filePath, List<string> text, string encoding = "UTF-8")
         {
             return FileWrite(filePath, encoding, text.ToArray());
         }

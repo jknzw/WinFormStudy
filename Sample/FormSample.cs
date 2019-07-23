@@ -13,6 +13,49 @@ namespace Sample
         public FormSample()
         {
             InitializeComponent();
+
+            // 使わないボタンを非表示にする
+            buttonF1.Visible = false;
+            buttonF2.Visible = false;
+            buttonF3.Visible = false;
+            buttonF4.Visible = false;
+            buttonF5.Visible = false;
+            buttonF6.Visible = false;
+            buttonF7.Visible = false;
+            buttonF8.Visible = false;
+            buttonF9.Visible = false;
+            buttonF10.Visible = false;
+            buttonF11.Visible = false;
+
+            // ボタンの有効無効を設定
+            SetButtonEnabled(ActionMode.Init);
+        }
+
+        /// <summary>
+        /// 動作モード
+        /// </summary>
+        private enum ActionMode
+        {
+            Init = 0,
+        }
+
+        /// <summary>
+        /// ボタン状態の設定
+        /// </summary>
+        /// <param name="mode"></param>
+        private void SetButtonEnabled(ActionMode mode)
+        {
+            // まず全てのボタンを無効にする
+            SetAllBaseButtonEnabled(false);
+
+            // 必要なボタンのみ有効にする
+            switch (mode)
+            {
+                case ActionMode.Init:
+                default:
+                    buttonF12.Enabled = true;
+                    break;
+            }
         }
 
         /// <summary>
