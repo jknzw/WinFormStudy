@@ -123,20 +123,27 @@ namespace SampleLibrary
         {
             while (loopWriteLog)
             {
-                using (StreamWriter sw = new StreamWriter(LogFilePath))
+                using (StreamWriter sw = new StreamWriter(LogFilePath, true))
                 {
-                    while (Que.Count > 0)
+                    try
                     {
-                        if (Que.TryTake(out string item, 1 * 1000))
+                        while (Que.Count > 0)
                         {
-                            Debug.WriteLine($"write[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fffffff")}]append{item}");
-                            await sw.WriteLineAsync(item);
+                            if (Que.TryTake(out string item, 1 * 1000))
+                            {
+                                Debug.WriteLine($"write[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fffffff")}]append{item}");
+                                await sw.WriteLineAsync(item);
+                            }
+                            else
+                            {
+                                Debug.WriteLine("TryTake Error");
+                                break;
+                            }
                         }
-                        else
-                        {
-                            Debug.WriteLine("TryTake Error");
-                            break;
-                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
                     }
                 }
                 await Task.Delay(WriteDelay);

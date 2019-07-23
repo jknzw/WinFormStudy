@@ -28,6 +28,9 @@ namespace Sample
         /// <param name="e"></param>
         protected override void ButtonF1_Click(object sender, EventArgs e)
         {
+            base.ButtonF1_Click(sender, e);
+
+            // ▼▼▼ 業務処理 ▼▼▼
             if (log == null)
             {
                 // 初回
@@ -51,8 +54,6 @@ namespace Sample
             log.TaskTimeout = timeout;
             log.WriteDelay = delay;
 
-            base.ButtonF1_Click(sender, e);
-            // ▼▼▼ 業務処理 ▼▼▼
             for (int i = 0; i < 1000; i++)
             {
                 log.WriteLineWait(count++.ToString());
