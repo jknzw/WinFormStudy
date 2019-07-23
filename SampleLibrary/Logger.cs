@@ -36,24 +36,62 @@ namespace SampleLibrary
 
         #region フィールド
         /// <summary>
+        /// AsyncLock
+        /// https://www.hanselman.com/blog/ComparingTwoTechniquesInNETAsynchronousCoordinationPrimitives.aspx
+        /// </summary>
+        private sealed class AsyncLock
+        {
+            private readonly System.Threading.SemaphoreSlim m_semaphore
+              = new System.Threading.SemaphoreSlim(1, 1);
+            private readonly Task<IDisposable> m_releaser;
+
+            public AsyncLock()
+            {
+                m_releaser = Task.FromResult((IDisposable)new Releaser(this));
+            }
+
+            public Task<IDisposable> LockAsync()
+            {
+                var wait = m_semaphore.WaitAsync();
+                return wait.IsCompleted ?
+                        m_releaser :
+                        wait.ContinueWith(
+                          (_, state) => (IDisposable)state,
+                          m_releaser.Result,
+                          System.Threading.CancellationToken.None,
+                          TaskContinuationOptions.ExecuteSynchronously,
+                          TaskScheduler.Default
+                        );
+            }
+            private sealed class Releaser : IDisposable
+            {
+                private readonly AsyncLock m_toRelease;
+                internal Releaser(AsyncLock toRelease) { m_toRelease = toRelease; }
+                public void Dispose() { m_toRelease.m_semaphore.Release(); }
+            }
+        }
+
+        /// <summary>
         /// インスタンス辞書
         /// </summary>
-        private static readonly Dictionary<string, Logger> dicLog = new Dictionary<string, Logger>();
+        private static readonly Dictionary<string, Logger> _dicLog = new Dictionary<string, Logger>();
+
+        private static readonly AsyncLock _asyncLock = new AsyncLock();
 
         /// <summary>
         /// ログ出力ループ継続フラグ
         /// </summary>
-        private bool loopWriteLog = true;
+        private bool _loopWriteLog = true;
 
         /// <summary>
         /// キュー
         /// </summary>
-        private BlockingCollection<string> Que = null;
+        private BlockingCollection<string> _que = null;
 
         /// <summary>
         /// タスク
         /// </summary>
-        private Task task = null;
+        private Task _task = null;
         #endregion
 
         /// <summary>
@@ -62,7 +100,7 @@ namespace SampleLibrary
         private Logger()
         {
             // コンストラクタの使用を禁止する
-            Que = new BlockingCollection<string>(new ConcurrentQueue<string>(), BoundedCapacity);
+            _que = new BlockingCollection<string>(new ConcurrentQueue<string>(), BoundedCapacity);
         }
 
         /// <summary>
@@ -72,10 +110,10 @@ namespace SampleLibrary
         /// <returns>Logger</returns>
         public static Logger GetInstance(string logFilePath, int taskTimeout = 0)
         {
-            if (dicLog.ContainsKey(logFilePath))
+            if (_dicLog.ContainsKey(logFilePath))
             {
                 // 生成済の場合
-                return dicLog[logFilePath];
+                return _dicLog[logFilePath];
             }
             else
             {
@@ -85,10 +123,10 @@ namespace SampleLibrary
                     LogFilePath = logFilePath,
                     TaskTimeout = taskTimeout,
                 };
-                dicLog.Add(logFilePath, log);
+                _dicLog.Add(logFilePath, log);
 
                 // タスクの開始
-                log.task = Task.Run(() => log.AsyncWriteLog());
+                log._task = Task.Run(() => log.AsyncWriteLog());
 
                 return log;
             }
@@ -109,11 +147,11 @@ namespace SampleLibrary
             bool ret;
             if (timeout == 0)
             {
-                ret = Que.TryAdd(GetLogText(log));
+                ret = _que.TryAdd(GetLogText(log));
             }
             else
             {
-                ret = Que.TryAdd(GetLogText(log), timeout);
+                ret = _que.TryAdd(GetLogText(log), timeout);
             }
             if (!ret)
             {
@@ -129,29 +167,32 @@ namespace SampleLibrary
 
         private async Task AsyncWriteLog()
         {
-            while (loopWriteLog)
+            while (_loopWriteLog)
             {
-                using (StreamWriter sw = new StreamWriter(LogFilePath, true))
+                using (await _asyncLock.LockAsync())
                 {
-                    try
+                    using (StreamWriter sw = new StreamWriter(LogFilePath, true))
                     {
-                        while (Que.Count > 0)
+                        try
                         {
-                            if (Que.TryTake(out string item, 1 * 1000))
+                            while (_que.Count > 0)
                             {
-                                Debug.WriteLine($"write[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fffffff")}]append{item}");
-                                await sw.WriteLineAsync(item);
-                            }
-                            else
-                            {
-                                Debug.WriteLine("TryTake Error");
-                                break;
+                                if (_que.TryTake(out string item, 1 * 1000))
+                                {
+                                    Debug.WriteLine($"write[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fffffff")}]append{item}");
+                                    await sw.WriteLineAsync(item);
+                                }
+                                else
+                                {
+                                    Debug.WriteLine("TryTake Error");
+                                    break;
+                                }
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                        }
                     }
                 }
                 await Task.Delay(WriteDelay);
@@ -170,19 +211,19 @@ namespace SampleLibrary
                     // 破棄処理
 
                     // 出力の終了を待つ
-                    loopWriteLog = false;
+                    _loopWriteLog = false;
                     if (TaskTimeout == 0)
                     {
-                        task.Wait();
+                        _task.Wait();
                     }
                     else
                     {
-                        task.Wait(TaskTimeout);
+                        _task.Wait(TaskTimeout);
                     }
 
                     try
                     {
-                        task.Dispose();
+                        _task.Dispose();
                     }
                     catch (Exception ex)
                     {
@@ -193,14 +234,14 @@ namespace SampleLibrary
 
                     }
 
-                    Que.Dispose();
+                    _que.Dispose();
 
-                    dicLog.Remove(LogFilePath);
+                    _dicLog.Remove(LogFilePath);
                 }
 
                 // null
-                task = null;
-                Que = null;
+                _task = null;
+                _que = null;
 
                 disposedValue = true;
             }
