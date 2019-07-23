@@ -101,22 +101,30 @@ namespace SampleLibrary
         /// <returns></returns>
         public bool WriteLineWait(string log)
         {
-            if (!Que.TryAdd($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fffffff")}]{log}", System.Threading.Timeout.Infinite))
-            {
-                Debug.WriteLine($"Que TryAdd false [{log}]");
-                return false;
-            }
-            return true;
+            return WriteLine(log, System.Threading.Timeout.Infinite);
         }
 
-        public bool WriteLine(string log)
+        public bool WriteLine(string log, int timeout = 0)
         {
-            if (!Que.TryAdd($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fffffff")}]{log}"))
+            bool ret;
+            if (timeout == 0)
+            {
+                ret = Que.TryAdd(GetLogText(log));
+            }
+            else
+            {
+                ret = Que.TryAdd(GetLogText(log), timeout);
+            }
+            if (!ret)
             {
                 Debug.WriteLine($"Que TryAdd false [{log}]");
-                return false;
             }
-            return true;
+            return ret;
+        }
+
+        private string GetLogText(string log)
+        {
+            return $"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fffffff")}]{log}";
         }
 
         private async Task AsyncWriteLog()
