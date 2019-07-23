@@ -21,7 +21,7 @@ namespace Sample
 
         private void SetTabIndex()
         {
-            foreach(Control ctrl in this.Controls)
+            foreach (Control ctrl in this.Controls)
             {
 
             }
@@ -48,6 +48,11 @@ namespace Sample
             Form f = new FormDiffBmp();
             //モードレスでフォームを表示
             f.Show();
+        }
+
+        private void CustomButton3_Click(object sender, EventArgs e)
+        {
+            ShowDialog(new TestForm());
         }
     }
 }

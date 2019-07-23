@@ -30,6 +30,7 @@
         {
             this.customButton1 = new WindowsFormsControlLibrary.CustomButton();
             this.customButton2 = new WindowsFormsControlLibrary.CustomButton();
+            this.customButton3 = new WindowsFormsControlLibrary.CustomButton();
             this.SuspendLayout();
             // 
             // customButton1
@@ -52,12 +53,23 @@
             this.customButton2.UseVisualStyleBackColor = true;
             this.customButton2.Click += new System.EventHandler(this.CustomButton2_Click);
             // 
+            // customButton3
+            // 
+            this.customButton3.Location = new System.Drawing.Point(12, 70);
+            this.customButton3.Name = "customButton3";
+            this.customButton3.Size = new System.Drawing.Size(99, 23);
+            this.customButton3.TabIndex = 0;
+            this.customButton3.Text = "TestForm";
+            this.customButton3.UseVisualStyleBackColor = true;
+            this.customButton3.Click += new System.EventHandler(this.CustomButton3_Click);
+            // 
             // FormMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.customButton2);
+            this.Controls.Add(this.customButton3);
             this.Controls.Add(this.customButton1);
             this.Name = "FormMenu";
             this.Text = "FormMenu";
@@ -69,5 +81,6 @@
 
         private WindowsFormsControlLibrary.CustomButton customButton1;
         private WindowsFormsControlLibrary.CustomButton customButton2;
+        private WindowsFormsControlLibrary.CustomButton customButton3;
     }
 }
