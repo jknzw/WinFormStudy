@@ -115,6 +115,7 @@
     <EmbeddedResource Include="TestForm.resx">
       <DependentUpon>TestForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Doc\Sample.drawio" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -139,7 +140,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="memo.txt" />
+    <Content Include="Doc\memo.txt" />
+    <Content Include="Doc\Sample.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
