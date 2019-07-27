@@ -1,5 +1,5 @@
 ﻿
-namespace Sample
+namespace Sample.Base
 {
     partial class BaseForm
     {

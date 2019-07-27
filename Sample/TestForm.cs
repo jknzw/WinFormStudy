@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Sample
 {
-    public partial class TestForm : Sample.BaseForm
+    public partial class TestForm : Sample.Base.BaseForm
     {
         public TestForm()
         {

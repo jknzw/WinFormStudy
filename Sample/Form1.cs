@@ -7,9 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using Sample.Service;
+
 namespace Sample
 {
-    public partial class Form1 : Sample.BaseForm
+    public partial class Form1 : Sample.Base.BaseForm
     {
         private string CsvFilePath { get; set; }
 
@@ -72,7 +74,7 @@ namespace Sample
                 CsvFilePath = openFileDialog1.FileName;
                 this.Text = CsvFilePath;
 
-                DataTable dt = Form1Service.GetInstance().GetDataTable(CsvFilePath, "UTF-8");
+                DataTable dt = Service.Form1Service.GetInstance(this).GetDataTable(CsvFilePath, "UTF-8");
 
                 //string sort = string.Empty;
                 if (dt.Columns.Count > 0)
@@ -123,7 +125,7 @@ namespace Sample
 
             // 試しコード
             Dictionary<string, dynamic> dicControls = this.GetControlDictionary();
-            dataGridView1.DataSource = Form1Service.GetInstance()
+            dataGridView1.DataSource = Form1Service.GetInstance(this)
                 .Search(dataGridView1.DataSource as BindingSource, dicControls[nameof(comboBoxSelect)], dicControls[nameof(textBoxSelect)]);
         }
 
@@ -140,7 +142,7 @@ namespace Sample
             textBoxSelect.Text = string.Empty;
 
             // フィルタクリア
-            dataGridView1.DataSource = Form1Service.GetInstance()
+            dataGridView1.DataSource = Form1Service.GetInstance(this)
                 .Clear(dataGridView1.DataSource as BindingSource);
         }
 
@@ -204,7 +206,7 @@ namespace Sample
             DialogResult result = MessageBox.Show("保存します。よろしいですか？", "保存確認", MessageBoxButtons.OKCancel);
             if (DialogResult.OK.Equals(result))
             {
-                int writeCount = Form1Service.GetInstance().Update(CsvFilePath, "UTF-8", (dataGridView1.DataSource as BindingSource).DataSource as DataTable);
+                int writeCount = Form1Service.GetInstance(this).Update(CsvFilePath, "UTF-8", (dataGridView1.DataSource as BindingSource).DataSource as DataTable);
 
                 MessageBox.Show($"{writeCount}件保存しました");
             }

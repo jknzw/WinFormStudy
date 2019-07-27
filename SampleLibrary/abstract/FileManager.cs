@@ -8,10 +8,10 @@ namespace SampleLibrary
 {
     /// <summary>
     /// ファイル読み書き用抽象クラス
-    /// メソッドを定義すると共に最低限の機能を実装している
+    /// メソッドと最低限の共通機能を実装している
     /// 使うときは継承して使う
     /// </summary>
-    public abstract class FileService : IFileService
+    public abstract class FileManager : IFileManager
     {
         public int FileWrite(string filePath, string encoding = "UTF-8", params string[] text)
         {

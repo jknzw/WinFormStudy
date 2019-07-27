@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Sample
+namespace Sample.Base
 {
     public partial class BaseForm : Form
     {

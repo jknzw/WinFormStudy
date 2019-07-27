@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace Sample
 {
-    public partial class FormDiffBmp : Sample.BaseForm
+    public partial class FormDiffBmp : Sample.Base.BaseForm
     {
         public FormDiffBmp()
         {

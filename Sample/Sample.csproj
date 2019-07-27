@@ -55,6 +55,7 @@
     <Compile Include="Base\BaseForm.Designer.cs">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Base\BaseService.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

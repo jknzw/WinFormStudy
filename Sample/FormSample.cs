@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace Sample
 {
-    public partial class FormSample : Sample.BaseForm
+    public partial class FormSample : Sample.Base.BaseForm
     {
         public FormSample()
         {

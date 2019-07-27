@@ -10,7 +10,7 @@ namespace SampleLibrary
     /// ファイル操作インタフェース
     /// ファイル読込・ファイル書込処理のメソッドの実装規約
     /// </summary>
-    interface IFileService
+    interface IFileManager
     {
         /// <summary>
         /// ファイル読込

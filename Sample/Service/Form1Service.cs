@@ -8,18 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Sample
+namespace Sample.Service
 {
-    class Form1Service : CsvFileService
+    public class Form1Service : Base.BaseService
     {
-        private Form1Service()
+        private Form1Service(Form form) : base(form)
         {
-
+            // コンストラクタの直接呼出しを禁止する
         }
 
-        public static Form1Service GetInstance()
+        public static Form1Service GetInstance(Form form)
         {
-            return new Form1Service();
+            return new Form1Service(form);
         }
 
         public DataTable GetDataTable(string filePath, string encoding)
@@ -29,7 +29,8 @@ namespace Sample
             {
                 // csvファイル読込
                 // ToListで読み込み処理を確定させる
-                List<string[]> list = FileRead(filePath, encoding).ToList();
+                CsvFileService csv = CsvFileService.GetInstance();
+                List<string[]> list = csv.FileRead(filePath, encoding).ToList();
 
                 // ヘッダ設定
                 foreach (string text in list.First())
@@ -99,7 +100,8 @@ namespace Sample
                 writeData.Add(data.Remove(data.Length - 1));
             }
 
-            return FileWrite(filePath, writeData, encoding);
+            CsvFileService csv = CsvFileService.GetInstance();
+            return csv.FileWrite(filePath, encoding, writeData);
         }
     }
 }
