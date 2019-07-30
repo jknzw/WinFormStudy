@@ -13,14 +13,23 @@ namespace SampleLibrary
     /// </summary>
     public abstract class FileManager : IFileManager
     {
-        public int FileWrite(string filePath, string encoding = "UTF-8", params string[] text)
+        public int FileWrite(string filePath, string encoding = "UTF-8", params string[] texts)
         {
-            for (int i = 0; i < text.Length; i++)
+            for (int i = 0; i < texts.Length; i++)
             {
-                text[i] = text[i].Replace("\n", "<br>");
+                texts[i] = texts[i].Replace("\n", "<br>");
             }
-            File.WriteAllLines(filePath, text, Encoding.GetEncoding(encoding));
-            return 0;
+
+            int count = 0;
+            using (StreamWriter sw = new StreamWriter(filePath, false, Encoding.GetEncoding(encoding)))
+            {
+                foreach (string text in texts)
+                {
+                    sw.WriteLine(text);
+                    count++;
+                }
+            }
+            return count;
         }
 
         public IEnumerable<string> FileRead(string filePath, string encoding = "UTF-8")

@@ -208,7 +208,7 @@ namespace Sample
             {
                 int writeCount = Form1Service.GetInstance(this).Update(CsvFilePath, "UTF-8", (dataGridView1.DataSource as BindingSource).DataSource as DataTable);
 
-                MessageBox.Show($"{writeCount}件保存しました");
+                MessageBox.Show($"{writeCount}行保存しました");
             }
         }
     }
