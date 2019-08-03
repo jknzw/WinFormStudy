@@ -169,32 +169,39 @@ namespace SampleLibrary
         {
             while (_loopWriteLog)
             {
-                using (await _asyncLock.LockAsync())
+                if (_que.Count != 0)
                 {
-                    using (StreamWriter sw = new StreamWriter(LogFilePath, true))
+                    // キューがある場合
+                    using (await _asyncLock.LockAsync())
                     {
-                        try
+                        // ファイルを開く
+                        using (StreamWriter sw = new StreamWriter(LogFilePath, true))
                         {
-                            while (_que.Count > 0)
+                            try
                             {
-                                if (_que.TryTake(out string item, 1 * 1000))
+                                // キューが無くなるまで書き込む
+                                while (_que.Count > 0)
                                 {
-                                    Debug.WriteLine($"write[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fffffff")}]append{item}");
-                                    await sw.WriteLineAsync(item);
-                                }
-                                else
-                                {
-                                    Debug.WriteLine("TryTake Error");
-                                    break;
+                                    if (_que.TryTake(out string item, 1 * 1000))
+                                    {
+                                        Debug.WriteLine($"write[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fffffff")}]append{item}");
+                                        await sw.WriteLineAsync(item);
+                                    }
+                                    else
+                                    {
+                                        Debug.WriteLine("TryTake Error");
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine(ex.Message);
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex.Message);
+                            }
                         }
                     }
                 }
+                // キューが無い場合 or 書き込み終わったら待機
                 await Task.Delay(WriteDelay);
             }
         }

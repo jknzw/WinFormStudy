@@ -30,7 +30,7 @@ namespace Sample.Service
                 // csvファイル読込
                 // ToListで読み込み処理を確定させる
                 CsvFileService csv = CsvFileService.GetInstance();
-                List<string[]> list = csv.FileRead(filePath, encoding).ToList();
+                List<string[]> list = csv.CsvFileRead(filePath, encoding).ToList();
 
                 // ヘッダ設定
                 foreach (string text in list.First())

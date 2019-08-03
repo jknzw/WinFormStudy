@@ -13,7 +13,7 @@ namespace SampleLibrary
     /// </summary>
     public abstract class FileManager : IFileManager
     {
-        public int FileWrite(string filePath, string encoding = "UTF-8", params string[] texts)
+        public virtual int FileWrite(string filePath, string encoding = "UTF-8", params string[] texts)
         {
             for (int i = 0; i < texts.Length; i++)
             {
@@ -32,7 +32,7 @@ namespace SampleLibrary
             return count;
         }
 
-        public IEnumerable<string> FileRead(string filePath, string encoding = "UTF-8")
+        public virtual IEnumerable<string> FileRead(string filePath, string encoding = "UTF-8")
         {
             foreach (string text in File.ReadAllLines(filePath, Encoding.GetEncoding(encoding)))
             {
