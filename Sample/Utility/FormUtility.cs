@@ -48,6 +48,9 @@ namespace Sample
                     case ComboBox combo:
                         list = list.Append((combo.Name, combo.Text));
                         break;
+                    case DateTimePicker dateTimePicker:
+                        list = list.Append((dateTimePicker.Name,dateTimePicker.Value));
+                        break;
                     default:
                         list = list.Concat(GetControlValue(ctrl.Controls));
                         break;

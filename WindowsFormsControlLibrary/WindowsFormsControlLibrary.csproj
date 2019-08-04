@@ -54,6 +54,12 @@
     <Compile Include="CustomDataGridView.Designer.cs">
       <DependentUpon>CustomDataGridView.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomReadOnlyTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomReadOnlyTextBox.Designer.cs">
+      <DependentUpon>CustomReadOnlyTextBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -69,6 +75,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomDataGridView.resx">
       <DependentUpon>CustomDataGridView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomReadOnlyTextBox.resx">
+      <DependentUpon>CustomReadOnlyTextBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomTextBox.resx">
       <DependentUpon>CustomTextBox.cs</DependentUpon>

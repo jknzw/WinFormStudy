@@ -10,9 +10,9 @@ namespace Sample.Base
     public class BaseService
     {
         #region コンストラクタ
-        private BaseService()
+        public BaseService()
         {
-            // 引数無しのコンストラクタを禁止する
+
         }
         public BaseService(Form form)
         {

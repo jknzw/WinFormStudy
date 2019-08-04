@@ -13,7 +13,19 @@ namespace SampleLibrary
     /// </summary>
     public abstract class FileManager : IFileManager
     {
-        public virtual int FileWrite(string filePath, string encoding = "UTF-8", params string[] texts)
+        protected const string DefaultEncoding = "UTF-8";
+
+        public virtual int FileWrite(string filePath, params string[] texts)
+        {
+            return FileWrite(filePath, DefaultEncoding, false, texts);
+        }
+
+        public virtual int FileAppend(string filePath, params string[] texts)
+        {
+            return FileWrite(filePath, DefaultEncoding, true, texts);
+        }
+
+        public virtual int FileWrite(string filePath, string encoding = DefaultEncoding, bool append = false, params string[] texts)
         {
             for (int i = 0; i < texts.Length; i++)
             {
@@ -21,7 +33,7 @@ namespace SampleLibrary
             }
 
             int count = 0;
-            using (StreamWriter sw = new StreamWriter(filePath, false, Encoding.GetEncoding(encoding)))
+            using (StreamWriter sw = new StreamWriter(filePath, append, Encoding.GetEncoding(encoding)))
             {
                 foreach (string text in texts)
                 {
@@ -32,12 +44,19 @@ namespace SampleLibrary
             return count;
         }
 
-        public virtual IEnumerable<string> FileRead(string filePath, string encoding = "UTF-8")
+        public virtual IEnumerable<string> FileRead(string filePath, string encoding = DefaultEncoding)
         {
-            foreach (string text in File.ReadAllLines(filePath, Encoding.GetEncoding(encoding)))
+            if (File.Exists(filePath))
             {
-                Debug.WriteLine($"yield return [{text}]");
-                yield return text.Replace("<br>", "\n");
+                foreach (string text in File.ReadAllLines(filePath, Encoding.GetEncoding(encoding)))
+                {
+                    Debug.WriteLine($"yield return [{text}]");
+                    yield return text.Replace("<br>", "\n");
+                }
+            }
+            else
+            {
+                yield return null;
             }
         }
     }

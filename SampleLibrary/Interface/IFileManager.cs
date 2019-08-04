@@ -27,6 +27,6 @@ namespace SampleLibrary
         /// <param name="encoding">文字コード</param>
         /// <param name="text">書込データ</param>
         /// <returns>0:正常</returns>
-        int FileWrite(string filePath, string encoding, params string[] text);
+        int FileWrite(string filePath, string encoding, bool append, params string[] text);
     }
 }

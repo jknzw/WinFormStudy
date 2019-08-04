@@ -74,6 +74,12 @@
     <Compile Include="FormMenu.Designer.cs">
       <DependentUpon>FormMenu.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormKakeibo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormKakeibo.Designer.cs">
+      <DependentUpon>FormKakeibo.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormSample.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -81,6 +87,7 @@
       <DependentUpon>FormSample.cs</DependentUpon>
     </Compile>
     <Compile Include="ProgramDiffBmp.cs" />
+    <Compile Include="Service\FormKakeiboService.cs" />
     <Compile Include="Service\Form1Service.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -103,6 +110,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormMenu.resx">
       <DependentUpon>FormMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormKakeibo.resx">
+      <DependentUpon>FormKakeibo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormSample.resx">
       <DependentUpon>FormSample.cs</DependentUpon>

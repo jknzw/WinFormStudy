@@ -101,7 +101,7 @@ namespace Sample.Service
             }
 
             CsvFileService csv = CsvFileService.GetInstance();
-            return csv.FileWrite(filePath, encoding, writeData);
+            return csv.FileWrite(filePath, encoding, false, writeData);
         }
     }
 }

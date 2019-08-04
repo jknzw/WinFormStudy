@@ -54,5 +54,10 @@ namespace Sample
         {
             ShowDialog(new TestForm());
         }
+
+        private void CustomButton4_Click(object sender, EventArgs e)
+        {
+            ShowDialog(new FormKakeibo());
+        }
     }
 }
