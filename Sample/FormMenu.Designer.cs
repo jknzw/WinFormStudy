@@ -67,12 +67,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(184, 161);
             this.Controls.Add(this.customButton2);
             this.Controls.Add(this.customButton3);
             this.Controls.Add(this.customButton1);
             this.Name = "FormMenu";
-            this.Text = "FormMenu";
+            this.Text = "メニュー";
             this.ResumeLayout(false);
 
         }

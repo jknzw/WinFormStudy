@@ -30,7 +30,7 @@
         {
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.comboBoxSelect = new System.Windows.Forms.ComboBox();
-            this.textBoxSelect = new System.Windows.Forms.TextBox();
+            this.textBoxSelect = new WindowsFormsControlLibrary.CustomTextBox();
             this.dataGridView1 = new WindowsFormsControlLibrary.CustomDataGridView();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -39,15 +39,54 @@
             // 
             // buttonF1
             // 
+            this.buttonF1.Location = new System.Drawing.Point(7, 513);
             this.buttonF1.Text = "CSV選択";
             // 
             // buttonF2
             // 
+            this.buttonF2.Location = new System.Drawing.Point(88, 513);
             this.buttonF2.Text = "検索";
+            // 
+            // buttonF3
+            // 
+            this.buttonF3.Location = new System.Drawing.Point(169, 513);
+            // 
+            // buttonF12
+            // 
+            this.buttonF12.Location = new System.Drawing.Point(903, 513);
+            // 
+            // buttonF11
+            // 
+            this.buttonF11.Location = new System.Drawing.Point(822, 513);
+            // 
+            // buttonF4
+            // 
+            this.buttonF4.Location = new System.Drawing.Point(250, 513);
+            // 
+            // buttonF5
+            // 
+            this.buttonF5.Location = new System.Drawing.Point(334, 513);
             // 
             // buttonF6
             // 
+            this.buttonF6.Location = new System.Drawing.Point(415, 513);
             this.buttonF6.Text = "選択行削除";
+            // 
+            // buttonF7
+            // 
+            this.buttonF7.Location = new System.Drawing.Point(496, 513);
+            // 
+            // buttonF8
+            // 
+            this.buttonF8.Location = new System.Drawing.Point(577, 513);
+            // 
+            // buttonF9
+            // 
+            this.buttonF9.Location = new System.Drawing.Point(660, 513);
+            // 
+            // buttonF10
+            // 
+            this.buttonF10.Location = new System.Drawing.Point(741, 513);
             // 
             // openFileDialog1
             // 
@@ -59,19 +98,21 @@
             this.comboBoxSelect.Location = new System.Drawing.Point(15, 27);
             this.comboBoxSelect.Name = "comboBoxSelect";
             this.comboBoxSelect.Size = new System.Drawing.Size(128, 20);
+            this.comboBoxSelect.TabIndex = 103;
             // 
             // textBoxSelect
             // 
-            this.textBoxSelect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.textBoxSelect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSelect.Location = new System.Drawing.Point(149, 27);
             this.textBoxSelect.Name = "textBoxSelect";
             this.textBoxSelect.Size = new System.Drawing.Size(823, 19);
+            this.textBoxSelect.TabIndex = 104;
             // 
             // dataGridView1
             // 
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
@@ -80,11 +121,12 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 21;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(957, 642);
+            this.dataGridView1.Size = new System.Drawing.Size(957, 442);
+            this.dataGridView1.TabIndex = 105;
             // 
             // statusStrip1
             // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 739);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 539);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(984, 22);
             this.statusStrip1.TabIndex = 101;
@@ -101,7 +143,7 @@
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-            this.ClientSize = new System.Drawing.Size(984, 761);
+            this.ClientSize = new System.Drawing.Size(984, 561);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.comboBoxSelect);
@@ -137,9 +179,9 @@
 
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.ComboBox comboBoxSelect;
-        private System.Windows.Forms.TextBox textBoxSelect;
         private WindowsFormsControlLibrary.CustomDataGridView dataGridView1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.MenuStrip menuStrip1;
+        private WindowsFormsControlLibrary.CustomTextBox textBoxSelect;
     }
 }

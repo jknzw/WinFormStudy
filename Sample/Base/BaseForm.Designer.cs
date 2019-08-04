@@ -58,7 +58,7 @@ namespace Sample.Base
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.Location = new System.Drawing.Point(5, 698);
+            this.label1.Location = new System.Drawing.Point(5, 498);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(77, 12);
             this.label1.TabIndex = 100;
@@ -68,7 +68,7 @@ namespace Sample.Base
             // label2
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label2.Location = new System.Drawing.Point(88, 698);
+            this.label2.Location = new System.Drawing.Point(88, 498);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(77, 12);
             this.label2.TabIndex = 100;
@@ -78,7 +78,7 @@ namespace Sample.Base
             // label3
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label3.Location = new System.Drawing.Point(167, 698);
+            this.label3.Location = new System.Drawing.Point(167, 498);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(77, 12);
             this.label3.TabIndex = 100;
@@ -88,7 +88,7 @@ namespace Sample.Base
             // label4
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label4.Location = new System.Drawing.Point(248, 698);
+            this.label4.Location = new System.Drawing.Point(248, 498);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(77, 12);
             this.label4.TabIndex = 100;
@@ -98,7 +98,7 @@ namespace Sample.Base
             // label5
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label5.Location = new System.Drawing.Point(332, 698);
+            this.label5.Location = new System.Drawing.Point(332, 498);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(77, 12);
             this.label5.TabIndex = 100;
@@ -108,7 +108,7 @@ namespace Sample.Base
             // label6
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label6.Location = new System.Drawing.Point(413, 698);
+            this.label6.Location = new System.Drawing.Point(413, 498);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(77, 12);
             this.label6.TabIndex = 100;
@@ -118,7 +118,7 @@ namespace Sample.Base
             // label7
             // 
             this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label7.Location = new System.Drawing.Point(494, 698);
+            this.label7.Location = new System.Drawing.Point(494, 498);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(77, 12);
             this.label7.TabIndex = 100;
@@ -128,7 +128,7 @@ namespace Sample.Base
             // label8
             // 
             this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label8.Location = new System.Drawing.Point(577, 698);
+            this.label8.Location = new System.Drawing.Point(577, 498);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(77, 12);
             this.label8.TabIndex = 100;
@@ -138,7 +138,7 @@ namespace Sample.Base
             // label9
             // 
             this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label9.Location = new System.Drawing.Point(658, 698);
+            this.label9.Location = new System.Drawing.Point(658, 498);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(77, 12);
             this.label9.TabIndex = 100;
@@ -148,7 +148,7 @@ namespace Sample.Base
             // label10
             // 
             this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label10.Location = new System.Drawing.Point(739, 698);
+            this.label10.Location = new System.Drawing.Point(739, 498);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(77, 12);
             this.label10.TabIndex = 100;
@@ -158,7 +158,7 @@ namespace Sample.Base
             // label11
             // 
             this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label11.Location = new System.Drawing.Point(820, 698);
+            this.label11.Location = new System.Drawing.Point(820, 498);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(77, 12);
             this.label11.TabIndex = 100;
@@ -168,7 +168,7 @@ namespace Sample.Base
             // label12
             // 
             this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label12.Location = new System.Drawing.Point(901, 698);
+            this.label12.Location = new System.Drawing.Point(901, 498);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(77, 12);
             this.label12.TabIndex = 100;
@@ -178,7 +178,7 @@ namespace Sample.Base
             // buttonF12
             // 
             this.buttonF12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonF12.Location = new System.Drawing.Point(903, 713);
+            this.buttonF12.Location = new System.Drawing.Point(903, 513);
             this.buttonF12.Name = "buttonF12";
             this.buttonF12.Size = new System.Drawing.Size(75, 23);
             this.buttonF12.TabIndex = 99;
@@ -189,7 +189,7 @@ namespace Sample.Base
             // buttonF9
             // 
             this.buttonF9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonF9.Location = new System.Drawing.Point(660, 713);
+            this.buttonF9.Location = new System.Drawing.Point(660, 513);
             this.buttonF9.Name = "buttonF9";
             this.buttonF9.Size = new System.Drawing.Size(75, 23);
             this.buttonF9.TabIndex = 96;
@@ -200,7 +200,7 @@ namespace Sample.Base
             // buttonF6
             // 
             this.buttonF6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonF6.Location = new System.Drawing.Point(415, 713);
+            this.buttonF6.Location = new System.Drawing.Point(415, 513);
             this.buttonF6.Name = "buttonF6";
             this.buttonF6.Size = new System.Drawing.Size(75, 23);
             this.buttonF6.TabIndex = 93;
@@ -211,7 +211,7 @@ namespace Sample.Base
             // buttonF8
             // 
             this.buttonF8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonF8.Location = new System.Drawing.Point(577, 713);
+            this.buttonF8.Location = new System.Drawing.Point(577, 513);
             this.buttonF8.Name = "buttonF8";
             this.buttonF8.Size = new System.Drawing.Size(75, 23);
             this.buttonF8.TabIndex = 95;
@@ -222,7 +222,7 @@ namespace Sample.Base
             // buttonF5
             // 
             this.buttonF5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonF5.Location = new System.Drawing.Point(334, 713);
+            this.buttonF5.Location = new System.Drawing.Point(334, 513);
             this.buttonF5.Name = "buttonF5";
             this.buttonF5.Size = new System.Drawing.Size(75, 23);
             this.buttonF5.TabIndex = 92;
@@ -233,7 +233,7 @@ namespace Sample.Base
             // buttonF3
             // 
             this.buttonF3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonF3.Location = new System.Drawing.Point(169, 713);
+            this.buttonF3.Location = new System.Drawing.Point(169, 513);
             this.buttonF3.Name = "buttonF3";
             this.buttonF3.Size = new System.Drawing.Size(75, 23);
             this.buttonF3.TabIndex = 90;
@@ -244,7 +244,7 @@ namespace Sample.Base
             // buttonF2
             // 
             this.buttonF2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonF2.Location = new System.Drawing.Point(88, 713);
+            this.buttonF2.Location = new System.Drawing.Point(88, 513);
             this.buttonF2.Name = "buttonF2";
             this.buttonF2.Size = new System.Drawing.Size(75, 23);
             this.buttonF2.TabIndex = 89;
@@ -255,7 +255,7 @@ namespace Sample.Base
             // buttonF10
             // 
             this.buttonF10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonF10.Location = new System.Drawing.Point(741, 713);
+            this.buttonF10.Location = new System.Drawing.Point(741, 513);
             this.buttonF10.Name = "buttonF10";
             this.buttonF10.Size = new System.Drawing.Size(75, 23);
             this.buttonF10.TabIndex = 97;
@@ -266,7 +266,7 @@ namespace Sample.Base
             // buttonF7
             // 
             this.buttonF7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonF7.Location = new System.Drawing.Point(496, 713);
+            this.buttonF7.Location = new System.Drawing.Point(496, 513);
             this.buttonF7.Name = "buttonF7";
             this.buttonF7.Size = new System.Drawing.Size(75, 23);
             this.buttonF7.TabIndex = 94;
@@ -277,7 +277,7 @@ namespace Sample.Base
             // buttonF4
             // 
             this.buttonF4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonF4.Location = new System.Drawing.Point(250, 713);
+            this.buttonF4.Location = new System.Drawing.Point(250, 513);
             this.buttonF4.Name = "buttonF4";
             this.buttonF4.Size = new System.Drawing.Size(75, 23);
             this.buttonF4.TabIndex = 91;
@@ -288,7 +288,7 @@ namespace Sample.Base
             // buttonF11
             // 
             this.buttonF11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonF11.Location = new System.Drawing.Point(822, 713);
+            this.buttonF11.Location = new System.Drawing.Point(822, 513);
             this.buttonF11.Name = "buttonF11";
             this.buttonF11.Size = new System.Drawing.Size(75, 23);
             this.buttonF11.TabIndex = 98;
@@ -299,7 +299,7 @@ namespace Sample.Base
             // buttonF1
             // 
             this.buttonF1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonF1.Location = new System.Drawing.Point(7, 713);
+            this.buttonF1.Location = new System.Drawing.Point(7, 513);
             this.buttonF1.Name = "buttonF1";
             this.buttonF1.Size = new System.Drawing.Size(75, 23);
             this.buttonF1.TabIndex = 88;
@@ -311,7 +311,7 @@ namespace Sample.Base
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 761);
+            this.ClientSize = new System.Drawing.Size(984, 561);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label10);
@@ -336,10 +336,12 @@ namespace Sample.Base
             this.Controls.Add(this.buttonF4);
             this.Controls.Add(this.buttonF11);
             this.Controls.Add(this.buttonF1);
+            this.KeyPreview = true;
             this.Name = "BaseForm";
             this.Text = "BaseForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BaseForm_FormClosing);
             this.Load += new System.EventHandler(this.BaseForm_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BaseForm_KeyDown);
             this.ResumeLayout(false);
 
         }

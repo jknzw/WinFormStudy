@@ -24,8 +24,8 @@ namespace WindowsFormsControlLibrary
 
         private void CustomButton_Leave(object sender, EventArgs e)
         {
-            BackColor = SystemColors.Control;
-            BackColor = Color.Empty;
+            //BackColor = Color.Empty;
+            BackColor = SystemColors.Control;            
         }
     }
 }

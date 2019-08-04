@@ -53,24 +53,63 @@
             // 
             // buttonF1
             // 
+            this.buttonF1.Location = new System.Drawing.Point(7, 513);
             this.buttonF1.Text = "比較";
             // 
             // buttonF2
             // 
+            this.buttonF2.Location = new System.Drawing.Point(88, 513);
             this.buttonF2.Visible = false;
             // 
             // buttonF3
             // 
+            this.buttonF3.Location = new System.Drawing.Point(169, 513);
             this.buttonF3.Visible = false;
+            // 
+            // buttonF12
+            // 
+            this.buttonF12.Location = new System.Drawing.Point(903, 513);
+            // 
+            // buttonF11
+            // 
+            this.buttonF11.Location = new System.Drawing.Point(822, 513);
+            // 
+            // buttonF4
+            // 
+            this.buttonF4.Location = new System.Drawing.Point(250, 513);
+            // 
+            // buttonF5
+            // 
+            this.buttonF5.Location = new System.Drawing.Point(334, 513);
+            // 
+            // buttonF6
+            // 
+            this.buttonF6.Location = new System.Drawing.Point(415, 513);
+            // 
+            // buttonF7
+            // 
+            this.buttonF7.Location = new System.Drawing.Point(496, 513);
+            // 
+            // buttonF8
+            // 
+            this.buttonF8.Location = new System.Drawing.Point(577, 513);
+            // 
+            // buttonF9
+            // 
+            this.buttonF9.Location = new System.Drawing.Point(660, 513);
+            // 
+            // buttonF10
+            // 
+            this.buttonF10.Location = new System.Drawing.Point(741, 513);
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.Location = new System.Drawing.Point(10, 70);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(480, 625);
+            this.pictureBox1.Size = new System.Drawing.Size(480, 425);
             this.pictureBox1.TabIndex = 100;
             this.pictureBox1.TabStop = false;
             // 
@@ -96,7 +135,7 @@
             // 
             // textBox1
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.Location = new System.Drawing.Point(96, 14);
             this.textBox1.Name = "textBox1";
@@ -105,7 +144,7 @@
             // 
             // textBox2
             // 
-            this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox2.Location = new System.Drawing.Point(96, 43);
             this.textBox2.Name = "textBox2";
@@ -196,7 +235,7 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 739);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 539);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(984, 22);
             this.statusStrip1.TabIndex = 106;
@@ -209,19 +248,19 @@
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox2.Location = new System.Drawing.Point(497, 70);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(480, 625);
+            this.pictureBox2.Size = new System.Drawing.Size(480, 425);
             this.pictureBox2.TabIndex = 100;
             this.pictureBox2.TabStop = false;
             // 
             // FormDiffBmp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-            this.ClientSize = new System.Drawing.Size(984, 761);
+            this.ClientSize = new System.Drawing.Size(984, 561);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label2);

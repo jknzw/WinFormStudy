@@ -146,5 +146,51 @@ namespace Sample.Base
             buttonF11.Enabled = enabled;
             buttonF12.Enabled = enabled;
         }
+
+        private void BaseForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            Debug.WriteLine(MethodBase.GetCurrentMethod().Name);
+            switch (e.KeyCode)
+            {
+                case Keys.F1:
+                    buttonF1.PerformClick();
+                    break;
+                case Keys.F2:
+                    buttonF2.PerformClick();
+                    break;
+                case Keys.F3:
+                    buttonF3.PerformClick();
+                    break;
+                case Keys.F4:
+                    buttonF4.PerformClick();
+                    break;
+                case Keys.F5:
+                    buttonF5.PerformClick();
+                    break;
+                case Keys.F6:
+                    buttonF6.PerformClick();
+                    break;
+                case Keys.F7:
+                    buttonF7.PerformClick();
+                    break;
+                case Keys.F8:
+                    buttonF8.PerformClick();
+                    break;
+                case Keys.F9:
+                    buttonF9.PerformClick();
+                    break;
+                case Keys.F10:
+                    buttonF10.PerformClick();
+                    break;
+                case Keys.F11:
+                    buttonF11.PerformClick();
+                    break;
+                case Keys.F12:
+                    buttonF12.PerformClick();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
