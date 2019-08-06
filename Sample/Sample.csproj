@@ -99,6 +99,7 @@
     </Compile>
     <Compile Include="Utility\BindingSourceUtility.cs" />
     <Compile Include="Utility\DataGridViewUtility.cs" />
+    <Compile Include="Utility\EnumRirekiExtension.cs" />
     <Compile Include="Utility\FormUtility.cs" />
     <EmbeddedResource Include="Base\BaseForm.resx">
       <DependentUpon>BaseForm.cs</DependentUpon>

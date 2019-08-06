@@ -1,4 +1,5 @@
-﻿using SampleLibrary;
+﻿using Sample.Utility;
+using SampleLibrary;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,31 +16,7 @@ namespace Sample.Service
         private readonly string zankinFilePath = "./zankin.txt";
         private readonly string rirekiFilePath = "./rireki.csv";
 
-        private enum EnumRireki
-        {
-            // "年月日", "用途", "収入", "支出", "残金", "備考"
-            Ymd,
-            Youto,
-            Shunyu,
-            Shishutsu,
-            Zankin,
-            Biko,
-        }
 
-        private readonly Dictionary<EnumRireki, string> dicRireki = new Dictionary<EnumRireki, string>()
-        {
-            { EnumRireki.Ymd,"年月日"},
-            { EnumRireki.Youto,"用途"},
-            { EnumRireki.Shunyu,"収入"},
-            { EnumRireki.Shishutsu,"支出"},
-            { EnumRireki.Zankin,"残金"},
-            { EnumRireki.Biko,"備考"},
-        };
-
-        private int GetInt(EnumRireki e)
-        {
-            return (int)e;
-        }
 
         private FormKakeiboService() : base()
         {
@@ -126,12 +103,12 @@ namespace Sample.Service
         private void WriteRirekiHeader(CsvFileService csv)
         {
             csv.FileWrite(rirekiFilePath,
-                dicRireki[EnumRireki.Ymd],
-                dicRireki[EnumRireki.Youto],
-                dicRireki[EnumRireki.Shunyu],
-                dicRireki[EnumRireki.Shishutsu],
-                dicRireki[EnumRireki.Zankin],
-                dicRireki[EnumRireki.Biko]);
+                EnumRirekiExtension.RirekiDic[EnumRireki.Ymd],
+                EnumRirekiExtension.RirekiDic[EnumRireki.Youto],
+                EnumRirekiExtension.RirekiDic[EnumRireki.Shunyu],
+                EnumRirekiExtension.RirekiDic[EnumRireki.Shishutsu],
+                EnumRirekiExtension.RirekiDic[EnumRireki.Zankin],
+                EnumRirekiExtension.RirekiDic[EnumRireki.Biko]);
         }
 
         public int Touroku()
@@ -181,7 +158,7 @@ namespace Sample.Service
             }
         }
 
-        public int Delete(DataGridView dataGridView,out int zankin)
+        public int Delete(DataGridView dataGridView, out int zankin)
         {
             int count = 0;
             zankin = 0;
@@ -238,26 +215,26 @@ namespace Sample.Service
                 {
                     // 最初のレコード
                     // 残金は変更しない
-                    int.TryParse(row[GetInt(EnumRireki.Zankin)].ToString(), out zankin);
+                    int.TryParse(row[EnumRireki.Zankin.GetInt()].ToString(), out zankin);
                     first = false;
                 }
                 else
                 {
                     // 2番目以降
                     // 残金を再設定する
-                    int.TryParse(row[GetInt(EnumRireki.Shunyu)].ToString(), out int shunyu);
-                    int.TryParse(row[GetInt(EnumRireki.Shishutsu)].ToString(), out int shishutsu);
+                    int.TryParse(row[EnumRireki.Shunyu.GetInt()].ToString(), out int shunyu);
+                    int.TryParse(row[EnumRireki.Shishutsu.GetInt()].ToString(), out int shishutsu);
                     zankin = zankin + shunyu - shishutsu;
-                    row[GetInt(EnumRireki.Zankin)] = zankin;
+                    row[EnumRireki.Zankin.GetInt()] = zankin;
                 }
 
                 count += csv.FileAppend(rirekiFilePath,
-                    row[GetInt(EnumRireki.Ymd)].ToString(),
-                    row[GetInt(EnumRireki.Youto)].ToString(),
-                    row[GetInt(EnumRireki.Shunyu)].ToString(),
-                    row[GetInt(EnumRireki.Shishutsu)].ToString(),
-                    row[GetInt(EnumRireki.Zankin)].ToString(),
-                    row[GetInt(EnumRireki.Biko)].ToString());
+                    row[EnumRireki.Ymd.GetInt()].ToString(),
+                    row[EnumRireki.Youto.GetInt()].ToString(),
+                    row[EnumRireki.Shunyu.GetInt()].ToString(),
+                    row[EnumRireki.Shishutsu.GetInt()].ToString(),
+                    row[EnumRireki.Zankin.GetInt()].ToString(),
+                    row[EnumRireki.Biko.GetInt()].ToString());
             }
 
             return count;
