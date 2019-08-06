@@ -13,7 +13,7 @@ namespace SampleLibrary
     /// </summary>
     public abstract class FileManager : IFileManager
     {
-        protected const string DefaultEncoding = "UTF-8";
+        public const string DefaultEncoding = "UTF-8";
 
         public virtual int FileWrite(string filePath, params string[] texts)
         {

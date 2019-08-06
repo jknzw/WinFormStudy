@@ -31,9 +31,9 @@
             this.label13 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
-            this.customReadOnlyTextBox1 = new WindowsFormsControlLibrary.CustomReadOnlyTextBox();
-            this.customReadOnlyTextBox2 = new WindowsFormsControlLibrary.CustomReadOnlyTextBox();
-            this.customReadOnlyTextBox3 = new WindowsFormsControlLibrary.CustomReadOnlyTextBox();
+            this.customReadOnlyTextBoxZankin = new WindowsFormsControlLibrary.CustomReadOnlyTextBox();
+            this.customReadOnlyTextBoxShishutsu = new WindowsFormsControlLibrary.CustomReadOnlyTextBox();
+            this.customReadOnlyTextBoxShunyu = new WindowsFormsControlLibrary.CustomReadOnlyTextBox();
             this.dataGridViewRireki = new System.Windows.Forms.DataGridView();
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.comboBoxYouto = new System.Windows.Forms.ComboBox();
@@ -60,11 +60,15 @@
             // 
             // buttonF2
             // 
-            this.buttonF2.Visible = false;
+            this.buttonF2.Text = "クリア";
             // 
             // buttonF3
             // 
             this.buttonF3.Visible = false;
+            // 
+            // buttonF11
+            // 
+            this.buttonF11.Visible = false;
             // 
             // buttonF4
             // 
@@ -73,10 +77,6 @@
             // buttonF5
             // 
             this.buttonF5.Visible = false;
-            // 
-            // buttonF6
-            // 
-            this.buttonF6.Visible = false;
             // 
             // buttonF7
             // 
@@ -121,32 +121,32 @@
             this.label15.TabIndex = 101;
             this.label15.Text = "収入";
             // 
-            // customReadOnlyTextBox1
+            // customReadOnlyTextBoxZankin
             // 
-            this.customReadOnlyTextBox1.Location = new System.Drawing.Point(52, 10);
-            this.customReadOnlyTextBox1.Name = "customReadOnlyTextBox1";
-            this.customReadOnlyTextBox1.ReadOnly = true;
-            this.customReadOnlyTextBox1.Size = new System.Drawing.Size(113, 19);
-            this.customReadOnlyTextBox1.TabIndex = 102;
-            this.customReadOnlyTextBox1.TabStop = false;
+            this.customReadOnlyTextBoxZankin.Location = new System.Drawing.Point(52, 10);
+            this.customReadOnlyTextBoxZankin.Name = "customReadOnlyTextBoxZankin";
+            this.customReadOnlyTextBoxZankin.ReadOnly = true;
+            this.customReadOnlyTextBoxZankin.Size = new System.Drawing.Size(113, 19);
+            this.customReadOnlyTextBoxZankin.TabIndex = 102;
+            this.customReadOnlyTextBoxZankin.TabStop = false;
             // 
-            // customReadOnlyTextBox2
+            // customReadOnlyTextBoxShishutsu
             // 
-            this.customReadOnlyTextBox2.Location = new System.Drawing.Point(206, 10);
-            this.customReadOnlyTextBox2.Name = "customReadOnlyTextBox2";
-            this.customReadOnlyTextBox2.ReadOnly = true;
-            this.customReadOnlyTextBox2.Size = new System.Drawing.Size(119, 19);
-            this.customReadOnlyTextBox2.TabIndex = 102;
-            this.customReadOnlyTextBox2.TabStop = false;
+            this.customReadOnlyTextBoxShishutsu.Location = new System.Drawing.Point(206, 10);
+            this.customReadOnlyTextBoxShishutsu.Name = "customReadOnlyTextBoxShishutsu";
+            this.customReadOnlyTextBoxShishutsu.ReadOnly = true;
+            this.customReadOnlyTextBoxShishutsu.Size = new System.Drawing.Size(119, 19);
+            this.customReadOnlyTextBoxShishutsu.TabIndex = 102;
+            this.customReadOnlyTextBoxShishutsu.TabStop = false;
             // 
-            // customReadOnlyTextBox3
+            // customReadOnlyTextBoxShunyu
             // 
-            this.customReadOnlyTextBox3.Location = new System.Drawing.Point(367, 10);
-            this.customReadOnlyTextBox3.Name = "customReadOnlyTextBox3";
-            this.customReadOnlyTextBox3.ReadOnly = true;
-            this.customReadOnlyTextBox3.Size = new System.Drawing.Size(123, 19);
-            this.customReadOnlyTextBox3.TabIndex = 102;
-            this.customReadOnlyTextBox3.TabStop = false;
+            this.customReadOnlyTextBoxShunyu.Location = new System.Drawing.Point(367, 10);
+            this.customReadOnlyTextBoxShunyu.Name = "customReadOnlyTextBoxShunyu";
+            this.customReadOnlyTextBoxShunyu.ReadOnly = true;
+            this.customReadOnlyTextBoxShunyu.Size = new System.Drawing.Size(123, 19);
+            this.customReadOnlyTextBoxShunyu.TabIndex = 102;
+            this.customReadOnlyTextBoxShunyu.TabStop = false;
             // 
             // dataGridViewRireki
             // 
@@ -155,11 +155,13 @@
             this.dataGridViewRireki.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridViewRireki.Location = new System.Drawing.Point(3, 3);
             this.dataGridViewRireki.Name = "dataGridViewRireki";
-            this.dataGridViewRireki.ReadOnly = true;
             this.dataGridViewRireki.RowTemplate.Height = 21;
+            this.dataGridViewRireki.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridViewRireki.Size = new System.Drawing.Size(946, 400);
             this.dataGridViewRireki.TabIndex = 0;
             this.dataGridViewRireki.TabStop = false;
+            this.dataGridViewRireki.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewRireki_CellEndEdit);
+            this.dataGridViewRireki.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DataGridViewRireki_UserDeletingRow);
             // 
             // dateTimePicker1
             // 
@@ -297,9 +299,9 @@
             this.Controls.Add(this.comboBoxType);
             this.Controls.Add(this.comboBoxYouto);
             this.Controls.Add(this.dateTimePicker1);
-            this.Controls.Add(this.customReadOnlyTextBox3);
-            this.Controls.Add(this.customReadOnlyTextBox2);
-            this.Controls.Add(this.customReadOnlyTextBox1);
+            this.Controls.Add(this.customReadOnlyTextBoxShunyu);
+            this.Controls.Add(this.customReadOnlyTextBoxShishutsu);
+            this.Controls.Add(this.customReadOnlyTextBoxZankin);
             this.Controls.Add(this.label18);
             this.Controls.Add(this.label17);
             this.Controls.Add(this.label15);
@@ -327,9 +329,9 @@
             this.Controls.SetChildIndex(this.label15, 0);
             this.Controls.SetChildIndex(this.label17, 0);
             this.Controls.SetChildIndex(this.label18, 0);
-            this.Controls.SetChildIndex(this.customReadOnlyTextBox1, 0);
-            this.Controls.SetChildIndex(this.customReadOnlyTextBox2, 0);
-            this.Controls.SetChildIndex(this.customReadOnlyTextBox3, 0);
+            this.Controls.SetChildIndex(this.customReadOnlyTextBoxZankin, 0);
+            this.Controls.SetChildIndex(this.customReadOnlyTextBoxShishutsu, 0);
+            this.Controls.SetChildIndex(this.customReadOnlyTextBoxShunyu, 0);
             this.Controls.SetChildIndex(this.dateTimePicker1, 0);
             this.Controls.SetChildIndex(this.comboBoxYouto, 0);
             this.Controls.SetChildIndex(this.comboBoxType, 0);
@@ -351,9 +353,9 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
-        private WindowsFormsControlLibrary.CustomReadOnlyTextBox customReadOnlyTextBox1;
-        private WindowsFormsControlLibrary.CustomReadOnlyTextBox customReadOnlyTextBox2;
-        private WindowsFormsControlLibrary.CustomReadOnlyTextBox customReadOnlyTextBox3;
+        private WindowsFormsControlLibrary.CustomReadOnlyTextBox customReadOnlyTextBoxZankin;
+        private WindowsFormsControlLibrary.CustomReadOnlyTextBox customReadOnlyTextBoxShishutsu;
+        private WindowsFormsControlLibrary.CustomReadOnlyTextBox customReadOnlyTextBoxShunyu;
         private System.Windows.Forms.DataGridView dataGridViewRireki;
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
         private System.Windows.Forms.ComboBox comboBoxYouto;

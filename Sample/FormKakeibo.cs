@@ -7,11 +7,17 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Linq;
+using System.Reflection;
+using SampleLibrary;
+using Sample.Utility;
 
 namespace Sample
 {
     public partial class FormKakeibo : Sample.Base.BaseForm
     {
+        private readonly Logger logger = Logger.GetInstance("kakeibo.log");
+
         public FormKakeibo()
         {
             InitializeComponent();
@@ -67,6 +73,8 @@ namespace Sample
         /// <param name="e"></param>
         protected override void ButtonF1_Click(object sender, EventArgs e)
         {
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+
             base.ButtonF1_Click(sender, e);
             // ▼▼▼ 業務処理 ▼▼▼
             FormKakeiboService sv = FormKakeiboService.GetInstance(this);
@@ -75,12 +83,22 @@ namespace Sample
             {
                 Debug.WriteLine($"Touroku error code:{ret}");
             }
+
             Search(sv);
+
+            // スクロールを最終に移動
+            dataGridViewRireki.ScrollToLast();
+
+            // 選択を解除
+            dataGridViewRireki.ClearSelection();
+            // 最終行を選択
+            dataGridViewRireki.Rows[dataGridViewRireki.Rows.GetLastRow(DataGridViewElementStates.None)].Selected = true;
+
             // ▲▲▲ 業務処理 ▲▲▲
         }
 
         /// <summary>
-        /// 
+        /// クリア
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -88,7 +106,10 @@ namespace Sample
         {
             base.ButtonF2_Click(sender, e);
             // ▼▼▼ 業務処理 ▼▼▼
+            customTextBoxKingaku.Text = string.Empty;
+            customTextBoxBiko.Text = string.Empty;
 
+            dateTimePicker1.Focus();
             // ▲▲▲ 業務処理 ▲▲▲
         }
 
@@ -132,7 +153,7 @@ namespace Sample
         }
 
         /// <summary>
-        /// 
+        /// 削除
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -140,7 +161,30 @@ namespace Sample
         {
             base.ButtonF6_Click(sender, e);
             // ▼▼▼ 業務処理 ▼▼▼
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
+            if (DialogResult.OK == MessageBox.Show("削除します。よろしいですか？", "確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
+            {
+                FormKakeiboService sv = FormKakeiboService.GetInstance(this);
+                int ret = sv.Delete(dataGridViewRireki, out int zankin);
+                if (ret > 0)
+                {
+                    // 1件以上削除した場合
+                    sv.WriteZankin(zankin);
+
+                    // 残金更新
+                    customReadOnlyTextBoxZankin.Text = zankin.ToString();
+
+                    // 再検索
+                    //Search(sv);
+
+                    MessageBox.Show($"{ret}件削除しました。");
+                }
+                else
+                {
+                    Debug.WriteLine($"{MethodBase.GetCurrentMethod().Name} Error:{ret}");
+                }
+            }
             // ▲▲▲ 業務処理 ▲▲▲
         }
 
@@ -203,12 +247,11 @@ namespace Sample
         /// <param name="e"></param>
         protected override void ButtonF11_Click(object sender, EventArgs e)
         {
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+
             base.ButtonF11_Click(sender, e);
             // ▼▼▼ 業務処理 ▼▼▼
-            customTextBoxKingaku.Text = string.Empty;
-            customTextBoxBiko.Text = string.Empty;
 
-            dateTimePicker1.Focus();
             // ▲▲▲ 業務処理 ▲▲▲
         }
 
@@ -225,19 +268,57 @@ namespace Sample
 
         private void Search(FormKakeiboService sv)
         {
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+
             // 残金ファイルを読み込む
             int zankin = sv.GetZankin();
 
             // 履歴ファイルを読み込む
             DataTable dt = sv.GetRireki();
 
-            customReadOnlyTextBox1.Text = zankin.ToString();
+            customReadOnlyTextBoxZankin.Text = zankin.ToString();
 
             BindingSource bs = new BindingSource
             {
                 DataSource = dt
             };
+
             dataGridViewRireki.DataSource = bs;
+
+            // 残金を編集不可にする
+            dataGridViewRireki.Columns["残金"].ReadOnly = true;
         }
+
+        #region DataGridViewRireki
+        /// <summary>
+        /// 削除キー押下時
+        /// </summary>
+        private void DataGridViewRireki_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+
+            // Deleteイベントをキャンセルし、削除ボタン処理を行う
+            buttonF6.PerformClick();
+            e.Cancel = true;
+        }
+
+        private void DataGridViewRireki_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+
+            FormKakeiboService sv = FormKakeiboService.GetInstance(this);
+            int ret = sv.UpdateAll(dataGridViewRireki, out int zankin);
+            if (ret >= 0)
+            {
+                // 正常
+                sv.WriteZankin(zankin);
+                customReadOnlyTextBoxZankin.Text = zankin.ToString();
+            }
+            else
+            {
+                logger.WriteLine($"{MethodBase.GetCurrentMethod().Name} Error:{ret}");
+            }
+        }
+        #endregion
     }
 }
