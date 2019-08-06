@@ -166,14 +166,14 @@ namespace Sample
             if (DialogResult.OK == MessageBox.Show("削除します。よろしいですか？", "確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
             {
                 FormKakeiboService sv = FormKakeiboService.GetInstance(this);
-                int ret = sv.Delete(dataGridViewRireki, out int zankin);
+                int ret = sv.Delete(dataGridViewRireki, out FormKakeiboService.BeanKakeibo value);
                 if (ret > 0)
                 {
                     // 1件以上削除した場合
-                    sv.WriteZankin(zankin);
+                    //sv.WriteZankin(value.Zankin);
 
                     // 残金更新
-                    customReadOnlyTextBoxZankin.Text = zankin.ToString();
+                    UpdateView(value);
 
                     // 再検索
                     //Search(sv);
@@ -271,16 +271,16 @@ namespace Sample
             logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             // 残金ファイルを読み込む
-            int zankin = sv.GetZankin();
+            //int zankin = sv.GetZankin();
 
             // 履歴ファイルを読み込む
-            DataTable dt = sv.GetRireki();
+            FormKakeiboService.BeanKakeibo bean = sv.GetRireki();
 
-            customReadOnlyTextBoxZankin.Text = zankin.ToString();
+            customReadOnlyTextBoxZankin.Text = bean.Zankin.ToString();
 
             BindingSource bs = new BindingSource
             {
-                DataSource = dt
+                DataSource = bean.DtRireki,
             };
 
             dataGridViewRireki.DataSource = bs;
@@ -307,17 +307,26 @@ namespace Sample
             logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             FormKakeiboService sv = FormKakeiboService.GetInstance(this);
-            int ret = sv.UpdateAll(dataGridViewRireki, out int zankin);
+            int ret = sv.UpdateAll(dataGridViewRireki, out FormKakeiboService.BeanKakeibo value);
             if (ret >= 0)
             {
                 // 正常
-                sv.WriteZankin(zankin);
-                customReadOnlyTextBoxZankin.Text = zankin.ToString();
+                //sv.WriteZankin(value.Zankin);
+                UpdateView(value);
             }
+
             else
             {
                 logger.WriteLine($"{MethodBase.GetCurrentMethod().Name} Error:{ret}");
             }
+        }
+
+        private void UpdateView(FormKakeiboService.BeanKakeibo value)
+        {
+            // 残金・収入・支出を更新
+            customReadOnlyTextBoxZankin.Text = value.Zankin.ToString();
+            customReadOnlyTextBoxShunyu.Text = value.SumShunyu.ToString();
+            customReadOnlyTextBoxShishutsu.Text = value.SumShishutsu.ToString();
         }
         #endregion
     }

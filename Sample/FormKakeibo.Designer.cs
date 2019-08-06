@@ -180,11 +180,15 @@
             "食費",
             "生活雑貨",
             "娯楽",
-            "医療",
             "光熱費",
-            "繰り越し",
+            "交通費",
+            "医療費",
+            "学費",
+            "貯金",
             "収入",
-            "その他"});
+            "繰り越し",
+            "その他"
+            });
             this.comboBoxYouto.Location = new System.Drawing.Point(206, 37);
             this.comboBoxYouto.Name = "comboBoxYouto";
             this.comboBoxYouto.Size = new System.Drawing.Size(121, 20);

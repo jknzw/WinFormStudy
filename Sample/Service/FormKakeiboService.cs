@@ -13,10 +13,16 @@ namespace Sample.Service
 {
     public class FormKakeiboService : Base.BaseService
     {
-        private readonly string zankinFilePath = "./zankin.txt";
+        //private readonly string zankinFilePath = "./zankin.txt";
         private readonly string rirekiFilePath = "./rireki.csv";
 
-
+        public class BeanKakeibo
+        {
+            public int Zankin { get; set; } = 0;
+            public int SumShunyu { get; set; } = 0;
+            public int SumShishutsu { get; set; } = 0;
+            public DataTable DtRireki { get; set; } = new DataTable();
+        }
 
         private FormKakeiboService() : base()
         {
@@ -38,23 +44,24 @@ namespace Sample.Service
             return new FormKakeiboService(form);
         }
 
-        public int GetZankin()
-        {
-            FileService fs = new FileService();
-            string zankin = fs.FileRead(zankinFilePath).First();
-            int.TryParse(zankin, out int result);
-            return result;
-        }
+        //public int GetZankin()
+        //{
+        //    FileService fs = new FileService();
+        //    string zankin = fs.FileRead(zankinFilePath).First();
+        //    int.TryParse(zankin, out int result);
+        //    return result;
+        //}
 
-        public int WriteZankin(int zankin)
-        {
-            FileService fs = new FileService();
-            return fs.FileWrite(zankinFilePath, zankin.ToString());
-        }
+        //public int WriteZankin(int zankin)
+        //{
+        //    FileService fs = new FileService();
+        //    return fs.FileWrite(zankinFilePath, zankin.ToString());
+        //}
 
-        public DataTable GetRireki()
+        public BeanKakeibo GetRireki()
         {
             string encoding = "UTF-8";
+            BeanKakeibo bean = new BeanKakeibo();
             DataTable dt = new DataTable();
             try
             {
@@ -70,7 +77,7 @@ namespace Sample.Service
                     WriteRirekiHeader(csv);
 
                     // 空のテーブルを返す
-                    return dt;
+                    return bean;
                 }
 
                 // ヘッダ設定
@@ -89,15 +96,32 @@ namespace Sample.Service
                         Debug.WriteLine($"Rows[{colIdx}].Add({texts[colIdx]})");
                         row[colIdx] = texts[colIdx];
                     }
+
+                    // 収入計算
+                    int.TryParse(row[EnumRireki.Shunyu.GetInt()].ToString(), out int shunyu);
+                    bean.SumShunyu += shunyu;
+
+                    // 支出計算
+                    int.TryParse(row[EnumRireki.Shishutsu.GetInt()].ToString(), out int shishutsu);
+                    bean.SumShishutsu += shishutsu;
+
+                    // 行追加
                     dt.Rows.Add(row);
                 }
+
+                // 残金
+                int.TryParse(list.Last()[EnumRireki.Zankin.GetInt()], out int zankin);
+                bean.Zankin = zankin;
+
+                // データテーブルを設定
+                bean.DtRireki = dt;
             }
             catch (Exception ex)
             {
                 // csvファイルのデータが0件・1件の場合 ArgumentNullException
                 Debug.WriteLine(ex.Message);
             }
-            return dt;
+            return bean;
         }
 
         private void WriteRirekiHeader(CsvFileService csv)
@@ -140,16 +164,19 @@ namespace Sample.Service
 
             if (1 == csv.FileAppend(rirekiFilePath, dt.ToString("yyyy/MM/dd"), youto, shunyu, sishutsu, zankin.ToString(), biko))
             {
-                if (1 == WriteZankin(zankin))
-                {
-                    // 正常
-                    return 0;
-                }
-                else
-                {
-                    // 残金の書き込みに失敗
-                    return -2;
-                }
+                // 正常
+                return 0;
+
+                //if (1 == WriteZankin(zankin))
+                //{
+                //    //正常
+                //    return 0;
+                //}
+                //else
+                //{
+                //    // 残金の書き込みに失敗
+                //    return -2;
+                //}
             }
             else
             {
@@ -158,10 +185,11 @@ namespace Sample.Service
             }
         }
 
-        public int Delete(DataGridView dataGridView, out int zankin)
+        public int Delete(DataGridView dataGridView, out BeanKakeibo val)
         {
+            val = null;
+
             int count = 0;
-            zankin = 0;
             // 選択行がある場合
             if (dataGridView.Rows.GetRowCount(DataGridViewElementStates.Selected) > 0)
             {
@@ -173,7 +201,7 @@ namespace Sample.Service
                 }
 
                 // ファイル更新
-                if (0 <= UpdateAll(dataGridView, out zankin))
+                if (0 <= UpdateAll(dataGridView, out val))
                 {
                     // 正常
                 }
@@ -196,7 +224,7 @@ namespace Sample.Service
         /// <param name="dataGridView"></param>
         /// <param name="count"></param>
         /// <returns>書き込み数</returns>
-        public int UpdateAll(DataGridView dataGridView, out int zankin)
+        public int UpdateAll(DataGridView dataGridView, out BeanKakeibo value)
         {
             int count = 0;
             // 履歴ファイルにDataGridViewの内容を書き込む
@@ -208,26 +236,35 @@ namespace Sample.Service
             WriteRirekiHeader(csv);
 
             bool first = true;
-            zankin = 0;
+            value = new BeanKakeibo();
             foreach (DataRow row in dt.Rows)
             {
+                // 収入合計
+                int.TryParse(row[EnumRireki.Shunyu.GetInt()].ToString(), out int shunyu);
+                value.SumShunyu += shunyu;
+
+                // 支出合計
+                int.TryParse(row[EnumRireki.Shishutsu.GetInt()].ToString(), out int shishutsu);
+                value.SumShishutsu += shishutsu;
+
+                // 残金
                 if (first)
                 {
                     // 最初のレコード
                     // 残金は変更しない
-                    int.TryParse(row[EnumRireki.Zankin.GetInt()].ToString(), out zankin);
+                    int.TryParse(row[EnumRireki.Zankin.GetInt()].ToString(), out int zankin);
+                    value.Zankin = zankin;
                     first = false;
                 }
                 else
                 {
                     // 2番目以降
                     // 残金を再設定する
-                    int.TryParse(row[EnumRireki.Shunyu.GetInt()].ToString(), out int shunyu);
-                    int.TryParse(row[EnumRireki.Shishutsu.GetInt()].ToString(), out int shishutsu);
-                    zankin = zankin + shunyu - shishutsu;
-                    row[EnumRireki.Zankin.GetInt()] = zankin;
+                    value.Zankin = value.Zankin + shunyu - shishutsu;
+                    row[EnumRireki.Zankin.GetInt()] = value.Zankin;
                 }
 
+                // ファイル書き込み
                 count += csv.FileAppend(rirekiFilePath,
                     row[EnumRireki.Ymd.GetInt()].ToString(),
                     row[EnumRireki.Youto.GetInt()].ToString(),
@@ -236,6 +273,9 @@ namespace Sample.Service
                     row[EnumRireki.Zankin.GetInt()].ToString(),
                     row[EnumRireki.Biko.GetInt()].ToString());
             }
+
+            // 履歴
+            value.DtRireki = dt;
 
             return count;
         }
