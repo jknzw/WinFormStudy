@@ -87,12 +87,12 @@ namespace Sample
             Search(sv);
 
             // スクロールを最終に移動
-            dataGridViewRireki.ScrollToLast();
+            gridRireki.ScrollToLast();
 
             // 選択を解除
-            dataGridViewRireki.ClearSelection();
+            gridRireki.ClearSelection();
             // 最終行を選択
-            dataGridViewRireki.Rows[dataGridViewRireki.Rows.GetLastRow(DataGridViewElementStates.None)].Selected = true;
+            gridRireki.Rows[gridRireki.Rows.GetLastRow(DataGridViewElementStates.None)].Selected = true;
 
             // ▲▲▲ 業務処理 ▲▲▲
         }
@@ -166,14 +166,14 @@ namespace Sample
             if (DialogResult.OK == MessageBox.Show("削除します。よろしいですか？", "確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
             {
                 FormKakeiboService sv = FormKakeiboService.GetInstance(this);
-                int ret = sv.Delete(dataGridViewRireki, out FormKakeiboService.BeanKakeibo value);
+                int ret = sv.Delete(gridRireki, out FormKakeiboService.ModelKakeibo value);
                 if (ret > 0)
                 {
                     // 1件以上削除した場合
                     //sv.WriteZankin(value.Zankin);
 
                     // 残金更新
-                    UpdateView(value);
+                    SetScreenValues(value);
 
                     // 再検索
                     //Search(sv);
@@ -262,7 +262,7 @@ namespace Sample
         /// <param name="e"></param>
         private void FormKakeibo_Load(object sender, EventArgs e)
         {
-            FormKakeiboService sv = FormKakeiboService.GetInstance();
+            FormKakeiboService sv = FormKakeiboService.GetInstance(this);
             Search(sv);
         }
 
@@ -274,19 +274,12 @@ namespace Sample
             //int zankin = sv.GetZankin();
 
             // 履歴ファイルを読み込む
-            FormKakeiboService.BeanKakeibo bean = sv.GetRireki();
-
-            customReadOnlyTextBoxZankin.Text = bean.Zankin.ToString();
-
-            BindingSource bs = new BindingSource
-            {
-                DataSource = bean.DtRireki,
-            };
-
-            dataGridViewRireki.DataSource = bs;
+            gridRireki.DataSource = new BindingSource();
+            gridShukei.DataSource = new BindingSource();
+            SetScreenValues(sv.GetRireki());
 
             // 残金を編集不可にする
-            dataGridViewRireki.Columns["残金"].ReadOnly = true;
+            gridRireki.Columns["残金"].ReadOnly = true;
         }
 
         #region DataGridViewRireki
@@ -307,12 +300,12 @@ namespace Sample
             logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             FormKakeiboService sv = FormKakeiboService.GetInstance(this);
-            int ret = sv.UpdateAll(dataGridViewRireki, out FormKakeiboService.BeanKakeibo value);
+            int ret = sv.UpdateAll(gridRireki, out FormKakeiboService.ModelKakeibo value);
             if (ret >= 0)
             {
                 // 正常
                 //sv.WriteZankin(value.Zankin);
-                UpdateView(value);
+                SetScreenValues(value);
             }
 
             else
@@ -321,13 +314,27 @@ namespace Sample
             }
         }
 
-        private void UpdateView(FormKakeiboService.BeanKakeibo value)
+        private void SetScreenValues(FormKakeiboService.ModelKakeibo model)
         {
             // 残金・収入・支出を更新
-            customReadOnlyTextBoxZankin.Text = value.Zankin.ToString();
-            customReadOnlyTextBoxShunyu.Text = value.SumShunyu.ToString();
-            customReadOnlyTextBoxShishutsu.Text = value.SumShishutsu.ToString();
+            customReadOnlyTextBoxZankin.Text = model.Zankin.ToString();
+            customReadOnlyTextBoxShunyu.Text = model.SumShunyu.ToString();
+            customReadOnlyTextBoxShishutsu.Text = model.SumShishutsu.ToString();
+
+            (gridRireki.DataSource as BindingSource).DataSource = model.RirekiTable;
+            (gridShukei.DataSource as BindingSource).DataSource = model.ShukeiTable;
         }
         #endregion
+
+        private void ComboBoxShukeiMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FormKakeiboService sv = FormKakeiboService.GetInstance(this);
+            DataTable rireki = (gridRireki.DataSource as BindingSource).DataSource as DataTable;
+            DataTable shukei = sv.GetShukeiTable(rireki);
+
+            gridShukei.Columns.Clear();
+            (gridShukei.DataSource as BindingSource).DataSource = shukei;
+
+        }
     }
 }

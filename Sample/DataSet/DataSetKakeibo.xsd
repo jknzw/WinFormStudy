@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataSetKakeibo" targetNamespace="http://tempuri.org/KakeiboShukei.xsd" xmlns:mstns="http://tempuri.org/KakeiboShukei.xsd" xmlns="http://tempuri.org/KakeiboShukei.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DataSetKakeibo" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DataSetKakeibo" msprop:Generator_UserDSName="DataSetKakeibo">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Shukei" msprop:Generator_TableClassName="ShukeiDataTable" msprop:Generator_TableVarName="tableShukei" msprop:Generator_TablePropName="Shukei" msprop:Generator_RowDeletingName="ShukeiRowDeleting" msprop:Generator_RowChangingName="ShukeiRowChanging" msprop:Generator_RowEvHandlerName="ShukeiRowChangeEventHandler" msprop:Generator_RowDeletedName="ShukeiRowDeleted" msprop:Generator_UserTableName="Shukei" msprop:Generator_RowChangedName="ShukeiRowChanged" msprop:Generator_RowEvArgName="ShukeiRowChangeEvent" msprop:Generator_RowClassName="ShukeiRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="年月日" msprop:Generator_ColumnVarNameInTable="column年月日" msprop:Generator_ColumnPropNameInRow="年月日" msprop:Generator_ColumnPropNameInTable="年月日Column" msprop:Generator_UserColumnName="年月日" type="xs:string" minOccurs="0" />
+              <xs:element name="収入" msprop:Generator_ColumnVarNameInTable="column収入" msprop:Generator_ColumnPropNameInRow="収入" msprop:Generator_ColumnPropNameInTable="収入Column" msprop:Generator_UserColumnName="収入" type="xs:string" minOccurs="0" />
+              <xs:element name="支出" msprop:Generator_ColumnVarNameInTable="column支出" msprop:Generator_ColumnPropNameInRow="支出" msprop:Generator_ColumnPropNameInTable="支出Column" msprop:Generator_UserColumnName="支出" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ShukeiYmdYouto" msprop:Generator_TableClassName="ShukeiYmdYoutoDataTable" msprop:Generator_TableVarName="tableShukeiYmdYouto" msprop:Generator_TablePropName="ShukeiYmdYouto" msprop:Generator_RowDeletingName="ShukeiYmdYoutoRowDeleting" msprop:Generator_RowChangingName="ShukeiYmdYoutoRowChanging" msprop:Generator_RowEvHandlerName="ShukeiYmdYoutoRowChangeEventHandler" msprop:Generator_RowDeletedName="ShukeiYmdYoutoRowDeleted" msprop:Generator_UserTableName="ShukeiYmdYouto" msprop:Generator_RowChangedName="ShukeiYmdYoutoRowChanged" msprop:Generator_RowEvArgName="ShukeiYmdYoutoRowChangeEvent" msprop:Generator_RowClassName="ShukeiYmdYoutoRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="年月日" msprop:Generator_ColumnVarNameInTable="column年月日" msprop:Generator_ColumnPropNameInRow="年月日" msprop:Generator_ColumnPropNameInTable="年月日Column" msprop:Generator_UserColumnName="年月日" type="xs:string" minOccurs="0" />
+              <xs:element name="用途" msprop:Generator_ColumnVarNameInTable="column用途" msprop:Generator_ColumnPropNameInRow="用途" msprop:Generator_ColumnPropNameInTable="用途Column" msprop:Generator_UserColumnName="用途" type="xs:string" minOccurs="0" />
+              <xs:element name="収入" msprop:Generator_ColumnVarNameInTable="column収入" msprop:Generator_ColumnPropNameInRow="収入" msprop:Generator_ColumnPropNameInTable="収入Column" msprop:Generator_UserColumnName="収入" type="xs:string" minOccurs="0" />
+              <xs:element name="支出" msprop:Generator_ColumnVarNameInTable="column支出" msprop:Generator_ColumnPropNameInRow="支出" msprop:Generator_ColumnPropNameInTable="支出Column" msprop:Generator_UserColumnName="支出" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ShukeiYouto" msprop:Generator_TableClassName="ShukeiYoutoDataTable" msprop:Generator_TableVarName="tableShukeiYouto" msprop:Generator_TablePropName="ShukeiYouto" msprop:Generator_RowDeletingName="ShukeiYoutoRowDeleting" msprop:Generator_RowChangingName="ShukeiYoutoRowChanging" msprop:Generator_RowEvHandlerName="ShukeiYoutoRowChangeEventHandler" msprop:Generator_RowDeletedName="ShukeiYoutoRowDeleted" msprop:Generator_UserTableName="ShukeiYouto" msprop:Generator_RowChangedName="ShukeiYoutoRowChanged" msprop:Generator_RowEvArgName="ShukeiYoutoRowChangeEvent" msprop:Generator_RowClassName="ShukeiYoutoRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="用途" msprop:Generator_ColumnVarNameInTable="column用途" msprop:Generator_ColumnPropNameInRow="用途" msprop:Generator_ColumnPropNameInTable="用途Column" msprop:Generator_UserColumnName="用途" type="xs:string" minOccurs="0" />
+              <xs:element name="収入" msprop:Generator_ColumnVarNameInTable="column収入" msprop:Generator_ColumnPropNameInRow="収入" msprop:Generator_ColumnPropNameInTable="収入Column" msprop:Generator_UserColumnName="収入" type="xs:string" minOccurs="0" />
+              <xs:element name="支出" msprop:Generator_ColumnVarNameInTable="column支出" msprop:Generator_ColumnPropNameInRow="支出" msprop:Generator_ColumnPropNameInTable="支出Column" msprop:Generator_UserColumnName="支出" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

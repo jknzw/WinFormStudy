@@ -56,6 +56,14 @@
       <DependentUpon>BaseForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Base\BaseService.cs" />
+    <Compile Include="DataSet\DataSetKakeibo.cs">
+      <DependentUpon>DataSetKakeibo.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataSet\DataSetKakeibo.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataSetKakeibo.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -131,6 +139,17 @@
     <EmbeddedResource Include="TestForm.resx">
       <DependentUpon>TestForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="DataSet\DataSetKakeibo.xsc">
+      <DependentUpon>DataSetKakeibo.xsd</DependentUpon>
+    </None>
+    <None Include="DataSet\DataSetKakeibo.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSetKakeibo.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="DataSet\DataSetKakeibo.xss">
+      <DependentUpon>DataSetKakeibo.xsd</DependentUpon>
+    </None>
     <None Include="Doc\Sample.drawio" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

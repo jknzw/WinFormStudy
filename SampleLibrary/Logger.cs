@@ -258,6 +258,11 @@ namespace SampleLibrary
         {
             Dispose(true);
         }
+
+        ~Logger()
+        {
+            Dispose();
+        }
         #endregion
     }
 }

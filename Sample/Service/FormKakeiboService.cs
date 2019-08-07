@@ -1,4 +1,5 @@
-﻿using Sample.Utility;
+﻿using Sample.DataSet;
+using Sample.Utility;
 using SampleLibrary;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SampleLibrary.Utility;
 
 namespace Sample.Service
 {
@@ -16,12 +18,13 @@ namespace Sample.Service
         //private readonly string zankinFilePath = "./zankin.txt";
         private readonly string rirekiFilePath = "./rireki.csv";
 
-        public class BeanKakeibo
+        public class ModelKakeibo
         {
             public int Zankin { get; set; } = 0;
             public int SumShunyu { get; set; } = 0;
             public int SumShishutsu { get; set; } = 0;
-            public DataTable DtRireki { get; set; } = new DataTable();
+            public DataTable RirekiTable { get; set; } = new DataTable();
+            public DataTable ShukeiTable { get; set; } = new DataTable();
         }
 
         private FormKakeiboService() : base()
@@ -32,11 +35,6 @@ namespace Sample.Service
         private FormKakeiboService(Form form) : base(form)
         {
             // コンストラクタの直接呼出しを禁止する
-        }
-
-        public static FormKakeiboService GetInstance()
-        {
-            return new FormKakeiboService();
         }
 
         public static FormKakeiboService GetInstance(Form form)
@@ -58,11 +56,11 @@ namespace Sample.Service
         //    return fs.FileWrite(zankinFilePath, zankin.ToString());
         //}
 
-        public BeanKakeibo GetRireki()
+        public ModelKakeibo GetRireki()
         {
             string encoding = "UTF-8";
-            BeanKakeibo bean = new BeanKakeibo();
-            DataTable dt = new DataTable();
+            ModelKakeibo bean = new ModelKakeibo();
+            DataTable dtRireki = new DataTable();
             try
             {
                 // csvファイル読込
@@ -84,14 +82,14 @@ namespace Sample.Service
                 foreach (string text in list.First())
                 {
                     Debug.WriteLine($"Columns.Add({text})");
-                    dt.Columns.Add(text);
+                    dtRireki.Columns.Add(text);
                 }
 
                 // データ設定
                 foreach (string[] texts in list.Skip(1))
                 {
-                    DataRow row = dt.NewRow();
-                    for (int colIdx = 0; colIdx < dt.Columns.Count; colIdx++)
+                    DataRow row = dtRireki.NewRow();
+                    for (int colIdx = 0; colIdx < dtRireki.Columns.Count; colIdx++)
                     {
                         Debug.WriteLine($"Rows[{colIdx}].Add({texts[colIdx]})");
                         row[colIdx] = texts[colIdx];
@@ -106,7 +104,7 @@ namespace Sample.Service
                     bean.SumShishutsu += shishutsu;
 
                     // 行追加
-                    dt.Rows.Add(row);
+                    dtRireki.Rows.Add(row);
                 }
 
                 // 残金
@@ -114,7 +112,8 @@ namespace Sample.Service
                 bean.Zankin = zankin;
 
                 // データテーブルを設定
-                bean.DtRireki = dt;
+                bean.RirekiTable = dtRireki;
+                bean.ShukeiTable = GetShukeiTable(dtRireki);
             }
             catch (Exception ex)
             {
@@ -123,6 +122,142 @@ namespace Sample.Service
             }
             return bean;
         }
+
+        public DataTable GetShukeiTable(DataTable dtRireki)
+        {
+            DataTable dt;
+            switch (ControlValuesDictionary["cmbShukeiMode"])
+            {
+                case "年月日＋内容":
+                    dt = GetShukeiYmdYouto(dtRireki);
+                    break;
+                case "内容":
+                    dt = GetShukeiYouto(dtRireki);
+                    break;
+                case "年月日":
+                default:
+                    dt = GetShukeiYmd(dtRireki);
+                    break;
+            }
+            return dt;
+        }
+
+        private DataTable GetShukeiYmd(DataTable rirekiTable)
+        {
+            DataTable dtShukei = new DataSetKakeibo.ShukeiDataTable();
+
+            SortedDictionary<string, (int shunyu, int shishutsu)> dic = new SortedDictionary<string, (int, int)>();
+
+            foreach (DataRow row in rirekiTable.Rows)
+            {
+                string ymd = row[EnumRireki.Ymd.GetInt()].ToString();
+                int shunyu = row[EnumRireki.Shunyu.GetInt()].GetInt();
+                int shishutsu = row[EnumRireki.Shishutsu.GetInt()].GetInt();
+
+                if (dic.ContainsKey(ymd))
+                {
+                    shunyu = dic[ymd].shunyu + shunyu;
+                    shishutsu = dic[ymd].shishutsu + shishutsu;
+                    dic[ymd] = (shunyu, shishutsu);
+                }
+                else
+                {
+                    dic.Add(ymd, (shunyu, shishutsu));
+                }
+            }
+
+            foreach (string ymd in dic.Keys)
+            {
+                DataRow row = dtShukei.NewRow();
+
+                row[EnumRirekiExtension.RirekiDic[EnumRireki.Ymd]] = ymd;
+                row[EnumRirekiExtension.RirekiDic[EnumRireki.Shunyu]] = dic[ymd].shunyu;
+                row[EnumRirekiExtension.RirekiDic[EnumRireki.Shishutsu]] = dic[ymd].shishutsu;
+
+                dtShukei.Rows.Add(row);
+            }
+
+            return dtShukei;
+        }
+
+        private DataTable GetShukeiYouto(DataTable rirekiTable)
+        {
+            DataTable dtShukei = new DataSetKakeibo.ShukeiYoutoDataTable();
+
+            SortedDictionary<string, (int shunyu, int shishutsu)> dic = new SortedDictionary<string, (int, int)>();
+
+            foreach (DataRow row in rirekiTable.Rows)
+            {
+                string youto = row[EnumRireki.Youto.GetInt()].ToString();
+                int shunyu = row[EnumRireki.Shunyu.GetInt()].GetInt();
+                int shishutsu = row[EnumRireki.Shishutsu.GetInt()].GetInt();
+
+                if (dic.ContainsKey(youto))
+                {
+                    shunyu = dic[youto].shunyu + shunyu;
+                    shishutsu = dic[youto].shishutsu + shishutsu;
+                    dic[youto] = (shunyu, shishutsu);
+                }
+                else
+                {
+                    dic.Add(youto, (shunyu, shishutsu));
+                }
+            }
+
+            foreach (string youto in dic.Keys)
+            {
+                DataRow row = dtShukei.NewRow();
+
+                row[EnumRirekiExtension.RirekiDic[EnumRireki.Youto]] = youto;
+                row[EnumRirekiExtension.RirekiDic[EnumRireki.Shunyu]] = dic[youto].shunyu;
+                row[EnumRirekiExtension.RirekiDic[EnumRireki.Shishutsu]] = dic[youto].shishutsu;
+
+                dtShukei.Rows.Add(row);
+            }
+
+            return dtShukei;
+        }
+
+        private DataTable GetShukeiYmdYouto(DataTable rirekiTable)
+        {
+            DataTable dtShukei = new DataSetKakeibo.ShukeiYmdYoutoDataTable();
+
+            SortedDictionary<(string ymd, string youto), (int shunyu, int shishutsu)> dic = new SortedDictionary<(string ymd, string youto), (int, int)>();
+
+            foreach (DataRow row in rirekiTable.Rows)
+            {
+                string ymd = row[EnumRireki.Ymd.GetInt()].ToString();
+                string youto = row[EnumRireki.Youto.GetInt()].ToString();
+                int shunyu = row[EnumRireki.Shunyu.GetInt()].GetInt();
+                int shishutsu = row[EnumRireki.Shishutsu.GetInt()].GetInt();
+
+                if (dic.ContainsKey((ymd, youto)))
+                {
+                    shunyu = dic[(ymd, youto)].shunyu + shunyu;
+                    shishutsu = dic[(ymd, youto)].shishutsu + shishutsu;
+                    dic[(ymd, youto)] = (shunyu, shishutsu);
+                }
+                else
+                {
+                    dic.Add((ymd, youto), (shunyu, shishutsu));
+                }
+            }
+
+            foreach ((string ymd, string youto) in dic.Keys)
+            {
+                DataRow row = dtShukei.NewRow();
+
+                row[EnumRirekiExtension.RirekiDic[EnumRireki.Ymd]] = ymd;
+                row[EnumRirekiExtension.RirekiDic[EnumRireki.Youto]] = youto;
+                row[EnumRirekiExtension.RirekiDic[EnumRireki.Shunyu]] = dic[(ymd, youto)].shunyu;
+                row[EnumRirekiExtension.RirekiDic[EnumRireki.Shishutsu]] = dic[(ymd, youto)].shishutsu;
+
+                dtShukei.Rows.Add(row);
+            }
+
+            return dtShukei;
+        }
+
 
         private void WriteRirekiHeader(CsvFileService csv)
         {
@@ -185,7 +320,7 @@ namespace Sample.Service
             }
         }
 
-        public int Delete(DataGridView dataGridView, out BeanKakeibo val)
+        public int Delete(DataGridView dataGridView, out ModelKakeibo val)
         {
             val = null;
 
@@ -224,7 +359,7 @@ namespace Sample.Service
         /// <param name="dataGridView"></param>
         /// <param name="count"></param>
         /// <returns>書き込み数</returns>
-        public int UpdateAll(DataGridView dataGridView, out BeanKakeibo value)
+        public int UpdateAll(DataGridView dataGridView, out ModelKakeibo value)
         {
             int count = 0;
             // 履歴ファイルにDataGridViewの内容を書き込む
@@ -236,7 +371,7 @@ namespace Sample.Service
             WriteRirekiHeader(csv);
 
             bool first = true;
-            value = new BeanKakeibo();
+            value = new ModelKakeibo();
             foreach (DataRow row in dt.Rows)
             {
                 // 収入合計
@@ -275,7 +410,10 @@ namespace Sample.Service
             }
 
             // 履歴
-            value.DtRireki = dt;
+            value.RirekiTable = dt;
+
+            // 集計
+            value.ShukeiTable = GetShukeiYmd(dt);
 
             return count;
         }

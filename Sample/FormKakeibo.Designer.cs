@@ -34,7 +34,7 @@
             this.customReadOnlyTextBoxZankin = new WindowsFormsControlLibrary.CustomReadOnlyTextBox();
             this.customReadOnlyTextBoxShishutsu = new WindowsFormsControlLibrary.CustomReadOnlyTextBox();
             this.customReadOnlyTextBoxShunyu = new WindowsFormsControlLibrary.CustomReadOnlyTextBox();
-            this.dataGridViewRireki = new System.Windows.Forms.DataGridView();
+            this.gridRireki = new WindowsFormsControlLibrary.CustomDataGridView();
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.comboBoxYouto = new System.Windows.Forms.ComboBox();
             this.label16 = new System.Windows.Forms.Label();
@@ -46,12 +46,13 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.dataGridViewShukei = new System.Windows.Forms.DataGridView();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRireki)).BeginInit();
+            this.cmbShukeiMode = new System.Windows.Forms.ComboBox();
+            this.gridShukei = new WindowsFormsControlLibrary.CustomDataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.gridRireki)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShukei)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridShukei)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonF1
@@ -148,20 +149,22 @@
             this.customReadOnlyTextBoxShunyu.TabIndex = 102;
             this.customReadOnlyTextBoxShunyu.TabStop = false;
             // 
-            // dataGridViewRireki
+            // gridRireki
             // 
-            this.dataGridViewRireki.AllowUserToAddRows = false;
-            this.dataGridViewRireki.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewRireki.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridViewRireki.Location = new System.Drawing.Point(3, 3);
-            this.dataGridViewRireki.Name = "dataGridViewRireki";
-            this.dataGridViewRireki.RowTemplate.Height = 21;
-            this.dataGridViewRireki.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridViewRireki.Size = new System.Drawing.Size(946, 400);
-            this.dataGridViewRireki.TabIndex = 0;
-            this.dataGridViewRireki.TabStop = false;
-            this.dataGridViewRireki.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewRireki_CellEndEdit);
-            this.dataGridViewRireki.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DataGridViewRireki_UserDeletingRow);
+            this.gridRireki.AllowUserToAddRows = false;
+            this.gridRireki.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.gridRireki.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.gridRireki.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gridRireki.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gridRireki.Location = new System.Drawing.Point(3, 3);
+            this.gridRireki.Name = "gridRireki";
+            this.gridRireki.RowTemplate.Height = 21;
+            this.gridRireki.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.gridRireki.Size = new System.Drawing.Size(946, 400);
+            this.gridRireki.TabIndex = 0;
+            this.gridRireki.TabStop = false;
+            this.gridRireki.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewRireki_CellEndEdit);
+            this.gridRireki.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DataGridViewRireki_UserDeletingRow);
             // 
             // dateTimePicker1
             // 
@@ -187,8 +190,7 @@
             "貯金",
             "収入",
             "繰り越し",
-            "その他"
-            });
+            "その他"});
             this.comboBoxYouto.Location = new System.Drawing.Point(206, 37);
             this.comboBoxYouto.Name = "comboBoxYouto";
             this.comboBoxYouto.Size = new System.Drawing.Size(121, 20);
@@ -263,7 +265,7 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.dataGridViewRireki);
+            this.tabPage1.Controls.Add(this.gridRireki);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -274,7 +276,8 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.dataGridViewShukei);
+            this.tabPage2.Controls.Add(this.cmbShukeiMode);
+            this.tabPage2.Controls.Add(this.gridShukei);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -283,15 +286,37 @@
             this.tabPage2.Text = "集計";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // dataGridViewShukei
+            // cmbShukeiMode
             // 
-            this.dataGridViewShukei.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewShukei.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridViewShukei.Location = new System.Drawing.Point(3, 3);
-            this.dataGridViewShukei.Name = "dataGridViewShukei";
-            this.dataGridViewShukei.RowTemplate.Height = 21;
-            this.dataGridViewShukei.Size = new System.Drawing.Size(946, 400);
-            this.dataGridViewShukei.TabIndex = 1;
+            this.cmbShukeiMode.FormattingEnabled = true;
+            this.cmbShukeiMode.Items.AddRange(new object[] {
+            "年月日",
+            "年月日＋内容",
+            "内容"});
+            this.cmbShukeiMode.Location = new System.Drawing.Point(6, 6);
+            this.cmbShukeiMode.Name = "cmbShukeiMode";
+            this.cmbShukeiMode.Size = new System.Drawing.Size(121, 20);
+            this.cmbShukeiMode.TabIndex = 1;
+            this.cmbShukeiMode.Text = "年月日";
+            this.cmbShukeiMode.SelectedIndexChanged += new System.EventHandler(this.ComboBoxShukeiMode_SelectedIndexChanged);
+            // 
+            // gridShukei
+            // 
+            this.gridShukei.AllowUserToAddRows = false;
+            this.gridShukei.AllowUserToDeleteRows = false;
+            this.gridShukei.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridShukei.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.gridShukei.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.gridShukei.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gridShukei.Location = new System.Drawing.Point(3, 32);
+            this.gridShukei.Name = "gridShukei";
+            this.gridShukei.ReadOnly = true;
+            this.gridShukei.RowTemplate.Height = 21;
+            this.gridShukei.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.gridShukei.Size = new System.Drawing.Size(946, 371);
+            this.gridShukei.TabIndex = 0;
             // 
             // FormKakeibo
             // 
@@ -342,11 +367,11 @@
             this.Controls.SetChildIndex(this.customTextBoxKingaku, 0);
             this.Controls.SetChildIndex(this.customTextBoxBiko, 0);
             this.Controls.SetChildIndex(this.tabControl1, 0);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRireki)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridRireki)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShukei)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridShukei)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -360,7 +385,7 @@
         private WindowsFormsControlLibrary.CustomReadOnlyTextBox customReadOnlyTextBoxZankin;
         private WindowsFormsControlLibrary.CustomReadOnlyTextBox customReadOnlyTextBoxShishutsu;
         private WindowsFormsControlLibrary.CustomReadOnlyTextBox customReadOnlyTextBoxShunyu;
-        private System.Windows.Forms.DataGridView dataGridViewRireki;
+        private WindowsFormsControlLibrary.CustomDataGridView gridRireki;
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
         private System.Windows.Forms.ComboBox comboBoxYouto;
         private System.Windows.Forms.Label label16;
@@ -372,6 +397,7 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.DataGridView dataGridViewShukei;
+        private WindowsFormsControlLibrary.CustomDataGridView gridShukei;
+        private System.Windows.Forms.ComboBox cmbShukeiMode;
     }
 }
