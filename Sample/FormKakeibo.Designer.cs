@@ -48,11 +48,17 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.cmbShukeiMode = new System.Windows.Forms.ComboBox();
             this.gridShukei = new WindowsFormsControlLibrary.CustomDataGridView();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.gridKakoRireki = new WindowsFormsControlLibrary.CustomDataGridView();
+            this.cmbRirekiFiles = new System.Windows.Forms.ComboBox();
+            this.cmbRirekiMode = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.gridRireki)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridShukei)).BeginInit();
+            this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridKakoRireki)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonF1
@@ -189,7 +195,6 @@
             "学費",
             "貯金",
             "収入",
-            "繰り越し",
             "その他"});
             this.comboBoxYouto.Location = new System.Drawing.Point(206, 37);
             this.comboBoxYouto.Name = "comboBoxYouto";
@@ -257,6 +262,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(12, 63);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -271,7 +277,7 @@
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(952, 406);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "履歴";
+            this.tabPage1.Text = "今月";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // tabPage2
@@ -317,6 +323,61 @@
             this.gridShukei.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridShukei.Size = new System.Drawing.Size(946, 371);
             this.gridShukei.TabIndex = 0;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.gridKakoRireki);
+            this.tabPage3.Controls.Add(this.cmbRirekiFiles);
+            this.tabPage3.Controls.Add(this.cmbRirekiMode);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(952, 406);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "履歴";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // gridKakoRireki
+            // 
+            this.gridKakoRireki.AllowUserToAddRows = false;
+            this.gridKakoRireki.AllowUserToDeleteRows = false;
+            this.gridKakoRireki.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridKakoRireki.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.gridKakoRireki.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.gridKakoRireki.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gridKakoRireki.Location = new System.Drawing.Point(3, 32);
+            this.gridKakoRireki.Name = "gridKakoRireki";
+            this.gridKakoRireki.ReadOnly = true;
+            this.gridKakoRireki.RowTemplate.Height = 21;
+            this.gridKakoRireki.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.gridKakoRireki.Size = new System.Drawing.Size(949, 374);
+            this.gridKakoRireki.TabIndex = 4;
+            // 
+            // cmbRirekiFiles
+            // 
+            this.cmbRirekiFiles.FormattingEnabled = true;
+            this.cmbRirekiFiles.Location = new System.Drawing.Point(6, 6);
+            this.cmbRirekiFiles.Name = "cmbRirekiFiles";
+            this.cmbRirekiFiles.Size = new System.Drawing.Size(121, 20);
+            this.cmbRirekiFiles.TabIndex = 3;
+            this.cmbRirekiFiles.SelectedIndexChanged += new System.EventHandler(this.CmbRirekiFiles_SelectedIndexChanged);
+            // 
+            // cmbRirekiMode
+            // 
+            this.cmbRirekiMode.FormattingEnabled = true;
+            this.cmbRirekiMode.Items.AddRange(new object[] {
+            "全て",
+            "年月日",
+            "年月日＋内容",
+            "内容"});
+            this.cmbRirekiMode.Location = new System.Drawing.Point(133, 6);
+            this.cmbRirekiMode.Name = "cmbRirekiMode";
+            this.cmbRirekiMode.Size = new System.Drawing.Size(121, 20);
+            this.cmbRirekiMode.TabIndex = 2;
+            this.cmbRirekiMode.Text = "全て";
+            this.cmbRirekiMode.SelectedIndexChanged += new System.EventHandler(this.CmbRirekiMode_SelectedIndexChanged);
             // 
             // FormKakeibo
             // 
@@ -372,6 +433,8 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridShukei)).EndInit();
+            this.tabPage3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.gridKakoRireki)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -399,5 +462,9 @@
         private System.Windows.Forms.TabPage tabPage2;
         private WindowsFormsControlLibrary.CustomDataGridView gridShukei;
         private System.Windows.Forms.ComboBox cmbShukeiMode;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.ComboBox cmbRirekiFiles;
+        private System.Windows.Forms.ComboBox cmbRirekiMode;
+        private WindowsFormsControlLibrary.CustomDataGridView gridKakoRireki;
     }
 }

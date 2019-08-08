@@ -11,12 +11,15 @@ using System.Linq;
 using System.Reflection;
 using SampleLibrary;
 using Sample.Utility;
+using System.IO;
 
 namespace Sample
 {
     public partial class FormKakeibo : Sample.Base.BaseForm
     {
         private readonly Logger logger = Logger.GetInstance("kakeibo.log");
+
+        private FormKakeiboService.ModelKakeibo Model { get; set; } = null;
 
         public FormKakeibo()
         {
@@ -104,6 +107,8 @@ namespace Sample
         /// <param name="e"></param>
         protected override void ButtonF2_Click(object sender, EventArgs e)
         {
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+
             base.ButtonF2_Click(sender, e);
             // ▼▼▼ 業務処理 ▼▼▼
             customTextBoxKingaku.Text = string.Empty;
@@ -159,14 +164,15 @@ namespace Sample
         /// <param name="e"></param>
         protected override void ButtonF6_Click(object sender, EventArgs e)
         {
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+
             base.ButtonF6_Click(sender, e);
             // ▼▼▼ 業務処理 ▼▼▼
-            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             if (DialogResult.OK == MessageBox.Show("削除します。よろしいですか？", "確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
             {
                 FormKakeiboService sv = FormKakeiboService.GetInstance(this);
-                int ret = sv.Delete(gridRireki, out FormKakeiboService.ModelKakeibo value);
+                (int ret, FormKakeiboService.ModelKakeibo value) = sv.Delete(Model.RirekiFile, gridRireki);
                 if (ret > 0)
                 {
                     // 1件以上削除した場合
@@ -262,6 +268,8 @@ namespace Sample
         /// <param name="e"></param>
         private void FormKakeibo_Load(object sender, EventArgs e)
         {
+            logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
+
             FormKakeiboService sv = FormKakeiboService.GetInstance(this);
             Search(sv);
         }
@@ -276,7 +284,30 @@ namespace Sample
             // 履歴ファイルを読み込む
             gridRireki.DataSource = new BindingSource();
             gridShukei.DataSource = new BindingSource();
-            SetScreenValues(sv.GetRireki());
+
+            // 検索結果を保持
+            Model = sv.GetRireki();
+
+            SortedDictionary<string, string> comboSource = new SortedDictionary<string, string>();
+            foreach (string rirekiFile in Model.RirekiFiles)
+            {
+                string filename = Path.GetFileNameWithoutExtension(rirekiFile);
+                if (!rirekiFile.Equals(Model.RirekiFile))
+                {
+                    comboSource.Add(filename, rirekiFile);
+                }
+            }
+            cmbRirekiFiles.DataSource = new BindingSource(comboSource.Reverse(), null);
+            cmbRirekiFiles.DisplayMember = "Key";
+            cmbRirekiFiles.ValueMember = "Value";
+
+            if (cmbRirekiFiles.Items.Count > 0)
+            {
+                cmbRirekiFiles.SelectedIndex = 0;
+            }
+
+            // 検索結果を画面に設定
+            SetScreenValues(Model);
 
             // 残金を編集不可にする
             gridRireki.Columns["残金"].ReadOnly = true;
@@ -300,7 +331,7 @@ namespace Sample
             logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             FormKakeiboService sv = FormKakeiboService.GetInstance(this);
-            int ret = sv.UpdateAll(gridRireki, out FormKakeiboService.ModelKakeibo value);
+            (int ret, FormKakeiboService.ModelKakeibo value) = sv.UpdateAll(Model.RirekiFile, gridRireki);
             if (ret >= 0)
             {
                 // 正常
@@ -316,6 +347,8 @@ namespace Sample
 
         private void SetScreenValues(FormKakeiboService.ModelKakeibo model)
         {
+            logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
+
             // 残金・収入・支出を更新
             customReadOnlyTextBoxZankin.Text = model.Zankin.ToString();
             customReadOnlyTextBoxShunyu.Text = model.SumShunyu.ToString();
@@ -328,6 +361,8 @@ namespace Sample
 
         private void ComboBoxShukeiMode_SelectedIndexChanged(object sender, EventArgs e)
         {
+            logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
+
             FormKakeiboService sv = FormKakeiboService.GetInstance(this);
             DataTable rireki = (gridRireki.DataSource as BindingSource).DataSource as DataTable;
             DataTable shukei = sv.GetShukeiTable(rireki);
@@ -335,6 +370,37 @@ namespace Sample
             gridShukei.Columns.Clear();
             (gridShukei.DataSource as BindingSource).DataSource = shukei;
 
+        }
+
+        private void CmbRirekiFiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
+
+            FormKakeiboService sv = FormKakeiboService.GetInstance();
+            ChangeKakoRireki(sv);
+        }
+
+        private void CmbRirekiMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
+
+            FormKakeiboService sv = FormKakeiboService.GetInstance();
+            ChangeKakoRireki(sv);
+        }
+
+        private void ChangeKakoRireki(FormKakeiboService sv)
+        {
+            logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
+
+            if (cmbRirekiFiles.SelectedIndex >= 0)
+            {
+                // 選択している項目がある場合
+
+                // 履歴ファイルを読み込む
+                string rirekiFile = ((KeyValuePair<string, string>)cmbRirekiFiles.SelectedItem).Value;
+                DataTable dt = sv.GetKakoRirekiTable(rirekiFile, cmbRirekiMode.Text);
+                gridKakoRireki.DataSource = new BindingSource(dt, null);
+            }
         }
     }
 }

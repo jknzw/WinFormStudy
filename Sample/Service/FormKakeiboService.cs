@@ -10,13 +10,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SampleLibrary.Utility;
+using System.IO;
 
 namespace Sample.Service
 {
     public class FormKakeiboService : Base.BaseService
     {
-        //private readonly string zankinFilePath = "./zankin.txt";
-        private readonly string rirekiFilePath = "./rireki.csv";
+        private readonly string zankinFilePath = "zankin.txt";
+        private readonly string rirekiFolderPath = "rireki";
+        private readonly string encoding = "UTF-8";
 
         public class ModelKakeibo
         {
@@ -25,6 +27,9 @@ namespace Sample.Service
             public int SumShishutsu { get; set; } = 0;
             public DataTable RirekiTable { get; set; } = new DataTable();
             public DataTable ShukeiTable { get; set; } = new DataTable();
+            public IEnumerable<string> RirekiFiles { get; set; } = null;
+
+            public string RirekiFile = null;
         }
 
         private FormKakeiboService() : base()
@@ -37,96 +42,142 @@ namespace Sample.Service
             // コンストラクタの直接呼出しを禁止する
         }
 
+        public static FormKakeiboService GetInstance()
+        {
+            return new FormKakeiboService();
+        }
+
         public static FormKakeiboService GetInstance(Form form)
         {
             return new FormKakeiboService(form);
         }
 
-        //public int GetZankin()
-        //{
-        //    FileService fs = new FileService();
-        //    string zankin = fs.FileRead(zankinFilePath).First();
-        //    int.TryParse(zankin, out int result);
-        //    return result;
-        //}
+        public int GetZankin()
+        {
+            FileService fs = new FileService();
+            string zankin = fs.FileRead(zankinFilePath).First();
+            int.TryParse(zankin, out int result);
+            return result;
+        }
 
-        //public int WriteZankin(int zankin)
-        //{
-        //    FileService fs = new FileService();
-        //    return fs.FileWrite(zankinFilePath, zankin.ToString());
-        //}
+        public int WriteZankin(int zankin)
+        {
+            FileService fs = new FileService();
+            return fs.FileWrite(zankinFilePath, zankin.ToString());
+        }
 
         public ModelKakeibo GetRireki()
         {
-            string encoding = "UTF-8";
-            ModelKakeibo bean = new ModelKakeibo();
-            DataTable dtRireki = new DataTable();
+            ModelKakeibo model = new ModelKakeibo();
             try
             {
                 // csvファイル読込
                 // ToListで読み込み処理を確定させる
                 CsvFileService csv = CsvFileService.GetInstance();
-                List<string[]> list = csv.CsvFileRead(rirekiFilePath, encoding)?.ToList();
+
+                // 履歴ファイルリスト
+                model.RirekiFiles = Directory.EnumerateFiles(rirekiFolderPath, "rireki*.csv");
+                model.RirekiFile = GetRirekiFilePath();
+
+                List<string[]> list = csv.CsvFileRead(model.RirekiFile, encoding)?.ToList();
 
                 if (list.First() == null)
                 {
                     // ヘッダがない場合、ファイルが存在しない
                     // ヘッダを生成して出力
-                    WriteRirekiHeader(csv);
+                    WriteRirekiHeader(csv, model.RirekiFile);
 
-                    // 空のテーブルを返す
-                    return bean;
+                    // 残金を繰越金として書き込む
+                    int kurikoshi = GetZankin();
+                    csv.FileAppend(model.RirekiFile, DateTime.Now.ToString("yyyy/MM/01"), "繰り越し", kurikoshi.ToString(), string.Empty, kurikoshi.ToString(), string.Empty);
+
+                    // 再読込
+                    list = csv.CsvFileRead(model.RirekiFile, encoding)?.ToList();
                 }
 
-                // ヘッダ設定
-                foreach (string text in list.First())
-                {
-                    Debug.WriteLine($"Columns.Add({text})");
-                    dtRireki.Columns.Add(text);
-                }
-
-                // データ設定
-                foreach (string[] texts in list.Skip(1))
-                {
-                    DataRow row = dtRireki.NewRow();
-                    for (int colIdx = 0; colIdx < dtRireki.Columns.Count; colIdx++)
-                    {
-                        Debug.WriteLine($"Rows[{colIdx}].Add({texts[colIdx]})");
-                        row[colIdx] = texts[colIdx];
-                    }
-
-                    // 収入計算
-                    int.TryParse(row[EnumRireki.Shunyu.GetInt()].ToString(), out int shunyu);
-                    bean.SumShunyu += shunyu;
-
-                    // 支出計算
-                    int.TryParse(row[EnumRireki.Shishutsu.GetInt()].ToString(), out int shishutsu);
-                    bean.SumShishutsu += shishutsu;
-
-                    // 行追加
-                    dtRireki.Rows.Add(row);
-                }
+                (DataTable dtRireki, int shunyu, int shishutsu) = ConvertToRirekiDataTable(list);
+                model.SumShunyu = shunyu;
+                model.SumShishutsu = shishutsu;
 
                 // 残金
                 int.TryParse(list.Last()[EnumRireki.Zankin.GetInt()], out int zankin);
-                bean.Zankin = zankin;
+                model.Zankin = zankin;
 
                 // データテーブルを設定
-                bean.RirekiTable = dtRireki;
-                bean.ShukeiTable = GetShukeiTable(dtRireki);
+                model.RirekiTable = dtRireki;
+                model.ShukeiTable = GetShukeiTable(dtRireki);
             }
             catch (Exception ex)
             {
                 // csvファイルのデータが0件・1件の場合 ArgumentNullException
                 Debug.WriteLine(ex.Message);
             }
-            return bean;
+            return model;
         }
 
-        public DataTable GetShukeiTable(DataTable dtRireki)
+        public DataTable GetKakoRirekiTable(string filePath, string shukeiMode)
         {
+            CsvFileService csv = CsvFileService.GetInstance();
+            List<string[]> list = csv.CsvFileRead(filePath, encoding)?.ToList();
+            (DataTable dt, _, _) = ConvertToRirekiDataTable(list);
+            dt = GetShukeiTable(dt, shukeiMode);
+            return dt;
+        }
+
+        private (DataTable, int, int) ConvertToRirekiDataTable(List<string[]> list)
+        {
+            DataTable dtRireki = new DataTable();
+
+            // ヘッダ設定
+            foreach (string text in list.First())
+            {
+                Debug.WriteLine($"Columns.Add({text})");
+                dtRireki.Columns.Add(text);
+            }
+
+            // データ設定
+            int sumShunyu = 0;
+            int sumShishutsu = 0;
+            foreach (string[] texts in list.Skip(1))
+            {
+                DataRow row = dtRireki.NewRow();
+                for (int colIdx = 0; colIdx < dtRireki.Columns.Count; colIdx++)
+                {
+                    Debug.WriteLine($"Rows[{colIdx}].Add({texts[colIdx]})");
+                    row[colIdx] = texts[colIdx];
+                }
+
+                // 収入計算
+                int.TryParse(row[EnumRireki.Shunyu.GetInt()].ToString(), out int shunyu);
+                sumShunyu += shunyu;
+
+                // 支出計算
+                int.TryParse(row[EnumRireki.Shishutsu.GetInt()].ToString(), out int shishutsu);
+                sumShishutsu += shishutsu;
+
+                // 行追加
+                dtRireki.Rows.Add(row);
+            }
+
+            return (dtRireki, sumShunyu, sumShishutsu);
+        }
+
+        private string GetRirekiFilePath()
+        {
+
+            // ファイルパス
+            return Path.Combine(rirekiFolderPath, $"rireki{DateTime.Now.ToString("yyyyMM")}.csv");
+        }
+
+        public DataTable GetShukeiTable(DataTable dtRireki, string mode = null)
+        {
+            if (string.IsNullOrEmpty(mode))
+            {
+                mode = ControlValuesDictionary["cmbShukeiMode"];
+            }
+
             DataTable dt;
-            switch (ControlValuesDictionary["cmbShukeiMode"])
+            switch (mode)
             {
                 case "年月日＋内容":
                     dt = GetShukeiYmdYouto(dtRireki);
@@ -135,8 +186,11 @@ namespace Sample.Service
                     dt = GetShukeiYouto(dtRireki);
                     break;
                 case "年月日":
-                default:
                     dt = GetShukeiYmd(dtRireki);
+                    break;
+                case "全て":
+                default:
+                    dt = dtRireki;
                     break;
             }
             return dt;
@@ -259,9 +313,9 @@ namespace Sample.Service
         }
 
 
-        private void WriteRirekiHeader(CsvFileService csv)
+        private void WriteRirekiHeader(CsvFileService csv, string filePath)
         {
-            csv.FileWrite(rirekiFilePath,
+            csv.FileWrite(filePath,
                 EnumRirekiExtension.RirekiDic[EnumRireki.Ymd],
                 EnumRirekiExtension.RirekiDic[EnumRireki.Youto],
                 EnumRirekiExtension.RirekiDic[EnumRireki.Shunyu],
@@ -297,21 +351,21 @@ namespace Sample.Service
             // csv.FileAppend(rirekiFilePath, "年月日", "用途", "収入","支出",  "残金", "備考");
             string biko = ControlValuesDictionary["customTextBoxBiko"];
 
-            if (1 == csv.FileAppend(rirekiFilePath, dt.ToString("yyyy/MM/dd"), youto, shunyu, sishutsu, zankin.ToString(), biko))
+
+            string filePath = GetRirekiFilePath();
+            if (1 == csv.FileAppend(filePath, dt.ToString("yyyy/MM/dd"), youto, shunyu, sishutsu, zankin.ToString(), biko))
             {
                 // 正常
-                return 0;
-
-                //if (1 == WriteZankin(zankin))
-                //{
-                //    //正常
-                //    return 0;
-                //}
-                //else
-                //{
-                //    // 残金の書き込みに失敗
-                //    return -2;
-                //}
+                if (1 == WriteZankin(zankin))
+                {
+                    //正常
+                    return 0;
+                }
+                else
+                {
+                    // 残金の書き込みに失敗
+                    return -2;
+                }
             }
             else
             {
@@ -320,10 +374,9 @@ namespace Sample.Service
             }
         }
 
-        public int Delete(DataGridView dataGridView, out ModelKakeibo val)
+        public (int, ModelKakeibo) Delete(string rirekiFilePath, DataGridView dataGridView)
         {
-            val = null;
-
+            ModelKakeibo val = null;
             int count = 0;
             // 選択行がある場合
             if (dataGridView.Rows.GetRowCount(DataGridViewElementStates.Selected) > 0)
@@ -336,9 +389,11 @@ namespace Sample.Service
                 }
 
                 // ファイル更新
-                if (0 <= UpdateAll(dataGridView, out val))
+                (int ret, ModelKakeibo value) = UpdateAll(rirekiFilePath, dataGridView);
+                if (0 <= ret)
                 {
                     // 正常
+                    val = value;
                 }
                 else
                 {
@@ -350,17 +405,19 @@ namespace Sample.Service
             {
                 // 選択0件
             }
-            return count;
+            return (count, val);
         }
 
         /// <summary>
-        /// CSVファイル更新
+        /// 履歴・残金ファイル更新
         /// </summary>
         /// <param name="dataGridView"></param>
         /// <param name="count"></param>
         /// <returns>書き込み数</returns>
-        public int UpdateAll(DataGridView dataGridView, out ModelKakeibo value)
+        public (int, ModelKakeibo) UpdateAll(string rirekiFilePath, DataGridView dataGridView)
         {
+            ModelKakeibo value = new ModelKakeibo();
+
             int count = 0;
             // 履歴ファイルにDataGridViewの内容を書き込む
             // ソート前情報(DataTable)を取得
@@ -368,10 +425,9 @@ namespace Sample.Service
 
             CsvFileService csv = CsvFileService.GetInstance();
 
-            WriteRirekiHeader(csv);
+            WriteRirekiHeader(csv, rirekiFilePath);
 
             bool first = true;
-            value = new ModelKakeibo();
             foreach (DataRow row in dt.Rows)
             {
                 // 収入合計
@@ -415,7 +471,17 @@ namespace Sample.Service
             // 集計
             value.ShukeiTable = GetShukeiYmd(dt);
 
-            return count;
+            // 残金ファイル更新
+            if (1 == WriteZankin(value.Zankin))
+            {
+                //正常
+                return (count, value);
+            }
+            else
+            {
+                // 残金の書き込みに失敗
+                return (-2, value);
+            }
         }
     }
 }
