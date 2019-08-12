@@ -17,57 +17,24 @@ namespace Sample
 {
     public partial class FormKakeibo : Sample.Base.BaseForm
     {
-        private readonly Logger logger = Logger.GetInstance("kakeibo.log");
+        /// <summary>
+        /// Logger
+        /// </summary>
+        private readonly Logger logger = Logger.GetInstance("kakeibo");
 
+        /// <summary>
+        /// Model
+        /// Serviceからの値を受け取るために使う
+        /// </summary>
         private FormKakeiboService.ModelKakeibo Model { get; set; } = null;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
         public FormKakeibo()
         {
             InitializeComponent();
-
-            //// 使わないボタンを非表示にする
-            //buttonF1.Visible = false;
-            //buttonF2.Visible = false;
-            //buttonF3.Visible = false;
-            //buttonF4.Visible = false;
-            //buttonF5.Visible = false;
-            //buttonF6.Visible = false;
-            //buttonF7.Visible = false;
-            //buttonF8.Visible = false;
-            //buttonF9.Visible = false;
-            //buttonF10.Visible = false;
-            //buttonF11.Visible = false;
-
-            //// ボタンの有効無効を設定
-            //SetButtonEnabled(ActionMode.Init);
         }
-
-        ///// <summary>
-        ///// 動作モード
-        ///// </summary>
-        //private enum ActionMode
-        //{
-        //    Init = 0,
-        //}
-
-        ///// <summary>
-        ///// ボタン状態の設定
-        ///// </summary>
-        ///// <param name="mode"></param>
-        //private void SetButtonEnabled(ActionMode mode)
-        //{
-        //    // まず全てのボタンを無効にする
-        //    SetAllBaseButtonEnabled(false);
-
-        //    // 必要なボタンのみ有効にする
-        //    switch (mode)
-        //    {
-        //        case ActionMode.Init:
-        //        default:
-        //            buttonF12.Enabled = true;
-        //            break;
-        //    }
-        //}
 
         /// <summary>
         /// 登録
@@ -77,21 +44,27 @@ namespace Sample
         protected override void ButtonF1_Click(object sender, EventArgs e)
         {
             logger.WriteLine(MethodBase.GetCurrentMethod().Name);
-
             base.ButtonF1_Click(sender, e);
+
             // ▼▼▼ 業務処理 ▼▼▼
             FormKakeiboService sv = FormKakeiboService.GetInstance(this);
+
+            // 登録
             int ret = sv.Touroku();
             if (ret != 0)
             {
-                Debug.WriteLine($"Touroku error code:{ret}");
+                logger.WriteLine($"登録処理でエラーが発生しました。ErrorCode[{ret}]");
             }
 
-            Search(sv);
+            // 検索
+            ret = Search(sv);
+            if (ret != 0)
+            {
+                logger.WriteLine($"検索処理でエラーが発生しました。ErrorCode[{ret}]");
+            }
 
             // スクロールを最終に移動
             gridRireki.ScrollToLast();
-
             // 選択を解除
             gridRireki.ClearSelection();
             // 最終行を選択
@@ -172,17 +145,11 @@ namespace Sample
             if (DialogResult.OK == MessageBox.Show("削除します。よろしいですか？", "確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
             {
                 FormKakeiboService sv = FormKakeiboService.GetInstance(this);
-                (int ret, FormKakeiboService.ModelKakeibo value) = sv.Delete(Model.RirekiFile, gridRireki);
+                int ret = sv.Delete(Model.RirekiFile, gridRireki, out FormKakeiboService.ModelKakeibo value);
                 if (ret > 0)
                 {
-                    // 1件以上削除した場合
-                    //sv.WriteZankin(value.Zankin);
-
-                    // 残金更新
+                    // 画面更新
                     SetScreenValues(value);
-
-                    // 再検索
-                    //Search(sv);
 
                     MessageBox.Show($"{ret}件削除しました。");
                 }
@@ -274,20 +241,80 @@ namespace Sample
             Search(sv);
         }
 
-        private void Search(FormKakeiboService sv)
+        private int Search(FormKakeiboService sv)
         {
             logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
-            // 残金ファイルを読み込む
-            //int zankin = sv.GetZankin();
-
-            // 履歴ファイルを読み込む
             gridRireki.DataSource = new BindingSource();
             gridShukei.DataSource = new BindingSource();
 
-            // 検索結果を保持
-            Model = sv.GetRireki();
+            // 新規Model生成
+            FormKakeiboService.ModelKakeibo model = new FormKakeiboService.ModelKakeibo
+            {
+                // 履歴ファイルパス取得
+                RirekiFile = sv.GetRirekiFilePath(),
 
+                // 過去履歴取得
+                RirekiFiles = sv.GetRirekiFiles()
+            };
+
+            // 履歴ファイルを読み込む
+            int ret = sv.GetRireki(model);
+            if (ret == 0)
+            {
+                // 正常
+                Model = model;
+            }
+            else if (ret == -1)
+            {
+                // 履歴ファイルが無い場合
+                if (DialogResult.OK == MessageBox.Show("月が変わりました。履歴ファイルを更新しますか？", "確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
+                {
+                    // 新しいファイルに変更する
+                    sv.CreateNewRirekiFile(model.RirekiFile);
+
+                    // 再読込
+                    ret = sv.GetRireki(model);
+                    if (ret == 0)
+                    {
+                        // 正常
+                        Model = model;
+                    }
+                    else
+                    {
+                        // 履歴ファイル取得エラー
+                        logger.WriteError($"履歴取得に失敗しました。", ret);
+                        return -2;
+                    }
+                }
+                else
+                {
+                    // 過去の最新のファイルを使う
+                    model.RirekiFile = model.RirekiFiles.OrderByDescending(x => x).First();
+
+                    // 再読込
+                    ret = sv.GetRireki(model);
+                    if (ret == 0)
+                    {
+                        // 正常
+                        Model = model;
+                    }
+                    else
+                    {
+                        // 履歴ファイル取得エラー
+                        logger.WriteError($"履歴取得に失敗しました。", ret);
+                        return -3;
+                    }
+                }
+            }
+            else
+            {
+                // 履歴ファイル取得エラー
+                logger.WriteError($"履歴取得に失敗しました。", ret);
+                return -1;
+            }
+
+            // コンボボックスの生成
             SortedDictionary<string, string> comboSource = new SortedDictionary<string, string>();
             foreach (string rirekiFile in Model.RirekiFiles)
             {
@@ -297,20 +324,25 @@ namespace Sample
                     comboSource.Add(filename, rirekiFile);
                 }
             }
-            cmbRirekiFiles.DataSource = new BindingSource(comboSource.Reverse(), null);
-            cmbRirekiFiles.DisplayMember = "Key";
-            cmbRirekiFiles.ValueMember = "Value";
-
-            if (cmbRirekiFiles.Items.Count > 0)
+            if (comboSource.Count > 0)
             {
-                cmbRirekiFiles.SelectedIndex = 0;
+                // 対象が1件以上の場合バインド
+                cmbRirekiFiles.DataSource = new BindingSource(comboSource.Reverse(), null);
+                cmbRirekiFiles.DisplayMember = "Key";
+                cmbRirekiFiles.ValueMember = "Value";
+
+                if (cmbRirekiFiles.Items.Count > 0)
+                {
+                    cmbRirekiFiles.SelectedIndex = 0;
+                }
             }
 
             // 検索結果を画面に設定
             SetScreenValues(Model);
-
             // 残金を編集不可にする
             gridRireki.Columns["残金"].ReadOnly = true;
+
+            return 0;
         }
 
         #region DataGridViewRireki
@@ -331,14 +363,12 @@ namespace Sample
             logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             FormKakeiboService sv = FormKakeiboService.GetInstance(this);
-            (int ret, FormKakeiboService.ModelKakeibo value) = sv.UpdateAll(Model.RirekiFile, gridRireki);
+            int ret = sv.UpdateAll(Model.RirekiFile, gridRireki, out FormKakeiboService.ModelKakeibo value);
             if (ret >= 0)
             {
                 // 正常
-                //sv.WriteZankin(value.Zankin);
                 SetScreenValues(value);
             }
-
             else
             {
                 logger.WriteLine($"{MethodBase.GetCurrentMethod().Name} Error:{ret}");
@@ -395,7 +425,6 @@ namespace Sample
             if (cmbRirekiFiles.SelectedIndex >= 0)
             {
                 // 選択している項目がある場合
-
                 // 履歴ファイルを読み込む
                 string rirekiFile = ((KeyValuePair<string, string>)cmbRirekiFiles.SelectedItem).Value;
                 DataTable dt = sv.GetKakoRirekiTable(rirekiFile, cmbRirekiMode.Text);

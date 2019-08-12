@@ -20,6 +20,12 @@ namespace Sample.Service
         private readonly string rirekiFolderPath = "rireki";
         private readonly string encoding = "UTF-8";
 
+        private enum ErrorCode : int
+        {
+            ZankinFileWriteError = -1,
+
+        }
+
         public class ModelKakeibo
         {
             public int Zankin { get; set; } = 0;
@@ -66,40 +72,32 @@ namespace Sample.Service
             return fs.FileWrite(zankinFilePath, zankin.ToString());
         }
 
-        public ModelKakeibo GetRireki()
+        public IEnumerable<string> GetRirekiFiles()
         {
-            ModelKakeibo model = new ModelKakeibo();
+            // 履歴ファイルリスト
+            return Directory.EnumerateFiles(rirekiFolderPath, "rireki*.csv");
+        }
+
+        public int GetRireki(ModelKakeibo model)
+        {
             try
             {
                 // csvファイル読込
                 // ToListで読み込み処理を確定させる
                 CsvFileService csv = CsvFileService.GetInstance();
 
-                // 履歴ファイルリスト
-                model.RirekiFiles = Directory.EnumerateFiles(rirekiFolderPath, "rireki*.csv");
-                model.RirekiFile = GetRirekiFilePath();
-
                 List<string[]> list = csv.CsvFileRead(model.RirekiFile, encoding)?.ToList();
 
                 if (list.First() == null)
                 {
-                    // ヘッダがない場合、ファイルが存在しない
-                    // ヘッダを生成して出力
-                    WriteRirekiHeader(csv, model.RirekiFile);
-
-                    // 残金を繰越金として書き込む
-                    int kurikoshi = GetZankin();
-                    csv.FileAppend(model.RirekiFile, DateTime.Now.ToString("yyyy/MM/01"), "繰り越し", kurikoshi.ToString(), string.Empty, kurikoshi.ToString(), string.Empty);
-
-                    // 再読込
-                    list = csv.CsvFileRead(model.RirekiFile, encoding)?.ToList();
+                    return -1;
                 }
 
                 (DataTable dtRireki, int shunyu, int shishutsu) = ConvertToRirekiDataTable(list);
                 model.SumShunyu = shunyu;
                 model.SumShishutsu = shishutsu;
 
-                // 残金
+                // 残金は履歴ファイルの最終行を設定
                 int.TryParse(list.Last()[EnumRireki.Zankin.GetInt()], out int zankin);
                 model.Zankin = zankin;
 
@@ -112,7 +110,19 @@ namespace Sample.Service
                 // csvファイルのデータが0件・1件の場合 ArgumentNullException
                 Debug.WriteLine(ex.Message);
             }
-            return model;
+            return 0;
+        }
+
+        public int CreateNewRirekiFile(string rirekiFilePath)
+        {
+            CsvFileService csv = CsvFileService.GetInstance();
+
+            // ヘッダを生成して出力
+            WriteRirekiHeader(csv, rirekiFilePath);
+
+            // 残金を繰越金として書き込む
+            int kurikoshi = GetZankin();
+            return csv.FileAppend(rirekiFilePath, DateTime.Now.ToString("yyyy/MM/01"), "繰り越し", kurikoshi.ToString(), string.Empty, kurikoshi.ToString(), string.Empty);
         }
 
         public DataTable GetKakoRirekiTable(string filePath, string shukeiMode)
@@ -162,7 +172,7 @@ namespace Sample.Service
             return (dtRireki, sumShunyu, sumShishutsu);
         }
 
-        private string GetRirekiFilePath()
+        public string GetRirekiFilePath()
         {
 
             // ファイルパス
@@ -324,6 +334,10 @@ namespace Sample.Service
                 EnumRirekiExtension.RirekiDic[EnumRireki.Biko]);
         }
 
+        /// <summary>
+        /// 登録
+        /// </summary>
+        /// <returns>0:正常 負数:エラー</returns>
         public int Touroku()
         {
             CsvFileService csv = CsvFileService.GetInstance();
@@ -374,9 +388,10 @@ namespace Sample.Service
             }
         }
 
-        public (int, ModelKakeibo) Delete(string rirekiFilePath, DataGridView dataGridView)
+        public int Delete(string rirekiFilePath, DataGridView dataGridView, out ModelKakeibo val)
         {
-            ModelKakeibo val = null;
+            val = null;
+
             int count = 0;
             // 選択行がある場合
             if (dataGridView.Rows.GetRowCount(DataGridViewElementStates.Selected) > 0)
@@ -389,11 +404,10 @@ namespace Sample.Service
                 }
 
                 // ファイル更新
-                (int ret, ModelKakeibo value) = UpdateAll(rirekiFilePath, dataGridView);
+                int ret = UpdateAll(rirekiFilePath, dataGridView, out val);
                 if (0 <= ret)
                 {
                     // 正常
-                    val = value;
                 }
                 else
                 {
@@ -405,18 +419,20 @@ namespace Sample.Service
             {
                 // 選択0件
             }
-            return (count, val);
+            return count;
         }
+
 
         /// <summary>
         /// 履歴・残金ファイル更新
         /// </summary>
-        /// <param name="dataGridView"></param>
-        /// <param name="count"></param>
-        /// <returns>書き込み数</returns>
-        public (int, ModelKakeibo) UpdateAll(string rirekiFilePath, DataGridView dataGridView)
+        /// <param name="rirekiFilePath">履歴ファイルパス</param>
+        /// <param name="dataGridView">DataGridView</param>
+        /// <param name="model">ModelKakeibo</param>
+        /// <returns>正数:履歴ファイル書き込み件数 負数:エラー</returns>
+        public int UpdateAll(string rirekiFilePath, DataGridView dataGridView, out ModelKakeibo model)
         {
-            ModelKakeibo value = new ModelKakeibo();
+            model = new ModelKakeibo();
 
             int count = 0;
             // 履歴ファイルにDataGridViewの内容を書き込む
@@ -432,11 +448,11 @@ namespace Sample.Service
             {
                 // 収入合計
                 int.TryParse(row[EnumRireki.Shunyu.GetInt()].ToString(), out int shunyu);
-                value.SumShunyu += shunyu;
+                model.SumShunyu += shunyu;
 
                 // 支出合計
                 int.TryParse(row[EnumRireki.Shishutsu.GetInt()].ToString(), out int shishutsu);
-                value.SumShishutsu += shishutsu;
+                model.SumShishutsu += shishutsu;
 
                 // 残金
                 if (first)
@@ -444,15 +460,15 @@ namespace Sample.Service
                     // 最初のレコード
                     // 残金は変更しない
                     int.TryParse(row[EnumRireki.Zankin.GetInt()].ToString(), out int zankin);
-                    value.Zankin = zankin;
+                    model.Zankin = zankin;
                     first = false;
                 }
                 else
                 {
                     // 2番目以降
                     // 残金を再設定する
-                    value.Zankin = value.Zankin + shunyu - shishutsu;
-                    row[EnumRireki.Zankin.GetInt()] = value.Zankin;
+                    model.Zankin = model.Zankin + shunyu - shishutsu;
+                    row[EnumRireki.Zankin.GetInt()] = model.Zankin;
                 }
 
                 // ファイル書き込み
@@ -466,21 +482,21 @@ namespace Sample.Service
             }
 
             // 履歴
-            value.RirekiTable = dt;
+            model.RirekiTable = dt;
 
             // 集計
-            value.ShukeiTable = GetShukeiYmd(dt);
+            model.ShukeiTable = GetShukeiYmd(dt);
 
             // 残金ファイル更新
-            if (1 == WriteZankin(value.Zankin))
+            if (1 == WriteZankin(model.Zankin))
             {
                 //正常
-                return (count, value);
+                return count;
             }
             else
             {
                 // 残金の書き込みに失敗
-                return (-2, value);
+                return ErrorCode.ZankinFileWriteError.GetInt();
             }
         }
     }

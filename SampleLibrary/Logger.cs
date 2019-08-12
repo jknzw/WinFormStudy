@@ -35,6 +35,7 @@ namespace SampleLibrary
         #endregion
 
         #region フィールド
+        #region AsyncLock
         /// <summary>
         /// AsyncLock
         /// https://www.hanselman.com/blog/ComparingTwoTechniquesInNETAsynchronousCoordinationPrimitives.aspx
@@ -72,11 +73,15 @@ namespace SampleLibrary
         }
 
         /// <summary>
+        /// ロックオブジェクト
+        /// </summary>
+        private static readonly AsyncLock _asyncLock = new AsyncLock();
+        #endregion
+
+        /// <summary>
         /// インスタンス辞書
         /// </summary>
         private static readonly Dictionary<string, Logger> _dicLog = new Dictionary<string, Logger>();
-
-        private static readonly AsyncLock _asyncLock = new AsyncLock();
 
         /// <summary>
         /// ログ出力ループ継続フラグ
@@ -108,8 +113,11 @@ namespace SampleLibrary
         /// </summary>
         /// <param name="logFilePath">ログファイルパス</param>
         /// <returns>Logger</returns>
-        public static Logger GetInstance(string logFilePath, int taskTimeout = 0)
+        public static Logger GetInstance(string baseFileName, int taskTimeout = 0)
         {
+            // ログファイルパスの生成
+            string logFilePath = $"{baseFileName}{DateTime.Now.ToString("yyyyMMdd")}.log";
+
             if (_dicLog.ContainsKey(logFilePath))
             {
                 // 生成済の場合
@@ -123,6 +131,8 @@ namespace SampleLibrary
                     LogFilePath = logFilePath,
                     TaskTimeout = taskTimeout,
                 };
+
+                // 静的領域に保持(プログラム終了まで保持)
                 _dicLog.Add(logFilePath, log);
 
                 // タスクの開始
@@ -133,7 +143,7 @@ namespace SampleLibrary
         }
 
         /// <summary>
-        /// 
+        /// ログ出力(Wait)
         /// </summary>
         /// <param name="log"></param>
         /// <returns></returns>
@@ -142,9 +152,29 @@ namespace SampleLibrary
             return WriteLine(log, System.Threading.Timeout.Infinite);
         }
 
+        /// <summary>
+        /// ログ出力(非同期) 
+        /// </summary>
+        /// <param name="log"></param>
+        /// <param name="code"></param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public bool WriteError(string log, dynamic error, int timeout = 0)
+        {
+            return WriteLine($"{log}[Error:{error}]", timeout);
+        }
+
+        /// <summary>
+        /// ログ出力(非同期) 
+        /// </summary>
+        /// <param name="log"></param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
         public bool WriteLine(string log, int timeout = 0)
         {
             bool ret;
+
+            // キューに追加
             if (timeout == 0)
             {
                 ret = _que.TryAdd(GetLogText(log));
@@ -153,18 +183,31 @@ namespace SampleLibrary
             {
                 ret = _que.TryAdd(GetLogText(log), timeout);
             }
+
             if (!ret)
             {
+                // キューの追加に失敗
                 Debug.WriteLine($"Que TryAdd false [{log}]");
             }
+
             return ret;
         }
 
+        /// <summary>
+        /// ログ出力用文字列の取得
+        /// 年月日日付を付加する
+        /// </summary>
+        /// <param name="log"></param>
+        /// <returns></returns>
         private string GetLogText(string log)
         {
             return $"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fffffff")}]{log}";
         }
 
+        /// <summary>
+        /// ログ出力
+        /// </summary>
+        /// <returns></returns>
         private async Task AsyncWriteLog()
         {
             while (_loopWriteLog)
@@ -184,7 +227,7 @@ namespace SampleLibrary
                                 {
                                     if (_que.TryTake(out string item, 1 * 1000))
                                     {
-                                        Debug.WriteLine($"write[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fffffff")}]append{item}");
+                                        Debug.WriteLine($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fffffff")}]{item}");
                                         await sw.WriteLineAsync(item);
                                     }
                                     else
