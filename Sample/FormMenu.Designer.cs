@@ -32,6 +32,8 @@
             this.customButton2 = new WindowsFormsControlLibrary.CustomButton();
             this.customButton3 = new WindowsFormsControlLibrary.CustomButton();
             this.customButton4 = new WindowsFormsControlLibrary.CustomButton();
+            this.customButton5 = new WindowsFormsControlLibrary.CustomButton();
+            this.customButton6 = new WindowsFormsControlLibrary.CustomButton();
             this.SuspendLayout();
             // 
             // customButton1
@@ -74,6 +76,26 @@
             this.customButton4.UseVisualStyleBackColor = true;
             this.customButton4.Click += new System.EventHandler(this.CustomButton4_Click);
             // 
+            // customButton5
+            // 
+            this.customButton5.Location = new System.Drawing.Point(117, 12);
+            this.customButton5.Name = "customButton5";
+            this.customButton5.Size = new System.Drawing.Size(99, 23);
+            this.customButton5.TabIndex = 0;
+            this.customButton5.Text = "FormTcpClient";
+            this.customButton5.UseVisualStyleBackColor = true;
+            this.customButton5.Click += new System.EventHandler(this.CustomButton5_Click);
+            // 
+            // customButton6
+            // 
+            this.customButton6.Location = new System.Drawing.Point(117, 41);
+            this.customButton6.Name = "customButton6";
+            this.customButton6.Size = new System.Drawing.Size(99, 23);
+            this.customButton6.TabIndex = 0;
+            this.customButton6.Text = "FormTcpServer";
+            this.customButton6.UseVisualStyleBackColor = true;
+            this.customButton6.Click += new System.EventHandler(this.CustomButton6_Click);
+            // 
             // FormMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -82,6 +104,8 @@
             this.Controls.Add(this.customButton2);
             this.Controls.Add(this.customButton3);
             this.Controls.Add(this.customButton4);
+            this.Controls.Add(this.customButton6);
+            this.Controls.Add(this.customButton5);
             this.Controls.Add(this.customButton1);
             this.Name = "FormMenu";
             this.Text = "メニュー";
@@ -95,5 +119,7 @@
         private WindowsFormsControlLibrary.CustomButton customButton2;
         private WindowsFormsControlLibrary.CustomButton customButton3;
         private WindowsFormsControlLibrary.CustomButton customButton4;
+        private WindowsFormsControlLibrary.CustomButton customButton5;
+        private WindowsFormsControlLibrary.CustomButton customButton6;
     }
 }

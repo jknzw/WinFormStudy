@@ -59,5 +59,19 @@ namespace Sample
         {
             ShowDialog(new FormKakeibo());
         }
+
+        private void CustomButton5_Click(object sender, EventArgs e)
+        {
+            Form f = new FormTcpClient();
+            //モードレスでフォームを表示
+            f.Show();            
+        }
+
+        private void CustomButton6_Click(object sender, EventArgs e)
+        {
+            Form f = new FormTcpServer();
+            //モードレスでフォームを表示
+            f.Show();
+        }
     }
 }

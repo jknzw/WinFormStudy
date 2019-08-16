@@ -70,6 +70,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormTcpServer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTcpServer.Designer.cs">
+      <DependentUpon>FormTcpServer.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormDiffBmp.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -87,6 +93,12 @@
     </Compile>
     <Compile Include="FormKakeibo.Designer.cs">
       <DependentUpon>FormKakeibo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormTcpClient.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTcpClient.Designer.cs">
+      <DependentUpon>FormTcpClient.cs</DependentUpon>
     </Compile>
     <Compile Include="FormSample.cs">
       <SubType>Form</SubType>
@@ -115,6 +127,9 @@
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormTcpServer.resx">
+      <DependentUpon>FormTcpServer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormDiffBmp.resx">
       <DependentUpon>FormDiffBmp.cs</DependentUpon>
     </EmbeddedResource>
@@ -126,6 +141,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormSample.resx">
       <DependentUpon>FormSample.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormTcpClient.resx">
+      <DependentUpon>FormTcpClient.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

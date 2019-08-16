@@ -11,6 +11,12 @@ namespace SampleLibrary
     public class Logger : IDisposable
     {
         #region プロパティ
+
+        /// <summary>
+        /// ベースファイル名
+        /// </summary>
+        private string BaseFileName { get; set; }
+
         /// <summary>
         /// ログファイルパス
         /// 変更は禁止し、参照は許可する
@@ -115,6 +121,8 @@ namespace SampleLibrary
         /// <returns>Logger</returns>
         public static Logger GetInstance(string baseFileName, int taskTimeout = 0)
         {
+
+
             // ログファイルパスの生成
             string logFilePath = $"{baseFileName}{DateTime.Now.ToString("yyyyMMdd")}.log";
 
@@ -128,6 +136,7 @@ namespace SampleLibrary
                 // 未生成の場合
                 Logger log = new Logger()
                 {
+                    BaseFileName = baseFileName,
                     LogFilePath = logFilePath,
                     TaskTimeout = taskTimeout,
                 };
@@ -227,7 +236,7 @@ namespace SampleLibrary
                                 {
                                     if (_que.TryTake(out string item, 1 * 1000))
                                     {
-                                        Debug.WriteLine($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fffffff")}]{item}");
+                                        Debug.WriteLine($"[{BaseFileName}][{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fffffff")}]{item}");
                                         await sw.WriteLineAsync(item);
                                     }
                                     else
@@ -297,14 +306,16 @@ namespace SampleLibrary
             }
         }
 
+        //~Logger()
+        //{
+        //    Dispose(false);
+        //}
+
         public void Dispose()
         {
             Dispose(true);
-        }
 
-        ~Logger()
-        {
-            Dispose();
+            //GC.SuppressFinalize(this);
         }
         #endregion
     }
