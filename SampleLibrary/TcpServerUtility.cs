@@ -22,26 +22,32 @@ namespace SampleLibrary
 
         private readonly Encoding _enc;
 
-        private Task _acceptTask = null;
-
-        private CancellationTokenSource _acceptCancelTokenSource = null;
-
         /// <summary>
         /// キュー
         /// </summary>
         private BlockingCollection<string> _que = new BlockingCollection<string>();
 
-        private class ClientManager
+        public class ClientManager
         {
-            public TcpClient Client { get; } = null;
-            public Task Task { get; } = null;
-            public CancellationTokenSource CancelTokenSource { get; } = null;
+            public TcpClient Client { get; }
+            private Task _task;
+            private CancellationTokenSource _cancelTokenSource;
 
             public ClientManager(Task task, TcpClient client, CancellationTokenSource cancelTokenSource)
             {
-                Task = task;
+                _task = task;
                 Client = client;
-                CancelTokenSource = cancelTokenSource;
+                _cancelTokenSource = cancelTokenSource;
+            }
+
+            public string GetIp()
+            {
+                return ((IPEndPoint)Client.Client.LocalEndPoint).Address.ToString();
+            }
+
+            public int GetPort()
+            {
+                return ((IPEndPoint)Client.Client.LocalEndPoint).Port;
             }
         }
 
@@ -65,14 +71,6 @@ namespace SampleLibrary
         private void Listen(string ipString, int port)
         {
             _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
-
-            if (_acceptCancelTokenSource != null)
-            {
-                _acceptCancelTokenSource.Cancel();
-                _acceptCancelTokenSource.Dispose();
-                _acceptTask.Wait(10 * 1000);
-                _acceptTask.Dispose();
-            }
 
             if (_listener == null)
             {
@@ -109,33 +107,42 @@ namespace SampleLibrary
             _logger.WriteLine($"Listen" +
                 $"IP:{((IPEndPoint)_listener.LocalEndpoint).Address} Port:{((System.Net.IPEndPoint)_listener.LocalEndpoint).Port})。");
             _listener.Start();
-
-            _acceptCancelTokenSource = new CancellationTokenSource();
-            _acceptTask = Task.Run(() => Accept(_acceptCancelTokenSource.Token));
         }
 
-        public async void Accept(CancellationToken token)
+        public async Task<ClientManager> Accept()
         {
             _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
-            while (!token.IsCancellationRequested)
+            TcpClient client = await _listener.AcceptTcpClientAsync();
+
+            string ip = ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString();
+            string port = ((IPEndPoint)client.Client.LocalEndPoint).Port.ToString();
+
+            _logger.WriteLine($"{MethodBase.GetCurrentMethod().Name} " +
+                $"Accept IP:{ip}" +
+                $"Port:{port})。");
+
+            // Task停止用のトークン発行
+            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+
+            Task task = Task.Run(() => ReadLoopAsync(client, cancelTokenSource.Token), cancelTokenSource.Token);
+
+            ClientManager mgr = new ClientManager(task, client, cancelTokenSource);
+
+            string key = $"{ip}:{port}";
+            if (_dicClient.ContainsKey(key))
             {
-                TcpClient client = await _listener.AcceptTcpClientAsync();
-
-                string ip = ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString();
-                string port = ((IPEndPoint)client.Client.LocalEndPoint).Port.ToString();
-
-                _logger.WriteLine($"{MethodBase.GetCurrentMethod().Name} " +
-                    $"Accept IP:{ip}" +
-                    $"Port:{port})。");
-
-                // Task停止用のトークン発行
-                CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-                Task task = Task.Run(() => ReadLoopAsync(client, cancelTokenSource.Token), cancelTokenSource.Token);
-
-                _dicClient.Add($"{ip}:{port}", new ClientManager(task, client, cancelTokenSource));
+                // 接続済の場合、破棄して後勝ち
+                _dicClient[key].Client.Dispose();
+                _dicClient[key] = mgr;
             }
+            else
+            {
+                // 初回
+                _dicClient.Add(key, mgr);
+            }
+
+            return mgr;
         }
 
         private async void ReadLoopAsync(TcpClient client, CancellationToken token)
@@ -145,9 +152,13 @@ namespace SampleLibrary
             while (!token.IsCancellationRequested)
             {
                 string resMsg = await Task.Run(() => ReadAsync(client), token);
-                if (!_que.TryAdd(resMsg))
+
+                foreach (string msg in resMsg.Split('\n'))
                 {
-                    _logger.WriteLine($"TryAdd Error[{resMsg}]");
+                    if (!_que.TryAdd(msg))
+                    {
+                        _logger.WriteLine($"TryAdd Error[{msg}]");
+                    }
                 }
             }
         }
@@ -199,12 +210,12 @@ namespace SampleLibrary
             return resMsg;
         }
 
-        public void SendAll(string sendMsg)
+        public void SendAll(string sendMsg, string header = "[MSG]")
         {
             foreach (ClientManager mgr in _dicClient.Values)
             {
                 TcpClient tcpClient = mgr.Client;
-                Send(tcpClient, sendMsg);
+                Send(tcpClient, sendMsg, header);
             }
         }
 
@@ -214,7 +225,7 @@ namespace SampleLibrary
         /// </summary>
         /// <param name="client"></param>
         /// <param name="sendMsg"></param>
-        public void Send(TcpClient client, string sendMsg)
+        public void Send(TcpClient client, string sendMsg, string header = "[MSG]")
         {
             _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
@@ -224,7 +235,7 @@ namespace SampleLibrary
             ns.WriteTimeout = 1000 * 10;
 
             //文字列をByte型配列に変換
-            byte[] sendBytes = _enc.GetBytes(sendMsg + '\n');
+            byte[] sendBytes = _enc.GetBytes(header + sendMsg + '\n');
 
             //データを送信する
             ns.Write(sendBytes, 0, sendBytes.Length);

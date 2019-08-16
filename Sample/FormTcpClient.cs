@@ -20,10 +20,9 @@ namespace Sample
         #region フィールド
         private TcpClientUtility _client = null;
 
-        private Task _task = null;
-
         private Logger _logger = null;
 
+        private Task _ReadLoopTask = null;
         private CancellationTokenSource _cancelTokenSource = null;
         #endregion
 
@@ -128,7 +127,7 @@ namespace Sample
             // Task停止用のトークン発行
             _cancelTokenSource = new CancellationTokenSource();
             CancellationToken cToken = _cancelTokenSource.Token;
-            _task = Task.Run(() => ReadLoop(cToken), cToken);
+            _ReadLoopTask = Task.Run(() => ReadLoop(cToken), cToken);
 
             // ボタンの有効無効を設定
             SetButtonEnabled(ActionMode.Connect);
@@ -147,10 +146,30 @@ namespace Sample
                 {
                     _logger.WriteLine(s);
 
-                    Invoke((Action)(() =>
+                    if (s.StartsWith("[MSG]"))
                     {
-                        listViewLog.Items.Add(s);
-                    }));
+                        string msg = s.Remove(0, "[MSG]".Length);
+                        Invoke((Action)(() =>
+                        {
+                            listViewLog.Items.Add(msg);
+                        }));
+
+                    }
+                    else if (s.StartsWith("[CONNECT]"))
+                    {
+                        string msg = s.Remove(0, "[CONNECT]".Length);
+                        Invoke((Action)(() =>
+                        {
+                            listBoxUser.Items.Add(msg);
+                        }));
+                    }
+                    else
+                    {
+                        Invoke((Action)(() =>
+                        {
+                            listViewLog.Items.Add(s);
+                        }));
+                    }
                 }
                 else
                 {
@@ -303,7 +322,7 @@ namespace Sample
             _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             _cancelTokenSource.Cancel();
-            _task.Wait(10 * 1000);
+            _ReadLoopTask.Wait(10 * 1000);
         }
     }
 }

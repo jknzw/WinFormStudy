@@ -81,9 +81,13 @@ namespace SampleLibrary
             while (!token.IsCancellationRequested)
             {
                 string resMsg = await Task.Run(() => ReadAsync(), token);
-                if (!_que.TryAdd(resMsg))
+
+                foreach (string msg in resMsg.Split('\n'))
                 {
-                    _logger.WriteLine($"TryAdd Error[{resMsg}]");
+                    if (!_que.TryAdd(msg))
+                    {
+                        _logger.WriteLine($"TryAdd Error[{msg}]");
+                    }
                 }
             }
         }

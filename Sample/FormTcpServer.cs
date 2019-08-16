@@ -19,10 +19,10 @@ namespace Sample
     {
         private TcpServerUtility _tcpServer = null;
 
-        private Task _task = null;
-
         private Logger _logger = null;
 
+        private Task _AcceptLoopTask = null;
+        private Task _ReadLoopTask = null;
         private CancellationTokenSource _cancelTokenSource = null;
 
         public FormTcpServer()
@@ -108,21 +108,46 @@ namespace Sample
                 _tcpServer.Dispose();
             }
 
-            // 接続
+            // Listen
             string ip = tboxIP.Text;
             int.TryParse(tboxPort.Text, out int port);
             _tcpServer = new TcpServerUtility(ip, port);
 
-            // 読み込みループ開始
             // Task停止用のトークン発行
             _cancelTokenSource = new CancellationTokenSource();
             CancellationToken cToken = _cancelTokenSource.Token;
-            _task = Task.Run(() => ReadLoop(cToken), cToken);
+
+            // Accept Loop Start
+            _AcceptLoopTask = Task.Run(() => AcceptLoop(cToken), cToken);
+
+            // Read Loop Start
+            _ReadLoopTask = Task.Run(() => ReadLoop(cToken), cToken);
 
             // ボタンの有効無効を設定
             SetButtonEnabled(ActionMode.Listen);
             // ▲▲▲ 業務処理 ▲▲▲
         }
+
+        private async void AcceptLoop(CancellationToken cToken)
+        {
+            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+
+            while (!cToken.IsCancellationRequested)
+            {
+                TcpServerUtility.ClientManager mgr = await _tcpServer.Accept();
+
+                string name = $"{mgr.GetIp()}:{mgr.GetPort()}";
+
+                Invoke((Action)(() =>
+                {
+                    listBoxUser.Items.Add(name);
+                }));
+
+                _tcpServer.SendAll($"[{name}]が接続しました。");
+                _tcpServer.SendAll(name, "[CONNECT]");
+            }
+        }
+
         private async void ReadLoop(CancellationToken cToken)
         {
             _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
@@ -139,6 +164,9 @@ namespace Sample
                     {
                         listViewLog.Items.Add(s);
                     }));
+
+                    // 受信したメッセージを全体に送信する
+                    _tcpServer.SendAll(s);
                 }
                 else
                 {
