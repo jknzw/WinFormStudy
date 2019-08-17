@@ -31,7 +31,7 @@ namespace SampleLibrary
         /// <summary>
         /// ログ出力ディレイ(ms)
         /// </summary>
-        public int WriteDelay { get; set; } = 5 * 1000;
+        public int WriteDelay { get; set; } = (int)(0.5 * 1000);
 
         /// <summary>
         /// 終了時のWait時間(ms)
@@ -78,16 +78,16 @@ namespace SampleLibrary
             }
         }
 
-        /// <summary>
-        /// ロックオブジェクト
-        /// </summary>
-        private static readonly AsyncLock _asyncLock = new AsyncLock();
+        ///// <summary>
+        ///// ロックオブジェクト
+        ///// </summary>
+        //private static readonly AsyncLock _asyncLock = new AsyncLock();
         #endregion
 
         /// <summary>
-        /// インスタンス辞書
+        /// ロックオブジェクト
         /// </summary>
-        private static readonly Dictionary<string, Logger> _dicLog = new Dictionary<string, Logger>();
+        private static readonly Dictionary<string, AsyncLock> dicLockObj = new Dictionary<string, AsyncLock>();
 
         /// <summary>
         /// ログ出力ループ継続フラグ
@@ -121,34 +121,26 @@ namespace SampleLibrary
         /// <returns>Logger</returns>
         public static Logger GetInstance(string baseFileName, int taskTimeout = 0)
         {
-
-
             // ログファイルパスの生成
             string logFilePath = $"{baseFileName}{DateTime.Now.ToString("yyyyMMdd")}.log";
 
-            if (_dicLog.ContainsKey(logFilePath))
+            Logger log = new Logger()
             {
-                // 生成済の場合
-                return _dicLog[logFilePath];
-            }
-            else
+                BaseFileName = baseFileName,
+                LogFilePath = logFilePath,
+                TaskTimeout = taskTimeout,
+            };
+
+            // LockObjectを静的領域に保持(プログラム終了まで保持)
+            if (!dicLockObj.ContainsKey(logFilePath))
             {
-                // 未生成の場合
-                Logger log = new Logger()
-                {
-                    BaseFileName = baseFileName,
-                    LogFilePath = logFilePath,
-                    TaskTimeout = taskTimeout,
-                };
-
-                // 静的領域に保持(プログラム終了まで保持)
-                _dicLog.Add(logFilePath, log);
-
-                // タスクの開始
-                log._task = Task.Run(() => log.AsyncWriteLog());
-
-                return log;
+                dicLockObj.Add(logFilePath, new AsyncLock());
             }
+
+            // タスクの開始
+            log._task = Task.Run(() => log.AsyncWriteLog());
+
+            return log;
         }
 
         /// <summary>
@@ -181,22 +173,29 @@ namespace SampleLibrary
         /// <returns></returns>
         public bool WriteLine(string log, int timeout = 0)
         {
-            bool ret;
+            bool ret = false;
 
-            // キューに追加
-            if (timeout == 0)
+            try
             {
-                ret = _que.TryAdd(GetLogText(log));
-            }
-            else
-            {
-                ret = _que.TryAdd(GetLogText(log), timeout);
-            }
+                // キューに追加
+                if (timeout == 0)
+                {
+                    ret = _que.TryAdd(GetLogText(log));
+                }
+                else
+                {
+                    ret = _que.TryAdd(GetLogText(log), timeout);
+                }
 
-            if (!ret)
+                if (!ret)
+                {
+                    // キューの追加に失敗
+                    Debug.WriteLine($"Que TryAdd false [{log}]");
+                }
+            }
+            catch (Exception ex)
             {
-                // キューの追加に失敗
-                Debug.WriteLine($"Que TryAdd false [{log}]");
+                Debug.WriteLine(ex.Message);
             }
 
             return ret;
@@ -224,7 +223,7 @@ namespace SampleLibrary
                 if (_que.Count != 0)
                 {
                     // キューがある場合
-                    using (await _asyncLock.LockAsync())
+                    using (await dicLockObj[LogFilePath].LockAsync())
                     {
                         // ファイルを開く
                         using (StreamWriter sw = new StreamWriter(LogFilePath, true))
@@ -295,7 +294,7 @@ namespace SampleLibrary
 
                     _que.Dispose();
 
-                    _dicLog.Remove(LogFilePath);
+                    //dicLockObj.Remove(LogFilePath);
                 }
 
                 // null

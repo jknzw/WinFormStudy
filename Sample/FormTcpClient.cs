@@ -24,6 +24,7 @@ namespace Sample
 
         private Task readLoopTask = null;
         private CancellationTokenSource readCancelTokenSource = null;
+
         #endregion
 
         #region コンストラクタ
@@ -116,6 +117,13 @@ namespace Sample
             try
             {
                 tcpClientUtil = new TcpClientUtility(ip, port);
+
+                listViewLog.Items.Add($"接続しました。{tcpClientUtil.GetClientIpAndPort()}->{tcpClientUtil.GetServerIpAndPort()}");
+
+                // 名前を送信
+                string name = tboxName.Text;
+                TcpMessageManager mgr = new TcpMessageManager(TcpMessageManager.HeaderConnect, name, TcpMessageManager.TargetAll, name);
+                tcpClientUtil.Send(mgr.GetSendMessage());
             }
             catch (SocketException ex)
             {
@@ -142,7 +150,7 @@ namespace Sample
             {
                 while (!cToken.IsCancellationRequested)
                 {
-                    string texts = await tcpClientUtil.ReadAsync();
+                    string texts = await tcpClientUtil.ReadAsync(cToken);
 
                     if (texts != null)
                     {
@@ -150,45 +158,90 @@ namespace Sample
                         {
                             logger.WriteLine(text);
 
-                            if (text.StartsWith("[MSG]"))
+                            TcpMessageManager mgr = new TcpMessageManager(text);
+                            switch (mgr.Header)
                             {
-                                string msg = text.Remove(0, "[MSG]".Length);
-                                Invoke((Action)(() =>
-                                {
-                                    listViewLog.Items.Add(msg);
-                                }));
+                                case TcpMessageManager.HeaderConnect:
+                                    // 申請した名前が登録できたか判定する
+                                    // Connect,IP:Port,送信した名前,登録した名前
+                                    if (tcpClientUtil.GetClientIpAndPort().Equals(mgr.SendFromTarget))
+                                    {
+                                        // 自分が送信したNAMEの返信
+                                        if (!mgr.SendToTarget.Equals(mgr.Value))
+                                        {
+                                            // 別名に変更された場合、名前を変更する
+                                            Invoke((Action)(() =>
+                                            {
+                                                tboxName.Text = mgr.Value;
+                                                listViewLog.Items.Add($"既に名前が使われていたため、名前を{mgr.Value}に変更しました。");
+                                            }));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // 他の人が送信したNAMEの受信
+                                        Invoke((Action)(() =>
+                                        {
+                                            listViewLog.Items.Add($"{mgr.Value}が接続しました。");
+                                        }));
+                                    }
 
-                            }
-                            else if (text.StartsWith("[CONNECT]"))
-                            {
-                                string msg = text.Remove(0, "[CONNECT]".Length);
-                                Invoke((Action)(() =>
-                                {
-                                    listBoxUser.Items.Add(msg);
-                                }));
-                            }
-                            else
-                            {
-                                Invoke((Action)(() =>
-                                {
-                                    listViewLog.Items.Add(text);
-                                }));
+                                    // リストに追加する
+                                    Invoke((Action)(() =>
+                                    {
+                                        listBoxUser.Items.Add(mgr.Value);
+                                        cboxTarget.Items.Add(mgr.Value);
+                                    }));
+                                    break;
+                                case TcpMessageManager.HeaderName:
+                                    // リストに追加する
+                                    Invoke((Action)(() =>
+                                    {
+                                        listBoxUser.Items.Add(mgr.Value);
+                                        cboxTarget.Items.Add(mgr.Value);
+                                    }));
+                                    break;
+                                case TcpMessageManager.HeaderTargetMsg:
+                                    Invoke((Action)(() =>
+                                    {
+                                        listViewLog.Items.Add(mgr.GetRecvTargetMessage());
+                                    }));
+                                    break;
+                                case TcpMessageManager.HeaderAllMsg:
+                                default:
+                                    Invoke((Action)(() =>
+                                    {
+                                        listViewLog.Items.Add(mgr.GetRecvMessage());
+                                    }));
+                                    break;
                             }
                         }
                     }
                     else
                     {
                         logger.WriteLine("切断されました。");
+
+                        // ToDo:破棄処理
+                        // ToDo:コントロール初期化
+
                         return;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Invoke((Action)(() =>
+                try
                 {
-                    listBoxUser.Items.Add(ex.Message);
-                }));
+                    Invoke((Action)(() =>
+                    {
+                        listViewLog.Items.Add(ex.Message);
+                    }));
+                }
+                catch (Exception ex2)
+                {
+                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine(ex2.Message);
+                }
             }
         }
 
@@ -244,9 +297,21 @@ namespace Sample
             base.ButtonF5_Click(sender, e);
 
             // ▼▼▼ 業務処理 ▼▼▼
-
+            // メッセージ送信
             string sendMsg = tboxMessage.Text;
-            tcpClientUtil.Send(sendMsg);
+            string toName = cboxTarget.Text;
+            string fromName = tboxName.Text;
+            TcpMessageManager mgr;
+            if (toName.Equals("全員"))
+            {
+                mgr = new TcpMessageManager(TcpMessageManager.HeaderAllMsg, fromName, TcpMessageManager.TargetAll, sendMsg);
+            }
+            else
+            {
+                mgr = new TcpMessageManager(TcpMessageManager.HeaderTargetMsg, fromName, toName, sendMsg);
+            }
+
+            tcpClientUtil.Send(mgr.GetSendMessage());
 
             // ▲▲▲ 業務処理 ▲▲▲
         }
@@ -330,6 +395,7 @@ namespace Sample
             // ▲▲▲ 業務処理 ▲▲▲
         }
         #endregion
+
 
         #region Close
         private void FormTcpClient_FormClosing(object sender, FormClosingEventArgs e)

@@ -43,22 +43,61 @@
             // 
             // buttonF1
             // 
+            this.buttonF1.TabIndex = 7;
             this.buttonF1.Text = "Listen";
             // 
             // buttonF2
             // 
+            this.buttonF2.TabIndex = 8;
             this.buttonF2.Text = "Stop";
+            // 
+            // buttonF3
+            // 
+            this.buttonF3.TabIndex = 9;
+            // 
+            // buttonF12
+            // 
+            this.buttonF12.TabIndex = 18;
+            // 
+            // buttonF11
+            // 
+            this.buttonF11.TabIndex = 17;
+            // 
+            // buttonF4
+            // 
+            this.buttonF4.TabIndex = 10;
             // 
             // buttonF5
             // 
+            this.buttonF5.TabIndex = 11;
             this.buttonF5.Text = "Send";
+            // 
+            // buttonF6
+            // 
+            this.buttonF6.TabIndex = 12;
+            // 
+            // buttonF7
+            // 
+            this.buttonF7.TabIndex = 13;
+            // 
+            // buttonF8
+            // 
+            this.buttonF8.TabIndex = 14;
+            // 
+            // buttonF9
+            // 
+            this.buttonF9.TabIndex = 15;
+            // 
+            // buttonF10
+            // 
+            this.buttonF10.TabIndex = 16;
             // 
             // tboxIP
             // 
             this.tboxIP.Location = new System.Drawing.Point(34, 12);
             this.tboxIP.Name = "tboxIP";
             this.tboxIP.Size = new System.Drawing.Size(100, 19);
-            this.tboxIP.TabIndex = 102;
+            this.tboxIP.TabIndex = 0;
             // 
             // label13
             // 
@@ -74,7 +113,7 @@
             this.tboxPort.Location = new System.Drawing.Point(174, 12);
             this.tboxPort.Name = "tboxPort";
             this.tboxPort.Size = new System.Drawing.Size(100, 19);
-            this.tboxPort.TabIndex = 102;
+            this.tboxPort.TabIndex = 1;
             this.tboxPort.Text = "2001";
             // 
             // label14
@@ -95,7 +134,7 @@
             this.listBoxUser.Location = new System.Drawing.Point(822, 36);
             this.listBoxUser.Name = "listBoxUser";
             this.listBoxUser.Size = new System.Drawing.Size(120, 448);
-            this.listBoxUser.TabIndex = 104;
+            this.listBoxUser.TabIndex = 4;
             // 
             // listViewLog
             // 
@@ -107,7 +146,7 @@
             this.listViewLog.Location = new System.Drawing.Point(13, 36);
             this.listViewLog.Name = "listViewLog";
             this.listViewLog.Size = new System.Drawing.Size(803, 423);
-            this.listViewLog.TabIndex = 105;
+            this.listViewLog.TabIndex = 3;
             this.listViewLog.UseCompatibleStateImageBehavior = false;
             this.listViewLog.View = System.Windows.Forms.View.Details;
             // 
@@ -123,15 +162,19 @@
             this.tboxMessage.Location = new System.Drawing.Point(140, 465);
             this.tboxMessage.Name = "tboxMessage";
             this.tboxMessage.Size = new System.Drawing.Size(676, 19);
-            this.tboxMessage.TabIndex = 106;
+            this.tboxMessage.TabIndex = 6;
             // 
             // cboxTarget
             // 
+            this.cboxTarget.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cboxTarget.FormattingEnabled = true;
+            this.cboxTarget.Items.AddRange(new object[] {
+            "全員"});
             this.cboxTarget.Location = new System.Drawing.Point(13, 465);
             this.cboxTarget.Name = "cboxTarget";
             this.cboxTarget.Size = new System.Drawing.Size(121, 20);
-            this.cboxTarget.TabIndex = 107;
+            this.cboxTarget.TabIndex = 5;
+            this.cboxTarget.Text = "全員";
             // 
             // label15
             // 
@@ -147,7 +190,7 @@
             this.tboxName.Location = new System.Drawing.Point(320, 11);
             this.tboxName.Name = "tboxName";
             this.tboxName.Size = new System.Drawing.Size(100, 19);
-            this.tboxName.TabIndex = 108;
+            this.tboxName.TabIndex = 2;
             this.tboxName.Text = "管理者";
             // 
             // FormTcpServer

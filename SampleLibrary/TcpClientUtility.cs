@@ -48,14 +48,38 @@ namespace SampleLibrary
 
             tcpClient = new TcpClient(ipString, port);
 
-            // タイムアウト設定
-            SetTimeOut();
+            // 送信タイムアウト設定
+            tcpClient.GetStream().WriteTimeout = 10 * 1000;
         }
 
-        public void SetTimeOut(int readTimeout = 10 * 1000, int writeTimeout = 10 * 1000)
+        public string GetClientIp()
         {
-            tcpClient.GetStream().ReadTimeout = readTimeout;
-            tcpClient.GetStream().WriteTimeout = writeTimeout;
+            return ((IPEndPoint)tcpClient.Client.LocalEndPoint).Address.MapToIPv6().ToString();
+        }
+
+        public int GetClientPort()
+        {
+            return ((IPEndPoint)tcpClient.Client.LocalEndPoint).Port;
+        }
+
+        public string GetClientIpAndPort()
+        {
+            return $"{GetClientIp()}:{GetClientPort()}";
+        }
+
+        public string GetServerIp()
+        {
+            return ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.MapToIPv6().ToString();
+        }
+
+        public int GetServerPort()
+        {
+            return ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port;
+        }
+
+        public string GetServerIpAndPort()
+        {
+            return $"{GetServerIp()}:{GetServerPort()}";
         }
 
         //private void ReadTaskStart()
@@ -121,7 +145,7 @@ namespace SampleLibrary
         //}
 
 
-        public async Task<string> ReadAsync()
+        public async Task<string> ReadAsync(CancellationToken token)
         {
             logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
@@ -135,7 +159,7 @@ namespace SampleLibrary
                 do
                 {
                     //データの一部を受信する
-                    resSize = await ns.ReadAsync(resBytes, 0, resBytes.Length);
+                    resSize = await ns.ReadAsync(resBytes, 0, resBytes.Length, token);
 
                     //Readが0を返した時はクライアントが切断したと判断
                     if (resSize == 0)

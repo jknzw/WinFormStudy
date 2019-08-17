@@ -18,42 +18,39 @@ namespace SampleLibrary
 
         private TcpListener listener = null;
 
-        private readonly Dictionary<string, ClientManager> _dicClient = new Dictionary<string, ClientManager>();
+        /// <summary>
+        /// クライアント管理辞書
+        /// [key]IP:Port
+        /// [Value]ClientManager
+        /// </summary>
+        private readonly Dictionary<string, ClientManager> dicClient = new Dictionary<string, ClientManager>();
 
         private readonly Encoding _enc;
-
-        /// <summary>
-        /// キュー
-        /// </summary>
-        private BlockingCollection<string> _que = new BlockingCollection<string>();
 
         public class ClientManager
         {
             public string Name { get; set; } = null;
             public TcpClient Client { get; }
             public Task ReadTask { get; set; } = null;
-            //private CancellationTokenSource _cancelTokenSource;
 
             public ClientManager(TcpClient client)
             {
                 Client = client;
             }
 
-            //public ClientManager(Task task, TcpClient client, CancellationTokenSource cancelTokenSource)
-            //{
-            //    _task = task;
-            //    Client = client;
-            //    _cancelTokenSource = cancelTokenSource;
-            //}
-
-            public string GetIp()
+            public string GetClientIp()
             {
-                return ((IPEndPoint)Client.Client.LocalEndPoint).Address.ToString();
+                return ((IPEndPoint)Client.Client.RemoteEndPoint).Address.MapToIPv6().ToString();
             }
 
-            public int GetPort()
+            public int GetClientPort()
             {
-                return ((IPEndPoint)Client.Client.LocalEndPoint).Port;
+                return ((IPEndPoint)Client.Client.RemoteEndPoint).Port;
+            }
+
+            public string GetClientIpAndPort()
+            {
+                return $"{GetClientIp()}:{GetClientPort()}";
             }
         }
 
@@ -86,14 +83,10 @@ namespace SampleLibrary
 
                     // Lisnerを生成
                     listener = new TcpListener(System.Net.IPAddress.IPv6Any, port);
-
-                    // IPv6Onlyを0にする
-                    listener.Server.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, 0);
                 }
                 else
                 {
-                    IPAddress ipAdd;
-                    if (!IPAddress.TryParse(ipString, out ipAdd))
+                    if (!IPAddress.TryParse(ipString, out IPAddress ipAdd))
                     {
                         // 変換失敗時
                         // ホスト名と判断し、ホスト名からIPアドレスを取得する
@@ -114,6 +107,9 @@ namespace SampleLibrary
                 }
             }
 
+            // IPv6Onlyを0にする
+            listener.Server.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, 0);
+
             //Listenを開始する
             logger.WriteLine($"Listen" +
                 $"IP:{((IPEndPoint)listener.LocalEndpoint).Address} Port:{((System.Net.IPEndPoint)listener.LocalEndpoint).Port})。");
@@ -124,38 +120,39 @@ namespace SampleLibrary
         {
             logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
-            TcpClient client = await listener.AcceptTcpClientAsync();
-
-            string ip = ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString();
-            string port = ((IPEndPoint)client.Client.LocalEndPoint).Port.ToString();
-
-            logger.WriteLine($"{MethodBase.GetCurrentMethod().Name} " +
-                $"Accept IP:{ip}" +
-                $"Port:{port})。");
-
-            //// Task停止用のトークン発行
-            //CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            //Task task = Task.Run(() => ReadLoopAsync(client, cancelTokenSource.Token), cancelTokenSource.Token);
-
-            //ClientManager mgr = new ClientManager(task, client, cancelTokenSource);
-
-            ClientManager mgr = new ClientManager(client);
-
-            string key = $"{ip}:{port}";
-            if (_dicClient.ContainsKey(key))
+            try
             {
-                // 接続済の場合、破棄して後勝ち
-                _dicClient[key].Client.Dispose();
-                _dicClient[key] = mgr;
-            }
-            else
-            {
-                // 初回
-                _dicClient.Add(key, mgr);
-            }
+                TcpClient client = await listener.AcceptTcpClientAsync();
 
-            return mgr;
+                ClientManager mgr = new ClientManager(client);
+
+                // 接続先(クライアント)
+                string clientIp = mgr.GetClientIp();
+                string clientPort = mgr.GetClientPort().ToString();
+
+                logger.WriteLine($"{MethodBase.GetCurrentMethod().Name} " +
+                    $"Client IP:{clientIp}" +
+                    $"Port:{clientPort})");
+
+                string key = mgr.GetClientIpAndPort();
+                if (dicClient.ContainsKey(key))
+                {
+                    // 接続済の場合、破棄して後勝ち
+                    dicClient[key].Client.Dispose();
+                    dicClient[key] = mgr;
+                }
+                else
+                {
+                    // 初回
+                    dicClient.Add(key, mgr);
+                }
+                return mgr;
+            }
+            catch (SocketException ex)
+            {
+                logger.WriteLine(ex.Message);
+            }
+            return null;
         }
 
         //private async void ReadLoopAsync(TcpClient client, CancellationToken token)
@@ -195,60 +192,73 @@ namespace SampleLibrary
         //    return null;
         //}
 
-        public async Task<string> ReadAsync(TcpClient client)
+        public async Task<string> ReadAsync(TcpClient client, CancellationToken token)
         {
             logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
-            NetworkStream ns = client.GetStream();
-
-            // 10秒でタイムアウト
-            ns.ReadTimeout = 1000 * 10;
-
             string resMsg = string.Empty;
-            using (MemoryStream ms = new MemoryStream())
+            try
             {
-                byte[] resBytes = new byte[256];
-                int resSize;
-                do
+                NetworkStream ns = client.GetStream();
+
+                //// 10秒でタイムアウト
+                //ns.ReadTimeout = 1000 * 10;
+
+                using (MemoryStream ms = new MemoryStream())
                 {
-                    //データの一部を受信する
-                    resSize = await ns.ReadAsync(resBytes, 0, resBytes.Length);
-
-                    //Readが0を返した時はクライアントが切断したと判断
-                    if (resSize == 0)
+                    byte[] resBytes = new byte[256];
+                    int resSize;
+                    do
                     {
-                        logger.WriteLine("クライアントが切断しました。");
-                        return null;
-                    }
+                        //データの一部を受信する
+                        resSize = await ns.ReadAsync(resBytes, 0, resBytes.Length, token);
 
-                    //受信したデータを蓄積する
-                    ms.Write(resBytes, 0, resSize);
+                        //Readが0を返した時はクライアントが切断したと判断
+                        if (resSize == 0)
+                        {
+                            logger.WriteLine("クライアントが切断しました。");
+                            return null;
+                        }
 
-                    //まだ読み取れるデータがあるか、データの最後が\nでない時は、
-                    //受信を続ける
-                } while (ns.DataAvailable || resBytes[resSize - 1] != '\n');
+                        //受信したデータを蓄積する
+                        ms.Write(resBytes, 0, resSize);
 
-                //受信したデータを文字列に変換
-                resMsg = _enc.GetString(ms.GetBuffer(), 0, (int)ms.Length);
+                        //まだ読み取れるデータがあるか、データの最後が\nでない時は、
+                        //受信を続ける
+                    } while (ns.DataAvailable || resBytes[resSize - 1] != '\n');
 
-                // クローズ
-                ms.Close();
+                    //受信したデータを文字列に変換
+                    resMsg = _enc.GetString(ms.GetBuffer(), 0, (int)ms.Length);
+
+                    // クローズ
+                    ms.Close();
+                }
+                //末尾の\nを削除
+                resMsg = resMsg.TrimEnd('\n');
+
+                logger.WriteLine($"受信MSG[{resMsg}]");
             }
-            //末尾の\nを削除
-            resMsg = resMsg.TrimEnd('\n');
-
-            logger.WriteLine($"受信MSG[{resMsg}]");
-
+            catch (Exception ex)
+            {
+                logger.WriteLine(ex.Message);
+            }
             return resMsg;
         }
 
-        public void SendAll(string sendMsg, string header = "[MSG]")
+        public void SendAll(string sendMsg)
         {
-            foreach (ClientManager mgr in _dicClient.Values)
+            foreach (ClientManager mgr in dicClient.Values)
             {
                 TcpClient tcpClient = mgr.Client;
-                Send(tcpClient, sendMsg, header);
+                Send(tcpClient, sendMsg);
             }
+        }
+
+        public void SendTarget(string targetClientIpAndPort, string sendMsg)
+        {
+            ClientManager mgr = dicClient[targetClientIpAndPort];
+            TcpClient tcpClient = mgr.Client;
+            Send(tcpClient, sendMsg);
         }
 
 
@@ -257,7 +267,7 @@ namespace SampleLibrary
         /// </summary>
         /// <param name="client"></param>
         /// <param name="sendMsg"></param>
-        public void Send(TcpClient client, string sendMsg, string header = "[MSG]")
+        public void Send(TcpClient client, string sendMsg)
         {
             logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
@@ -267,7 +277,7 @@ namespace SampleLibrary
             ns.WriteTimeout = 1000 * 10;
 
             //文字列をByte型配列に変換
-            byte[] sendBytes = _enc.GetBytes(header + sendMsg + '\n');
+            byte[] sendBytes = _enc.GetBytes(sendMsg + '\n');
 
             //データを送信する
             ns.Write(sendBytes, 0, sendBytes.Length);
@@ -292,7 +302,7 @@ namespace SampleLibrary
                     listener.Stop();
 
                     // ClientのClose
-                    foreach (ClientManager mgr in _dicClient.Values)
+                    foreach (ClientManager mgr in dicClient.Values)
                     {
                         TcpClient client = mgr.Client;
                         client.GetStream().Close();
