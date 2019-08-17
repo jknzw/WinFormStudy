@@ -36,6 +36,7 @@
             this.listViewLog = new System.Windows.Forms.ListView();
             this.tboxMessage = new System.Windows.Forms.TextBox();
             this.cboxTarget = new System.Windows.Forms.ComboBox();
+            this.colLog = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // buttonF1
@@ -94,6 +95,8 @@
             // 
             // listViewLog
             // 
+            this.listViewLog.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colLog});
             this.listViewLog.Location = new System.Drawing.Point(13, 36);
             this.listViewLog.Name = "listViewLog";
             this.listViewLog.Size = new System.Drawing.Size(803, 423);
@@ -115,6 +118,11 @@
             this.cboxTarget.Name = "cboxTarget";
             this.cboxTarget.Size = new System.Drawing.Size(121, 20);
             this.cboxTarget.TabIndex = 107;
+            // 
+            // colLog
+            // 
+            this.colLog.Text = "Log";
+            this.colLog.Width = 600;
             // 
             // FormTcpServer
             // 
@@ -164,5 +172,6 @@
         private System.Windows.Forms.ListView listViewLog;
         private System.Windows.Forms.TextBox tboxMessage;
         private System.Windows.Forms.ComboBox cboxTarget;
+        private System.Windows.Forms.ColumnHeader colLog;
     }
 }

@@ -138,44 +138,54 @@ namespace Sample
         {
             logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
-            while (!cToken.IsCancellationRequested)
+            try
             {
-                string s = await tcpClientUtil.ReadAsync();
-
-                if (!string.IsNullOrEmpty(s))
+                while (!cToken.IsCancellationRequested)
                 {
-                    logger.WriteLine(s);
+                    string s = await tcpClientUtil.ReadAsync();
 
-                    if (s.StartsWith("[MSG]"))
+                    if (!string.IsNullOrEmpty(s))
                     {
-                        string msg = s.Remove(0, "[MSG]".Length);
-                        Invoke((Action)(() =>
-                        {
-                            listViewLog.Items.Add(msg);
-                        }));
+                        logger.WriteLine(s);
 
-                    }
-                    else if (s.StartsWith("[CONNECT]"))
-                    {
-                        string msg = s.Remove(0, "[CONNECT]".Length);
-                        Invoke((Action)(() =>
+                        if (s.StartsWith("[MSG]"))
                         {
-                            listBoxUser.Items.Add(msg);
-                        }));
+                            string msg = s.Remove(0, "[MSG]".Length);
+                            Invoke((Action)(() =>
+                            {
+                                listViewLog.Items.Add(msg);
+                            }));
+
+                        }
+                        else if (s.StartsWith("[CONNECT]"))
+                        {
+                            string msg = s.Remove(0, "[CONNECT]".Length);
+                            Invoke((Action)(() =>
+                            {
+                                listBoxUser.Items.Add(msg);
+                            }));
+                        }
+                        else
+                        {
+                            Invoke((Action)(() =>
+                            {
+                                listViewLog.Items.Add(s);
+                            }));
+                        }
                     }
                     else
                     {
-                        Invoke((Action)(() =>
-                        {
-                            listViewLog.Items.Add(s);
-                        }));
+                        logger.WriteLine("切断されました。");
+                        return;
                     }
                 }
-                else
+            }
+            catch (Exception ex)
+            {
+                Invoke((Action)(() =>
                 {
-                    logger.WriteLine("切断されました。");
-                    return;
-                }
+                    listBoxUser.Items.Add(ex.Message);
+                }));
             }
         }
 
