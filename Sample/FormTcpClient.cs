@@ -117,7 +117,7 @@ namespace Sample
             {
                 tcpClientUtil = new TcpClientUtility(ip, port);
             }
-            catch (Exception ex)
+            catch (SocketException ex)
             {
                 listViewLog.Items.Add(ex.Message);
                 return;
@@ -142,35 +142,38 @@ namespace Sample
             {
                 while (!cToken.IsCancellationRequested)
                 {
-                    string s = await tcpClientUtil.ReadAsync();
+                    string texts = await tcpClientUtil.ReadAsync();
 
-                    if (!string.IsNullOrEmpty(s))
+                    if (texts != null)
                     {
-                        logger.WriteLine(s);
+                        foreach (string text in texts.Split('\n'))
+                        {
+                            logger.WriteLine(text);
 
-                        if (s.StartsWith("[MSG]"))
-                        {
-                            string msg = s.Remove(0, "[MSG]".Length);
-                            Invoke((Action)(() =>
+                            if (text.StartsWith("[MSG]"))
                             {
-                                listViewLog.Items.Add(msg);
-                            }));
+                                string msg = text.Remove(0, "[MSG]".Length);
+                                Invoke((Action)(() =>
+                                {
+                                    listViewLog.Items.Add(msg);
+                                }));
 
-                        }
-                        else if (s.StartsWith("[CONNECT]"))
-                        {
-                            string msg = s.Remove(0, "[CONNECT]".Length);
-                            Invoke((Action)(() =>
+                            }
+                            else if (text.StartsWith("[CONNECT]"))
                             {
-                                listBoxUser.Items.Add(msg);
-                            }));
-                        }
-                        else
-                        {
-                            Invoke((Action)(() =>
+                                string msg = text.Remove(0, "[CONNECT]".Length);
+                                Invoke((Action)(() =>
+                                {
+                                    listBoxUser.Items.Add(msg);
+                                }));
+                            }
+                            else
                             {
-                                listViewLog.Items.Add(s);
-                            }));
+                                Invoke((Action)(() =>
+                                {
+                                    listViewLog.Items.Add(text);
+                                }));
+                            }
                         }
                     }
                     else

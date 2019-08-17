@@ -22,7 +22,7 @@ namespace Sample
         private readonly Logger logger = null;
 
         private Task acceptLoopTask = null;
-        private readonly Dictionary<string, TcpServerUtility.ClientManager> readLoopTasks = new Dictionary<string, TcpServerUtility.ClientManager>();
+        private readonly Dictionary<string, TcpServerUtility.ClientManager> Clients = new Dictionary<string, TcpServerUtility.ClientManager>();
         private CancellationTokenSource cancelTokenSource = null;
 
         private readonly int taskTimeOut = 10 * 1000;
@@ -147,7 +147,7 @@ namespace Sample
 
                 // Read Loop Start
                 mgr.ReadTask = Task.Run(() => ReadLoop(mgr.Client, cToken), cToken);
-                readLoopTasks.Add(name, mgr);
+                Clients.Add(name, mgr);
             }
         }
 
@@ -157,23 +157,30 @@ namespace Sample
 
             while (!cToken.IsCancellationRequested)
             {
-                string s = await tcpServerUtil.ReadAsync(client);
+                // メッセージ受信
+                string texts = await tcpServerUtil.ReadAsync(client);
 
-                if (!string.IsNullOrEmpty(s))
+                if (texts != null)
                 {
-                    logger.WriteLine(s);
-
-                    Invoke((Action)(() =>
+                    // \nで分割
+                    foreach (string text in texts.Split('\n'))
                     {
-                        listViewLog.Items.Add(s);
-                    }));
+                        logger.WriteLine(text);
 
-                    // 受信したメッセージを全体に送信する
-                    tcpServerUtil.SendAll(s);
+                        Invoke((Action)(() =>
+                        {
+                            listViewLog.Items.Add(text);
+                        }));
+
+                        // 受信したメッセージを全体に送信する
+                        tcpServerUtil.SendAll(text);
+                    }
                 }
                 else
                 {
-                    await Task.Delay(1 * 1000);
+                    // 切断
+                    logger.WriteLine("切断されました。");
+                    return;
                 }
             }
         }
@@ -324,7 +331,7 @@ namespace Sample
             {
                 acceptLoopTask
             };
-            foreach (TcpServerUtility.ClientManager mgr in readLoopTasks.Values)
+            foreach (TcpServerUtility.ClientManager mgr in Clients.Values)
             {
                 waitTasks.Add(mgr.ReadTask);
             }

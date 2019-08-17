@@ -34,9 +34,11 @@
             this.label14 = new System.Windows.Forms.Label();
             this.listBoxUser = new System.Windows.Forms.ListBox();
             this.listViewLog = new System.Windows.Forms.ListView();
+            this.colHeaderLog = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tboxMessage = new System.Windows.Forms.TextBox();
             this.cboxTarget = new System.Windows.Forms.ComboBox();
-            this.colHeaderLog = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.label15 = new System.Windows.Forms.Label();
+            this.tboxName = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // buttonF1
@@ -65,7 +67,7 @@
             this.tboxIP.Name = "tboxIP";
             this.tboxIP.Size = new System.Drawing.Size(100, 19);
             this.tboxIP.TabIndex = 102;
-            this.tboxIP.Text = "localhost";
+            this.tboxIP.Text = "127.0.0.1";
             // 
             // label13
             // 
@@ -95,6 +97,8 @@
             // 
             // listBoxUser
             // 
+            this.listBoxUser.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listBoxUser.FormattingEnabled = true;
             this.listBoxUser.ItemHeight = 12;
             this.listBoxUser.Location = new System.Drawing.Point(822, 36);
@@ -104,6 +108,9 @@
             // 
             // listViewLog
             // 
+            this.listViewLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listViewLog.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colHeaderLog});
             this.listViewLog.Location = new System.Drawing.Point(13, 36);
@@ -113,8 +120,15 @@
             this.listViewLog.UseCompatibleStateImageBehavior = false;
             this.listViewLog.View = System.Windows.Forms.View.Details;
             // 
+            // colHeaderLog
+            // 
+            this.colHeaderLog.Text = "Log";
+            this.colHeaderLog.Width = 600;
+            // 
             // tboxMessage
             // 
+            this.tboxMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tboxMessage.Location = new System.Drawing.Point(140, 465);
             this.tboxMessage.Name = "tboxMessage";
             this.tboxMessage.Size = new System.Drawing.Size(676, 19);
@@ -128,10 +142,22 @@
             this.cboxTarget.Size = new System.Drawing.Size(121, 20);
             this.cboxTarget.TabIndex = 107;
             // 
-            // colHeaderLog
+            // label15
             // 
-            this.colHeaderLog.Text = "Log";
-            this.colHeaderLog.Width = 600;
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(280, 15);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(34, 12);
+            this.label15.TabIndex = 103;
+            this.label15.Text = "Name";
+            // 
+            // tboxName
+            // 
+            this.tboxName.Location = new System.Drawing.Point(320, 11);
+            this.tboxName.Name = "tboxName";
+            this.tboxName.Size = new System.Drawing.Size(100, 19);
+            this.tboxName.TabIndex = 102;
+            this.tboxName.Text = "テストユーザー";
             // 
             // FormTcpClient
             // 
@@ -141,11 +167,14 @@
             this.Controls.Add(this.tboxMessage);
             this.Controls.Add(this.listViewLog);
             this.Controls.Add(this.listBoxUser);
+            this.Controls.Add(this.label15);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.label13);
+            this.Controls.Add(this.tboxName);
             this.Controls.Add(this.tboxPort);
             this.Controls.Add(this.tboxIP);
             this.Name = "FormTcpClient";
+            this.Text = "TcpClient";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormTcpClient_FormClosing);
             this.Controls.SetChildIndex(this.buttonF1, 0);
             this.Controls.SetChildIndex(this.buttonF11, 0);
@@ -161,8 +190,10 @@
             this.Controls.SetChildIndex(this.buttonF12, 0);
             this.Controls.SetChildIndex(this.tboxIP, 0);
             this.Controls.SetChildIndex(this.tboxPort, 0);
+            this.Controls.SetChildIndex(this.tboxName, 0);
             this.Controls.SetChildIndex(this.label13, 0);
             this.Controls.SetChildIndex(this.label14, 0);
+            this.Controls.SetChildIndex(this.label15, 0);
             this.Controls.SetChildIndex(this.listBoxUser, 0);
             this.Controls.SetChildIndex(this.listViewLog, 0);
             this.Controls.SetChildIndex(this.tboxMessage, 0);
@@ -182,5 +213,7 @@
         private System.Windows.Forms.TextBox tboxMessage;
         private System.Windows.Forms.ComboBox cboxTarget;
         private System.Windows.Forms.ColumnHeader colHeaderLog;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox tboxName;
     }
 }

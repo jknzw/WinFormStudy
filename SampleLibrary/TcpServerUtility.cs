@@ -14,9 +14,9 @@ namespace SampleLibrary
 {
     public class TcpServerUtility : IDisposable
     {
-        private readonly Logger _logger;
+        private readonly Logger logger;
 
-        private TcpListener _listener = null;
+        private TcpListener listener = null;
 
         private readonly Dictionary<string, ClientManager> _dicClient = new Dictionary<string, ClientManager>();
 
@@ -59,7 +59,7 @@ namespace SampleLibrary
 
         public TcpServerUtility(string ipString = null, int port = 2001, string encoding = null)
         {
-            _logger = Logger.GetInstance(GetType().Name);
+            logger = Logger.GetInstance(GetType().Name);
 
             if (string.IsNullOrEmpty(encoding))
             {
@@ -76,14 +76,19 @@ namespace SampleLibrary
 
         private void Listen(string ipString, int port)
         {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
-            if (_listener == null)
+            if (listener == null)
             {
                 if (string.IsNullOrEmpty(ipString))
                 {
-                    //IPv4とIPv6の全てのIPアドレスをListenする
-                    _listener = new TcpListener(System.Net.IPAddress.IPv6Any, port);
+                    // IPv4とIPv6の全てのIPアドレスをListenする
+
+                    // Lisnerを生成
+                    listener = new TcpListener(System.Net.IPAddress.IPv6Any, port);
+
+                    // IPv6Onlyを0にする
+                    listener.Server.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, 0);
                 }
                 else
                 {
@@ -105,26 +110,26 @@ namespace SampleLibrary
                         }
                         ipAdd = IPAddress.Parse(ipString);
                     }
-                    _listener = new TcpListener(ipAdd, port);
+                    listener = new TcpListener(ipAdd, port);
                 }
             }
 
             //Listenを開始する
-            _logger.WriteLine($"Listen" +
-                $"IP:{((IPEndPoint)_listener.LocalEndpoint).Address} Port:{((System.Net.IPEndPoint)_listener.LocalEndpoint).Port})。");
-            _listener.Start();
+            logger.WriteLine($"Listen" +
+                $"IP:{((IPEndPoint)listener.LocalEndpoint).Address} Port:{((System.Net.IPEndPoint)listener.LocalEndpoint).Port})。");
+            listener.Start();
         }
 
         public async Task<ClientManager> Accept()
         {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
-            TcpClient client = await _listener.AcceptTcpClientAsync();
+            TcpClient client = await listener.AcceptTcpClientAsync();
 
             string ip = ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString();
             string port = ((IPEndPoint)client.Client.LocalEndPoint).Port.ToString();
 
-            _logger.WriteLine($"{MethodBase.GetCurrentMethod().Name} " +
+            logger.WriteLine($"{MethodBase.GetCurrentMethod().Name} " +
                 $"Accept IP:{ip}" +
                 $"Port:{port})。");
 
@@ -192,7 +197,7 @@ namespace SampleLibrary
 
         public async Task<string> ReadAsync(TcpClient client)
         {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             NetworkStream ns = client.GetStream();
 
@@ -212,7 +217,7 @@ namespace SampleLibrary
                     //Readが0を返した時はクライアントが切断したと判断
                     if (resSize == 0)
                     {
-                        _logger.WriteLine("クライアントが切断しました。");
+                        logger.WriteLine("クライアントが切断しました。");
                         return null;
                     }
 
@@ -232,7 +237,7 @@ namespace SampleLibrary
             //末尾の\nを削除
             resMsg = resMsg.TrimEnd('\n');
 
-            _logger.WriteLine($"受信MSG[{resMsg}]");
+            logger.WriteLine($"受信MSG[{resMsg}]");
 
             return resMsg;
         }
@@ -254,7 +259,7 @@ namespace SampleLibrary
         /// <param name="sendMsg"></param>
         public void Send(TcpClient client, string sendMsg, string header = "[MSG]")
         {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             NetworkStream ns = client.GetStream();
 
@@ -267,7 +272,7 @@ namespace SampleLibrary
             //データを送信する
             ns.Write(sendBytes, 0, sendBytes.Length);
 
-            _logger.WriteLine($"送信MSG[{sendMsg}]");
+            logger.WriteLine($"送信MSG[{sendMsg}]");
         }
 
         #region IDisposable Support
@@ -275,7 +280,7 @@ namespace SampleLibrary
 
         protected virtual void Dispose(bool disposing)
         {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             if (!disposedValue)
             {
@@ -284,7 +289,7 @@ namespace SampleLibrary
                     // マネージ状態を破棄します (マネージ オブジェクト)。
 
                     // Listenの停止
-                    _listener.Stop();
+                    listener.Stop();
 
                     // ClientのClose
                     foreach (ClientManager mgr in _dicClient.Values)
@@ -295,7 +300,7 @@ namespace SampleLibrary
                         client.Dispose();
                     }
 
-                    _logger.Dispose();
+                    logger.Dispose();
                 }
 
                 // アンマネージ リソース (アンマネージ オブジェクト) を解放し、下のファイナライザーをオーバーライドします。
@@ -314,7 +319,7 @@ namespace SampleLibrary
 
         public void Dispose()
         {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             // このコードを変更しないでください。クリーンアップ コードを上の Dispose(bool disposing) に記述します。
             Dispose(true);
