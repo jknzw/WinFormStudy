@@ -18,19 +18,19 @@ namespace Sample
     public partial class FormTcpClient : Sample.Base.BaseForm
     {
         #region フィールド
-        private TcpClientUtility _client = null;
+        private TcpClientUtility tcpClientUtil = null;
 
-        private Logger _logger = null;
+        private readonly Logger logger = null;
 
-        private Task _ReadLoopTask = null;
-        private CancellationTokenSource _cancelTokenSource = null;
+        private Task readLoopTask = null;
+        private CancellationTokenSource readCancelTokenSource = null;
         #endregion
 
         #region コンストラクタ
         public FormTcpClient()
         {
-            _logger = Logger.GetInstance(GetType().Name);
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger = Logger.GetInstance(GetType().Name);
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             InitializeComponent();
 
@@ -67,7 +67,7 @@ namespace Sample
         /// <param name="mode"></param>
         private void SetButtonEnabled(ActionMode mode)
         {
-            _logger.WriteLine($"{MethodBase.GetCurrentMethod().Name} ActionMode:{mode}");
+            logger.WriteLine($"{MethodBase.GetCurrentMethod().Name} ActionMode:{mode}");
 
             // まず全てのボタンを無効にする
             SetAllBaseButtonEnabled(false);
@@ -98,15 +98,15 @@ namespace Sample
         /// <param name="e"></param>
         protected override void ButtonF1_Click(object sender, EventArgs e)
         {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             base.ButtonF1_Click(sender, e);
             // ▼▼▼ 業務処理 ▼▼▼
 
-            if (_client != null)
+            if (tcpClientUtil != null)
             {
                 // 既に接続している場合、再接続前に破棄する
-                _client.Dispose();
+                tcpClientUtil.Dispose();
             }
 
             // 接続
@@ -115,7 +115,7 @@ namespace Sample
 
             try
             {
-                _client = new TcpClientUtility(ip, port);
+                tcpClientUtil = new TcpClientUtility(ip, port);
             }
             catch (Exception ex)
             {
@@ -125,9 +125,9 @@ namespace Sample
 
             // 読み込みループ開始
             // Task停止用のトークン発行
-            _cancelTokenSource = new CancellationTokenSource();
-            CancellationToken cToken = _cancelTokenSource.Token;
-            _ReadLoopTask = Task.Run(() => ReadLoop(cToken), cToken);
+            readCancelTokenSource = new CancellationTokenSource();
+            CancellationToken cToken = readCancelTokenSource.Token;
+            readLoopTask = Task.Run(() => ReadLoop(cToken), cToken);
 
             // ボタンの有効無効を設定
             SetButtonEnabled(ActionMode.Connect);
@@ -136,15 +136,15 @@ namespace Sample
 
         private async void ReadLoop(CancellationToken cToken)
         {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             while (!cToken.IsCancellationRequested)
             {
-                string s = _client.Read();
+                string s = await tcpClientUtil.ReadAsync();
 
                 if (!string.IsNullOrEmpty(s))
                 {
-                    _logger.WriteLine(s);
+                    logger.WriteLine(s);
 
                     if (s.StartsWith("[MSG]"))
                     {
@@ -173,7 +173,8 @@ namespace Sample
                 }
                 else
                 {
-                    await Task.Delay(1 * 1000);
+                    logger.WriteLine("切断されました。");
+                    return;
                 }
             }
         }
@@ -226,13 +227,13 @@ namespace Sample
         /// <param name="e"></param>
         protected override void ButtonF5_Click(object sender, EventArgs e)
         {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
             base.ButtonF5_Click(sender, e);
 
             // ▼▼▼ 業務処理 ▼▼▼
 
             string sendMsg = tboxMessage.Text;
-            _client.Send(sendMsg);
+            tcpClientUtil.Send(sendMsg);
 
             // ▲▲▲ 業務処理 ▲▲▲
         }
@@ -317,12 +318,22 @@ namespace Sample
         }
         #endregion
 
+        #region Close
         private void FormTcpClient_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
-            _cancelTokenSource.Cancel();
-            _ReadLoopTask.Wait(10 * 1000);
+            // 受信キャンセル
+            readCancelTokenSource.Cancel();
+            readLoopTask.Wait(10 * 1000);
+            readLoopTask.Dispose();
+
+            // TCP破棄
+            tcpClientUtil.Dispose();
+
+            // Logger破棄
+            logger.Dispose();
         }
+        #endregion
     }
 }

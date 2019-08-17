@@ -99,7 +99,7 @@
             this.listViewLog.Size = new System.Drawing.Size(803, 423);
             this.listViewLog.TabIndex = 105;
             this.listViewLog.UseCompatibleStateImageBehavior = false;
-            this.listViewLog.View = System.Windows.Forms.View.List;
+            this.listViewLog.View = System.Windows.Forms.View.Details;
             // 
             // tboxMessage
             // 
@@ -129,6 +129,7 @@
             this.Controls.Add(this.tboxPort);
             this.Controls.Add(this.tboxIP);
             this.Name = "FormTcpServer";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormTcpServer_FormClosing);
             this.Controls.SetChildIndex(this.buttonF1, 0);
             this.Controls.SetChildIndex(this.buttonF11, 0);
             this.Controls.SetChildIndex(this.buttonF4, 0);

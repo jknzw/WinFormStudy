@@ -29,16 +29,22 @@ namespace SampleLibrary
 
         public class ClientManager
         {
+            public string Name { get; set; } = null;
             public TcpClient Client { get; }
-            private Task _task;
-            private CancellationTokenSource _cancelTokenSource;
+            public Task ReadTask { get; set; } = null;
+            //private CancellationTokenSource _cancelTokenSource;
 
-            public ClientManager(Task task, TcpClient client, CancellationTokenSource cancelTokenSource)
+            public ClientManager(TcpClient client)
             {
-                _task = task;
                 Client = client;
-                _cancelTokenSource = cancelTokenSource;
             }
+
+            //public ClientManager(Task task, TcpClient client, CancellationTokenSource cancelTokenSource)
+            //{
+            //    _task = task;
+            //    Client = client;
+            //    _cancelTokenSource = cancelTokenSource;
+            //}
 
             public string GetIp()
             {
@@ -122,12 +128,14 @@ namespace SampleLibrary
                 $"Accept IP:{ip}" +
                 $"Port:{port})。");
 
-            // Task停止用のトークン発行
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            //// Task停止用のトークン発行
+            //CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
 
-            Task task = Task.Run(() => ReadLoopAsync(client, cancelTokenSource.Token), cancelTokenSource.Token);
+            //Task task = Task.Run(() => ReadLoopAsync(client, cancelTokenSource.Token), cancelTokenSource.Token);
 
-            ClientManager mgr = new ClientManager(task, client, cancelTokenSource);
+            //ClientManager mgr = new ClientManager(task, client, cancelTokenSource);
+
+            ClientManager mgr = new ClientManager(client);
 
             string key = $"{ip}:{port}";
             if (_dicClient.ContainsKey(key))
@@ -145,23 +153,42 @@ namespace SampleLibrary
             return mgr;
         }
 
-        private async void ReadLoopAsync(TcpClient client, CancellationToken token)
-        {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+        //private async void ReadLoopAsync(TcpClient client, CancellationToken token)
+        //{
+        //    _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
-            while (!token.IsCancellationRequested)
-            {
-                string resMsg = await Task.Run(() => ReadAsync(client), token);
+        //    while (!token.IsCancellationRequested)
+        //    {
+        //        string resMsg = await Task.Run(() => ReadAsync(client), token);
 
-                foreach (string msg in resMsg.Split('\n'))
-                {
-                    if (!_que.TryAdd(msg))
-                    {
-                        _logger.WriteLine($"TryAdd Error[{msg}]");
-                    }
-                }
-            }
-        }
+        //        foreach (string msg in resMsg.Split('\n'))
+        //        {
+        //            if (!_que.TryAdd(msg))
+        //            {
+        //                _logger.WriteLine($"TryAdd Error[{msg}]");
+        //            }
+        //        }
+        //    }
+        //}
+
+        //public string Read()
+        //{
+        //    if (_que.Count > 0)
+        //    {
+        //        _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+
+        //        if (_que.TryTake(out string retMsg, 1 * 1000))
+        //        {
+        //            return retMsg;
+        //        }
+        //        else
+        //        {
+        //            _logger.WriteLine("TryTake Error");
+        //            return null;
+        //        }
+        //    }
+        //    return null;
+        //}
 
         public async Task<string> ReadAsync(TcpClient client)
         {
@@ -241,25 +268,6 @@ namespace SampleLibrary
             ns.Write(sendBytes, 0, sendBytes.Length);
 
             _logger.WriteLine($"送信MSG[{sendMsg}]");
-        }
-
-        public string Read()
-        {
-            if (_que.Count > 0)
-            {
-                _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
-
-                if (_que.TryTake(out string retMsg, 1 * 1000))
-                {
-                    return retMsg;
-                }
-                else
-                {
-                    _logger.WriteLine("TryTake Error");
-                    return null;
-                }
-            }
-            return null;
         }
 
         #region IDisposable Support

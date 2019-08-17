@@ -13,93 +13,119 @@ namespace SampleLibrary
 {
     public class TcpClientUtility : IDisposable
     {
-        private readonly Logger _logger;
+        private readonly Logger logger;
 
-        private readonly Encoding _enc;
+        private readonly Encoding encoding;
 
-        private TcpClient _client = null;
+        private TcpClient tcpClient = null;
 
-        private Task _readLoopTask = null;
+        //private Task _readLoopTask = null;
 
-        private CancellationTokenSource _cancelTokenSource = null;
+        //private CancellationTokenSource _cancelTokenSource = null;
 
-        /// <summary>
-        /// キュー
-        /// </summary>
-        private BlockingCollection<string> _que = new BlockingCollection<string>();
+        ///// <summary>
+        ///// キュー
+        ///// </summary>
+        //private BlockingCollection<string> _que = new BlockingCollection<string>();
 
         public TcpClientUtility(string ipString = null, int port = 2001, string encoding = "UTF-8")
         {
-            _logger = Logger.GetInstance(GetType().Name);
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger = Logger.GetInstance(GetType().Name);
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
-            _enc = Encoding.GetEncoding(encoding);
+            this.encoding = Encoding.GetEncoding(encoding);
 
             // 接続
             Connect(ipString, port);
 
-            // 読み込みループ
-            ReadTaskStart();
+            //// 読み込みループ
+            //ReadTaskStart();
         }
 
         private void Connect(string ipString, int port)
         {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
-            _client = new TcpClient(ipString, port);
+            tcpClient = new TcpClient(ipString, port);
+
+            // タイムアウト設定
+            SetTimeOut();
         }
 
-        private void ReadTaskStart()
+        public void SetTimeOut(int readTimeout = 10 * 1000, int writeTimeout = 10 * 1000)
         {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
-
-            if (_cancelTokenSource != null)
-            {
-                // 既にRead中の場合キャンセル
-                _cancelTokenSource.Cancel();
-                _cancelTokenSource.Dispose();
-            }
-
-            if (_readLoopTask != null)
-            {
-                // 既にタスクがある場合終了を待つ
-                _readLoopTask.Wait(10 * 1000);
-                _readLoopTask.Dispose();
-            }
-
-            // Task停止用のトークン発行
-            _cancelTokenSource = new CancellationTokenSource();
-
-            // 非同期Read
-            _readLoopTask = Task.Run(() => ReadLoopAsync(_cancelTokenSource.Token), _cancelTokenSource.Token);
+            tcpClient.GetStream().ReadTimeout = readTimeout;
+            tcpClient.GetStream().WriteTimeout = writeTimeout;
         }
 
-        private async void ReadLoopAsync(CancellationToken token)
+        //private void ReadTaskStart()
+        //{
+        //    _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+
+        //    if (_cancelTokenSource != null)
+        //    {
+        //        // 既にRead中の場合キャンセル
+        //        _cancelTokenSource.Cancel();
+        //        _cancelTokenSource.Dispose();
+        //    }
+
+        //    if (_readLoopTask != null)
+        //    {
+        //        // 既にタスクがある場合終了を待つ
+        //        _readLoopTask.Wait(10 * 1000);
+        //        _readLoopTask.Dispose();
+        //    }
+
+        //    // Task停止用のトークン発行
+        //    _cancelTokenSource = new CancellationTokenSource();
+
+        //    // 非同期Read
+        //    _readLoopTask = Task.Run(() => ReadLoopAsync(_cancelTokenSource.Token), _cancelTokenSource.Token);
+        //}
+
+        //private async void ReadLoopAsync(CancellationToken token)
+        //{
+        //    _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+
+        //    while (!token.IsCancellationRequested)
+        //    {
+        //        string resMsg = await Task.Run(() => ReadAsync(), token);
+
+        //        foreach (string msg in resMsg.Split('\n'))
+        //        {
+        //            if (!_que.TryAdd(msg))
+        //            {
+        //                _logger.WriteLine($"TryAdd Error[{msg}]");
+        //            }
+        //        }
+        //    }
+        //}
+
+        //public string Read()
+        //{
+        //    if (_que.Count > 0)
+        //    {
+        //        _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+
+        //        if (_que.TryTake(out string retMsg, 1 * 1000))
+        //        {
+        //            return retMsg;
+        //        }
+        //        else
+        //        {
+        //            _logger.WriteLine("TryTake Error");
+        //            return null;
+        //        }
+        //    }
+        //    return null;
+        //}
+
+
+        public async Task<string> ReadAsync()
         {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
-            while (!token.IsCancellationRequested)
-            {
-                string resMsg = await Task.Run(() => ReadAsync(), token);
-
-                foreach (string msg in resMsg.Split('\n'))
-                {
-                    if (!_que.TryAdd(msg))
-                    {
-                        _logger.WriteLine($"TryAdd Error[{msg}]");
-                    }
-                }
-            }
-        }
-
-        private async Task<string> ReadAsync()
-        {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
-
-            NetworkStream ns = _client.GetStream();
-
-            // 10秒でタイムアウト
-            ns.ReadTimeout = 1000 * 10;
+            NetworkStream ns = tcpClient.GetStream();
 
             string resMsg = string.Empty;
             using (MemoryStream ms = new MemoryStream())
@@ -114,7 +140,7 @@ namespace SampleLibrary
                     //Readが0を返した時はクライアントが切断したと判断
                     if (resSize == 0)
                     {
-                        _logger.WriteLine("切断されました。");
+                        logger.WriteLine("切断されました。");
                         return null;
                     }
 
@@ -126,7 +152,7 @@ namespace SampleLibrary
                 } while (ns.DataAvailable || resBytes[resSize - 1] != '\n');
 
                 //受信したデータを文字列に変換
-                resMsg = _enc.GetString(ms.GetBuffer(), 0, (int)ms.Length);
+                resMsg = encoding.GetString(ms.GetBuffer(), 0, (int)ms.Length);
 
                 // クローズ
                 ms.Close();
@@ -134,7 +160,7 @@ namespace SampleLibrary
             //末尾の\nを削除
             resMsg = resMsg.TrimEnd('\n');
 
-            _logger.WriteLine($"受信MSG[{resMsg}]");
+            logger.WriteLine($"受信MSG[{resMsg}]");
 
             return resMsg;
         }
@@ -146,39 +172,20 @@ namespace SampleLibrary
         /// <param name="sendMsg"></param>
         public void Send(string sendMsg)
         {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
-            NetworkStream ns = _client.GetStream();
+            NetworkStream ns = tcpClient.GetStream();
 
             // 10秒でタイムアウト
             ns.WriteTimeout = 1000 * 10;
 
             //文字列をByte型配列に変換
-            byte[] sendBytes = _enc.GetBytes(sendMsg + '\n');
+            byte[] sendBytes = encoding.GetBytes(sendMsg + '\n');
 
             //データを送信する
             ns.Write(sendBytes, 0, sendBytes.Length);
 
-            _logger.WriteLine($"送信MSG[{sendMsg}]");
-        }
-
-        public string Read()
-        {
-            if (_que.Count > 0)
-            {
-                _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
-
-                if (_que.TryTake(out string retMsg, 1 * 1000))
-                {
-                    return retMsg;
-                }
-                else
-                {
-                    _logger.WriteLine("TryTake Error");
-                    return null;
-                }
-            }
-            return null;
+            logger.WriteLine($"送信MSG[{sendMsg}]");
         }
 
         #region IDisposable Support
@@ -186,7 +193,7 @@ namespace SampleLibrary
 
         protected virtual void Dispose(bool disposing)
         {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             if (!disposedValue)
             {
@@ -195,11 +202,11 @@ namespace SampleLibrary
                     // マネージ状態を破棄します (マネージ オブジェクト)。
 
                     // ClientのClose
-                    _client.GetStream().Close();
-                    _client.Close();
-                    _client.Dispose();
+                    tcpClient.GetStream().Close();
+                    tcpClient.Close();
+                    tcpClient.Dispose();
 
-                    _logger.Dispose();
+                    logger.Dispose();
                 }
 
                 // アンマネージ リソース (アンマネージ オブジェクト) を解放し、下のファイナライザーをオーバーライドします。
@@ -218,7 +225,7 @@ namespace SampleLibrary
 
         public void Dispose()
         {
-            _logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             // このコードを変更しないでください。クリーンアップ コードを上の Dispose(bool disposing) に記述します。
             Dispose(true);

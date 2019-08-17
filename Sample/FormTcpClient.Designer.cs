@@ -108,7 +108,7 @@
             this.listViewLog.Size = new System.Drawing.Size(803, 423);
             this.listViewLog.TabIndex = 105;
             this.listViewLog.UseCompatibleStateImageBehavior = false;
-            this.listViewLog.View = System.Windows.Forms.View.List;
+            this.listViewLog.View = System.Windows.Forms.View.Details;
             // 
             // tboxMessage
             // 
