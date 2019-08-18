@@ -49,7 +49,7 @@ namespace Sample
             //buttonF11.Visible = false;
 
             // ボタンの有効無効を設定
-            SetButtonEnabled(ActionMode.Init);
+            SetControlEnabled(ActionMode.Init);
         }
         #endregion
 
@@ -66,7 +66,7 @@ namespace Sample
         /// ボタン状態の設定
         /// </summary>
         /// <param name="mode"></param>
-        private void SetButtonEnabled(ActionMode mode)
+        private void SetControlEnabled(ActionMode mode)
         {
             logger.WriteLine($"{MethodBase.GetCurrentMethod().Name} ActionMode:{mode}");
 
@@ -138,7 +138,7 @@ namespace Sample
             readLoopTask = Task.Run(() => ReadLoop(cToken), cToken);
 
             // ボタンの有効無効を設定
-            SetButtonEnabled(ActionMode.Connect);
+            SetControlEnabled(ActionMode.Connect);
             // ▲▲▲ 業務処理 ▲▲▲
         }
 
@@ -220,10 +220,11 @@ namespace Sample
                     else
                     {
                         logger.WriteLine("切断されました。");
-
-                        // ToDo:破棄処理
-                        // ToDo:コントロール初期化
-
+                        Invoke((Action)(() =>
+                        {
+                            listViewLog.Items.Add("切断されました。");
+                            CloseAndInit();
+                        }));
                         return;
                     }
                 }
@@ -311,7 +312,11 @@ namespace Sample
                 mgr = new TcpMessageManager(TcpMessageManager.HeaderTargetMsg, fromName, toName, sendMsg);
             }
 
-            tcpClientUtil.Send(mgr.GetSendMessage());
+            if (!tcpClientUtil.Send(mgr.GetSendMessage()))
+            {
+                listViewLog.Items.Add("送信に失敗しました。再接続して下さい。");
+                CloseAndInit();
+            }
 
             // ▲▲▲ 業務処理 ▲▲▲
         }
@@ -402,16 +407,32 @@ namespace Sample
         {
             logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
+            CloseTcpClient();
+
+            // Logger破棄
+            logger.Dispose();
+        }
+
+        private void CloseAndInit()
+        {
+            // 破棄処理
+            CloseTcpClient();
+
+            // コントロール初期化
+            SetControlEnabled(ActionMode.Init);
+        }
+
+        private void CloseTcpClient()
+        {
             // 受信キャンセル
             readCancelTokenSource.Cancel();
             readLoopTask.Wait(10 * 1000);
             readLoopTask.Dispose();
+            readLoopTask = null;
 
             // TCP破棄
             tcpClientUtil.Dispose();
-
-            // Logger破棄
-            logger.Dispose();
+            tcpClientUtil = null;
         }
         #endregion
     }

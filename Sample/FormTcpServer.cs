@@ -37,7 +37,7 @@ namespace Sample
         public FormTcpServer()
         {
             logger = Logger.GetInstance(GetType().Name);
-            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger.StartMethod(nameof(FormTcpServer));
 
             InitializeComponent();
 
@@ -56,6 +56,8 @@ namespace Sample
 
             // ボタンの有効無効を設定
             SetButtonEnabled(ActionMode.Init);
+
+            logger.EndMethod(nameof(FormTcpServer));
         }
 
         /// <summary>
@@ -73,7 +75,7 @@ namespace Sample
         /// <param name="mode"></param>
         private void SetButtonEnabled(ActionMode mode)
         {
-            logger.WriteLine($"{MethodBase.GetCurrentMethod().Name} ActionMode:{mode}");
+            logger.StartMethod(MethodBase.GetCurrentMethod().Name, $"ActionMode:{mode}");
 
             // まず全てのボタンを無効にする
             SetAllBaseButtonEnabled(false);
@@ -97,6 +99,8 @@ namespace Sample
                     buttonF6.Enabled = false;
                     break;
             }
+
+            logger.EndMethod(MethodBase.GetCurrentMethod().Name);
         }
 
         /// <summary>
@@ -106,8 +110,7 @@ namespace Sample
         /// <param name="e"></param>
         protected override void ButtonF1_Click(object sender, EventArgs e)
         {
-            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
-
+            logger.StartMethod(MethodBase.GetCurrentMethod().Name);
             base.ButtonF1_Click(sender, e);
             // ▼▼▼ 業務処理 ▼▼▼
 
@@ -134,23 +137,23 @@ namespace Sample
             // ボタンの有効無効を設定
             SetButtonEnabled(ActionMode.Listen);
             // ▲▲▲ 業務処理 ▲▲▲
+            logger.EndMethod(MethodBase.GetCurrentMethod().Name);
         }
 
-        private async void AcceptLoop(CancellationToken cToken)
+        private async Task AcceptLoop(CancellationToken cToken)
         {
-            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
-
+            logger.StartMethod(nameof(AcceptLoop));
             try
             {
                 while (!cToken.IsCancellationRequested)
                 {
-                    TcpServerUtility.ClientManager mgr = await tcpServerUtil.Accept();
+                    TcpServerUtility.ClientManager mgr = await tcpServerUtil.Accept().ConfigureAwait(false);
 
                     string acceptClientName = mgr.GetClientIpAndPort();
 
                     Invoke((Action)(() =>
                     {
-                        listViewLog.Items.Add($"[Accept]{acceptClientName}が接続しました。");
+                        listViewLog.Items.Add($"[{MethodBase.GetCurrentMethod().Name}]{acceptClientName}が接続しました。");
                     }));
 
                     // Read Loop Start
@@ -169,13 +172,14 @@ namespace Sample
             }
             catch (Exception ex)
             {
-                logger.WriteLine(ex.Message);
+                logger.WriteException(nameof(AcceptLoop), ex);
             }
+            logger.EndMethod(nameof(AcceptLoop));
         }
 
-        private async void ReadLoop(TcpServerUtility.ClientManager tcpClientMgr, CancellationToken cToken)
+        private async Task ReadLoop(TcpServerUtility.ClientManager tcpClientMgr, CancellationToken cToken)
         {
-            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            logger.StartMethod(nameof(ReadLoop));
 
             try
             {
@@ -277,15 +281,17 @@ namespace Sample
                     else
                     {
                         // 切断
-                        logger.WriteLine("切断されました。");
+                        logger.WriteLine(nameof(ReadLoop), "切断されました。");
                         return;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                logger.WriteException(nameof(ReadLoop), ex);
             }
+
+            logger.EndMethod(nameof(ReadLoop));
         }
 
         /// <summary>
@@ -451,9 +457,11 @@ namespace Sample
             {
                 waitTasks.Add(mgr.ReadTask);
             }
-            if (!Task.WaitAll(waitTasks.ToArray(), taskTimeOut))
+
+            // wait
+            if (Task.WhenAll(waitTasks).Wait(taskTimeOut))
             {
-                logger.WriteLine("WaitAll Timeout");
+                logger.WriteLine("Task Timeout");
             }
 
             tcpServerUtil?.Dispose();

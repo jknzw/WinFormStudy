@@ -283,7 +283,7 @@ namespace Sample
                     else
                     {
                         // 履歴ファイル取得エラー
-                        logger.WriteError($"履歴取得に失敗しました。", ret);
+                        logger.WriteLog(MethodBase.GetCurrentMethod().Name, $"履歴取得に失敗しました。", ret);
                         return -2;
                     }
                 }
@@ -302,7 +302,7 @@ namespace Sample
                     else
                     {
                         // 履歴ファイル取得エラー
-                        logger.WriteError($"履歴取得に失敗しました。", ret);
+                        logger.WriteLog(MethodBase.GetCurrentMethod().Name, $"履歴取得に失敗しました。", ret);
                         return -3;
                     }
                 }
@@ -310,7 +310,7 @@ namespace Sample
             else
             {
                 // 履歴ファイル取得エラー
-                logger.WriteError($"履歴取得に失敗しました。", ret);
+                logger.WriteLog(MethodBase.GetCurrentMethod().Name, $"履歴取得に失敗しました。", ret);
                 return -1;
             }
 

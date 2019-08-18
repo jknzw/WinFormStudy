@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -153,16 +154,60 @@ namespace SampleLibrary
             return WriteLine(log, System.Threading.Timeout.Infinite);
         }
 
-        /// <summary>
-        /// ログ出力(非同期) 
-        /// </summary>
-        /// <param name="log"></param>
-        /// <param name="code"></param>
-        /// <param name="timeout"></param>
-        /// <returns></returns>
-        public bool WriteError(string log, dynamic error, int timeout = 0)
+        #region WriteLine
+        public bool StartMethod(string methodName, params string[] values)
         {
-            return WriteLine($"{log}[Error:{error}]", timeout);
+            if (values.Length > 0)
+            {
+                return WriteLine($"[{methodName}] Method Start [{string.Join("][", values)}]");
+            }
+            else
+            {
+                return WriteLine($"[{methodName}] Method Start");
+            }
+        }
+
+        public bool EndMethod(string methodName, params string[] values)
+        {
+            if (values.Length > 0)
+            {
+                return WriteLine($"[{methodName}] Method End [{string.Join("][", values)}]");
+            }
+            else
+            {
+                return WriteLine($"[{methodName}] Method End");
+            }
+        }
+        public bool WriteException(string methodName, Exception ex, int timeout = 0)
+        {
+            return WriteLine($"[{methodName}] Exception[{ex}]", timeout);
+        }
+
+        public bool WriteExceptionMessage(string methodName, Exception ex, int timeout = 0)
+        {
+            return WriteLine($"[{methodName}] Message[{ex.Message}]", timeout);
+        }
+
+        public bool WriteLog(string methodName, params dynamic[] values)
+        {
+            if (values.Length > 0)
+            {
+                List<string> valueList = new List<string>();
+                foreach (dynamic value in values)
+                {
+                    valueList.Add(value?.ToString());
+                }
+                return WriteLine($"[{methodName}] [{string.Join("][", values)}]");
+            }
+            else
+            {
+                return WriteLine($"[{methodName}]");
+            }
+        }
+
+        public bool WriteLine(string methodName, string log, int timeout = 0)
+        {
+            return WriteLine($"[{methodName}]{log}", timeout);
         }
 
         /// <summary>
@@ -177,6 +222,8 @@ namespace SampleLibrary
 
             try
             {
+                Debug.WriteLine($"[{BaseFileName}][{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fffffff")}]{log}");
+
                 // キューに追加
                 if (timeout == 0)
                 {
@@ -195,11 +242,12 @@ namespace SampleLibrary
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"[{MethodBase.GetCurrentMethod().Name}][{ex.Message}]");
             }
 
             return ret;
         }
+        #endregion
 
         /// <summary>
         /// ログ出力用文字列の取得
@@ -235,7 +283,6 @@ namespace SampleLibrary
                                 {
                                     if (_que.TryTake(out string item, 1 * 1000))
                                     {
-                                        Debug.WriteLine($"[{BaseFileName}][{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fffffff")}]{item}");
                                         await sw.WriteLineAsync(item);
                                     }
                                     else
@@ -247,7 +294,7 @@ namespace SampleLibrary
                             }
                             catch (Exception ex)
                             {
-                                Debug.WriteLine(ex.Message);
+                                Debug.WriteLine($"[{MethodBase.GetCurrentMethod().Name}][{ex.Message}]");
                             }
                         }
                     }

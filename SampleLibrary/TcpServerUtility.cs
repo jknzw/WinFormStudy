@@ -201,8 +201,8 @@ namespace SampleLibrary
             {
                 NetworkStream ns = client.GetStream();
 
-                //// 10秒でタイムアウト
-                //ns.ReadTimeout = 1000 * 10;
+                // 10秒でタイムアウト
+                ns.ReadTimeout = 1000 * 10;
 
                 using (MemoryStream ms = new MemoryStream())
                 {

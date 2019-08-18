@@ -50,6 +50,9 @@ namespace SampleLibrary
 
             // 送信タイムアウト設定
             tcpClient.GetStream().WriteTimeout = 10 * 1000;
+
+            // 受信タイムアウト設定
+            tcpClient.GetStream().ReadTimeout = 10 * 1000;
         }
 
         public string GetClientIp()
@@ -194,22 +197,32 @@ namespace SampleLibrary
         /// </summary>
         /// <param name="client"></param>
         /// <param name="sendMsg"></param>
-        public void Send(string sendMsg)
+        public bool Send(string sendMsg)
         {
             logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
-            NetworkStream ns = tcpClient.GetStream();
+            bool ret = true;
+            try
+            {
+                NetworkStream ns = tcpClient.GetStream();
 
-            // 10秒でタイムアウト
-            ns.WriteTimeout = 1000 * 10;
+                // 10秒でタイムアウト
+                ns.WriteTimeout = 1000 * 10;
 
-            //文字列をByte型配列に変換
-            byte[] sendBytes = encoding.GetBytes(sendMsg + '\n');
+                //文字列をByte型配列に変換
+                byte[] sendBytes = encoding.GetBytes(sendMsg + '\n');
 
-            //データを送信する
-            ns.Write(sendBytes, 0, sendBytes.Length);
+                //データを送信する
+                ns.Write(sendBytes, 0, sendBytes.Length);
 
-            logger.WriteLine($"送信MSG[{sendMsg}]");
+                logger.WriteLine($"送信MSG[{sendMsg}]");
+            }
+            catch (SocketException ex)
+            {
+                ret = false;
+                logger.WriteLine(ex.Message);
+            }
+            return ret;
         }
 
         #region IDisposable Support
