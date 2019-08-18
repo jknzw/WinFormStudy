@@ -448,6 +448,10 @@ namespace Sample
         {
             cancelTokenSource?.Cancel();
 
+            // Lisner Stop And TcpClient Close
+            tcpServerUtil?.Dispose();
+
+            // Accept And Read Task Wait
             List<Task> waitTasks = new List<Task>();
             if (acceptLoopTask != null)
             {
@@ -457,14 +461,12 @@ namespace Sample
             {
                 waitTasks.Add(mgr.ReadTask);
             }
-
-            // wait
             if (Task.WhenAll(waitTasks).Wait(taskTimeOut))
             {
                 logger.WriteLine("Task Timeout");
             }
 
-            tcpServerUtil?.Dispose();
+            // Logger Dispose
             logger?.Dispose();
         }
         #endregion
