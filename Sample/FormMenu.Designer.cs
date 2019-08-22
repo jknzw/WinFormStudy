@@ -109,6 +109,7 @@
             this.Controls.Add(this.customButton1);
             this.Name = "FormMenu";
             this.Text = "メニュー";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMenu_FormClosing);
             this.ResumeLayout(false);
 
         }

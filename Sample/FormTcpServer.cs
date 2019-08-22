@@ -17,10 +17,6 @@ namespace Sample
 {
     public partial class FormTcpServer : Sample.Base.BaseForm
     {
-        private TcpServerUtility tcpServerUtil = null;
-
-        private readonly Logger logger = null;
-
         private Task acceptLoopTask = null;
 
         /// <summary>
@@ -29,15 +25,17 @@ namespace Sample
         /// [Value] TcpServerUtility.ClientManager
         /// </summary>
         private readonly Dictionary<string, TcpServerUtility.ClientManager> dicTcpClient = new Dictionary<string, TcpServerUtility.ClientManager>();
-
-        private CancellationTokenSource cancelTokenSource = null;
-
         private readonly int taskTimeOut = 10 * 1000;
+
+        public TcpServerUtility TcpServerUtil { get; set; } = null;
+
+        public Logger Logger { get; } = null;
+        public CancellationTokenSource CancelTokenSource { get; set; } = null;
 
         public FormTcpServer()
         {
-            logger = Logger.GetInstance(GetType().Name);
-            logger.StartMethod(nameof(FormTcpServer));
+            Logger = Logger.GetInstance(GetType().Name);
+            Logger.StartMethod(nameof(FormTcpServer));
 
             InitializeComponent();
 
@@ -57,7 +55,7 @@ namespace Sample
             // ボタンの有効無効を設定
             SetButtonEnabled(ActionMode.Init);
 
-            logger.EndMethod(nameof(FormTcpServer));
+            Logger.EndMethod(nameof(FormTcpServer));
         }
 
         /// <summary>
@@ -75,7 +73,7 @@ namespace Sample
         /// <param name="mode"></param>
         private void SetButtonEnabled(ActionMode mode)
         {
-            logger.StartMethod(MethodBase.GetCurrentMethod().Name, $"ActionMode:{mode}");
+            Logger.StartMethod(MethodBase.GetCurrentMethod().Name, $"ActionMode:{mode}");
 
             // まず全てのボタンを無効にする
             SetAllBaseButtonEnabled(false);
@@ -100,7 +98,7 @@ namespace Sample
                     break;
             }
 
-            logger.EndMethod(MethodBase.GetCurrentMethod().Name);
+            Logger.EndMethod(MethodBase.GetCurrentMethod().Name);
         }
 
         /// <summary>
@@ -110,26 +108,26 @@ namespace Sample
         /// <param name="e"></param>
         protected override void ButtonF1_Click(object sender, EventArgs e)
         {
-            logger.StartMethod(MethodBase.GetCurrentMethod().Name);
+            Logger.StartMethod(MethodBase.GetCurrentMethod().Name);
             base.ButtonF1_Click(sender, e);
             // ▼▼▼ 業務処理 ▼▼▼
 
-            if (tcpServerUtil != null)
+            if (TcpServerUtil != null)
             {
                 // 既に接続している場合、再接続前に破棄する
-                tcpServerUtil.Dispose();
+                TcpServerUtil.Dispose();
             }
 
             // Listen
             string ip = tboxIP.Text;
             int.TryParse(tboxPort.Text, out int port);
-            tcpServerUtil = new TcpServerUtility(ip, port);
+            TcpServerUtil = new TcpServerUtility(ip, port);
 
             listViewLog.Items.Add($"Listenを開始しました。IP[{ip}] Port[{port}]");
 
             // Task停止用のトークン発行
-            cancelTokenSource = new CancellationTokenSource();
-            CancellationToken cToken = cancelTokenSource.Token;
+            CancelTokenSource = new CancellationTokenSource();
+            CancellationToken cToken = CancelTokenSource.Token;
 
             // Accept Loop Start
             acceptLoopTask = Task.Run(() => AcceptLoop(cToken), cToken);
@@ -137,17 +135,17 @@ namespace Sample
             // ボタンの有効無効を設定
             SetButtonEnabled(ActionMode.Listen);
             // ▲▲▲ 業務処理 ▲▲▲
-            logger.EndMethod(MethodBase.GetCurrentMethod().Name);
+            Logger.EndMethod(MethodBase.GetCurrentMethod().Name);
         }
 
         private async Task AcceptLoop(CancellationToken cToken)
         {
-            logger.StartMethod(nameof(AcceptLoop));
+            Logger.StartMethod(nameof(AcceptLoop));
             try
             {
                 while (!cToken.IsCancellationRequested)
                 {
-                    TcpServerUtility.ClientManager mgr = await tcpServerUtil.Accept().ConfigureAwait(false);
+                    TcpServerUtility.ClientManager mgr = await TcpServerUtil.Accept().ConfigureAwait(false);
 
                     string acceptClientName = mgr.GetClientIpAndPort();
 
@@ -163,7 +161,7 @@ namespace Sample
                     foreach (string clientName in dicTcpClient.Keys)
                     {
                         TcpMessageManager sendMsgMgr = new TcpMessageManager(TcpMessageManager.HeaderName, clientName, acceptClientName, clientName);
-                        tcpServerUtil.SendTarget(mgr.GetClientIpAndPort(), sendMsgMgr.GetSendMessage());
+                        TcpServerUtil.SendTarget(mgr.GetClientIpAndPort(), sendMsgMgr.GetSendMessage());
                     }
 
                     // 管理用辞書に追加
@@ -172,14 +170,14 @@ namespace Sample
             }
             catch (Exception ex)
             {
-                logger.WriteException(nameof(AcceptLoop), ex);
+                Logger.WriteException(nameof(AcceptLoop), ex);
             }
-            logger.EndMethod(nameof(AcceptLoop));
+            Logger.EndMethod(nameof(AcceptLoop));
         }
 
         private async Task ReadLoop(TcpServerUtility.ClientManager tcpClientMgr, CancellationToken cToken)
         {
-            logger.StartMethod(nameof(ReadLoop));
+            Logger.StartMethod(nameof(ReadLoop));
 
             try
             {
@@ -187,14 +185,14 @@ namespace Sample
                 while (!cToken.IsCancellationRequested)
                 {
                     // メッセージ受信
-                    string texts = await tcpServerUtil.ReadAsync(client, cToken);
+                    string texts = await TcpServerUtil.ReadAsync(client, cToken);
 
                     if (texts != null)
                     {
                         // \nで分割
                         foreach (string text in texts.Split('\n'))
                         {
-                            logger.WriteLine(text);
+                            Logger.WriteLine(text);
 
                             Invoke((Action)(() =>
                             {
@@ -241,7 +239,7 @@ namespace Sample
                                     // 全体に接続情報を送信
                                     // Connect,IP:Port,受信した名前,登録した名前
                                     sendMsgMgr = new TcpMessageManager(TcpMessageManager.HeaderConnect, tcpClientMgr.GetClientIpAndPort(), recvMsgMgr.Value, tcpClientMgr.Name);
-                                    tcpServerUtil.SendAll(sendMsgMgr.GetSendMessage());
+                                    TcpServerUtil.SendAll(sendMsgMgr.GetSendMessage());
                                     break;
                                 case TcpMessageManager.HeaderTargetMsg:
                                     // 送信元を設定
@@ -255,12 +253,12 @@ namespace Sample
                                     // 受信したメッセージを対象に送信する
                                     // 名前→IP:Portへの変換
                                     string toTarget = dicTcpClient[recvMsgMgr.SendToTarget].GetClientIpAndPort();
-                                    tcpServerUtil.SendTarget(toTarget, sendMsgMgr.GetSendMessage());
+                                    TcpServerUtil.SendTarget(toTarget, sendMsgMgr.GetSendMessage());
 
                                     // 受信したメッセージを送信元に送信する
                                     // 名前→IP:Portへの変換
                                     string fromTarget = tcpClientMgr.GetClientIpAndPort();
-                                    tcpServerUtil.SendTarget(fromTarget, sendMsgMgr.GetSendMessage());
+                                    TcpServerUtil.SendTarget(fromTarget, sendMsgMgr.GetSendMessage());
                                     break;
                                 case TcpMessageManager.HeaderAllMsg:
                                 default:
@@ -273,7 +271,7 @@ namespace Sample
                                     }));
 
                                     // 受信したメッセージを全体に送信する
-                                    tcpServerUtil.SendAll(sendMsgMgr.GetSendMessage());
+                                    TcpServerUtil.SendAll(sendMsgMgr.GetSendMessage());
                                     break;
                             }
                         }
@@ -281,17 +279,17 @@ namespace Sample
                     else
                     {
                         // 切断
-                        logger.WriteLine(nameof(ReadLoop), "切断されました。");
+                        Logger.WriteLine(nameof(ReadLoop), "切断されました。");
                         return;
                     }
                 }
             }
             catch (Exception ex)
             {
-                logger.WriteException(nameof(ReadLoop), ex);
+                Logger.WriteException(nameof(ReadLoop), ex);
             }
 
-            logger.EndMethod(nameof(ReadLoop));
+            Logger.EndMethod(nameof(ReadLoop));
         }
 
         /// <summary>
@@ -359,7 +357,7 @@ namespace Sample
                 sendMsgMgr = new TcpMessageManager(TcpMessageManager.HeaderTargetMsg, fromName, toName, sendMsg);
             }
 
-            tcpServerUtil.SendAll(sendMsgMgr.GetSendMessage());
+            TcpServerUtil.SendAll(sendMsgMgr.GetSendMessage());
             // ▲▲▲ 業務処理 ▲▲▲
         }
 
@@ -446,10 +444,10 @@ namespace Sample
         #region Close
         private void FormTcpServer_FormClosing(object sender, FormClosingEventArgs e)
         {
-            cancelTokenSource?.Cancel();
+            CancelTokenSource?.Cancel();
 
             // Lisner Stop And TcpClient Close
-            tcpServerUtil?.Dispose();
+            TcpServerUtil?.Dispose();
 
             // Accept And Read Task Wait
             List<Task> waitTasks = new List<Task>();
@@ -463,11 +461,11 @@ namespace Sample
             }
             if (Task.WhenAll(waitTasks).Wait(taskTimeOut))
             {
-                logger.WriteLine("Task Timeout");
+                Logger.WriteLine("Task Timeout");
             }
 
             // Logger Dispose
-            logger?.Dispose();
+            Logger?.Dispose();
         }
         #endregion
     }

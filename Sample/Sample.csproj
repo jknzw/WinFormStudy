@@ -184,7 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SampleLibrary\SampleLibrary.csproj">
-      <Project>{8468f120-9746-4b53-a9c9-9ca304887915}</Project>
+      <Project>{c35d23ee-e507-4f58-8629-8e574a49871d}</Project>
       <Name>SampleLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\WindowsFormsControlLibrary\WindowsFormsControlLibrary.csproj">

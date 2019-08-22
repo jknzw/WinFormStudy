@@ -17,16 +17,14 @@ namespace Sample
 {
     public partial class FormKakeibo : Sample.Base.BaseForm
     {
-        /// <summary>
-        /// Logger
-        /// </summary>
-        private readonly Logger logger = Logger.GetInstance("kakeibo");
 
         /// <summary>
         /// Model
         /// Serviceからの値を受け取るために使う
         /// </summary>
         private FormKakeiboService.ModelKakeibo Model { get; set; } = null;
+
+        public Logger Logger { get; } = Logger.GetInstance("kakeibo");
 
         /// <summary>
         /// コンストラクタ
@@ -43,7 +41,7 @@ namespace Sample
         /// <param name="e"></param>
         protected override void ButtonF1_Click(object sender, EventArgs e)
         {
-            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            Logger.WriteLine(MethodBase.GetCurrentMethod().Name);
             base.ButtonF1_Click(sender, e);
 
             // ▼▼▼ 業務処理 ▼▼▼
@@ -53,14 +51,14 @@ namespace Sample
             int ret = sv.Touroku();
             if (ret != 0)
             {
-                logger.WriteLine($"登録処理でエラーが発生しました。ErrorCode[{ret}]");
+                Logger.WriteLine($"登録処理でエラーが発生しました。ErrorCode[{ret}]");
             }
 
             // 検索
             ret = Search(sv);
             if (ret != 0)
             {
-                logger.WriteLine($"検索処理でエラーが発生しました。ErrorCode[{ret}]");
+                Logger.WriteLine($"検索処理でエラーが発生しました。ErrorCode[{ret}]");
             }
 
             // スクロールを最終に移動
@@ -80,7 +78,7 @@ namespace Sample
         /// <param name="e"></param>
         protected override void ButtonF2_Click(object sender, EventArgs e)
         {
-            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            Logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             base.ButtonF2_Click(sender, e);
             // ▼▼▼ 業務処理 ▼▼▼
@@ -137,7 +135,7 @@ namespace Sample
         /// <param name="e"></param>
         protected override void ButtonF6_Click(object sender, EventArgs e)
         {
-            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            Logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             base.ButtonF6_Click(sender, e);
             // ▼▼▼ 業務処理 ▼▼▼
@@ -220,7 +218,7 @@ namespace Sample
         /// <param name="e"></param>
         protected override void ButtonF11_Click(object sender, EventArgs e)
         {
-            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            Logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             base.ButtonF11_Click(sender, e);
             // ▼▼▼ 業務処理 ▼▼▼
@@ -235,7 +233,7 @@ namespace Sample
         /// <param name="e"></param>
         private void FormKakeibo_Load(object sender, EventArgs e)
         {
-            logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
+            Logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
 
             FormKakeiboService sv = FormKakeiboService.GetInstance(this);
             Search(sv);
@@ -243,7 +241,7 @@ namespace Sample
 
         private int Search(FormKakeiboService sv)
         {
-            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            Logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             gridRireki.DataSource = new BindingSource();
             gridShukei.DataSource = new BindingSource();
@@ -283,7 +281,7 @@ namespace Sample
                     else
                     {
                         // 履歴ファイル取得エラー
-                        logger.WriteLog(MethodBase.GetCurrentMethod().Name, $"履歴取得に失敗しました。", ret);
+                        Logger.WriteLog(MethodBase.GetCurrentMethod().Name, $"履歴取得に失敗しました。", ret);
                         return -2;
                     }
                 }
@@ -302,7 +300,7 @@ namespace Sample
                     else
                     {
                         // 履歴ファイル取得エラー
-                        logger.WriteLog(MethodBase.GetCurrentMethod().Name, $"履歴取得に失敗しました。", ret);
+                        Logger.WriteLog(MethodBase.GetCurrentMethod().Name, $"履歴取得に失敗しました。", ret);
                         return -3;
                     }
                 }
@@ -310,7 +308,7 @@ namespace Sample
             else
             {
                 // 履歴ファイル取得エラー
-                logger.WriteLog(MethodBase.GetCurrentMethod().Name, $"履歴取得に失敗しました。", ret);
+                Logger.WriteLog(MethodBase.GetCurrentMethod().Name, $"履歴取得に失敗しました。", ret);
                 return -1;
             }
 
@@ -351,7 +349,7 @@ namespace Sample
         /// </summary>
         private void DataGridViewRireki_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
-            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            Logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             // Deleteイベントをキャンセルし、削除ボタン処理を行う
             buttonF6.PerformClick();
@@ -360,7 +358,7 @@ namespace Sample
 
         private void DataGridViewRireki_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            logger.WriteLine(MethodBase.GetCurrentMethod().Name);
+            Logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
             FormKakeiboService sv = FormKakeiboService.GetInstance(this);
             int ret = sv.UpdateAll(Model.RirekiFile, gridRireki, out FormKakeiboService.ModelKakeibo value);
@@ -371,13 +369,13 @@ namespace Sample
             }
             else
             {
-                logger.WriteLine($"{MethodBase.GetCurrentMethod().Name} Error:{ret}");
+                Logger.WriteLine($"{MethodBase.GetCurrentMethod().Name} Error:{ret}");
             }
         }
 
         private void SetScreenValues(FormKakeiboService.ModelKakeibo model)
         {
-            logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
+            Logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
 
             // 残金・収入・支出を更新
             customReadOnlyTextBoxZankin.Text = model.Zankin.ToString();
@@ -391,7 +389,7 @@ namespace Sample
 
         private void ComboBoxShukeiMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
+            Logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
 
             FormKakeiboService sv = FormKakeiboService.GetInstance(this);
             DataTable rireki = (gridRireki.DataSource as BindingSource).DataSource as DataTable;
@@ -404,7 +402,7 @@ namespace Sample
 
         private void CmbRirekiFiles_SelectedIndexChanged(object sender, EventArgs e)
         {
-            logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
+            Logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
 
             FormKakeiboService sv = FormKakeiboService.GetInstance();
             ChangeKakoRireki(sv);
@@ -412,7 +410,7 @@ namespace Sample
 
         private void CmbRirekiMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
+            Logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
 
             FormKakeiboService sv = FormKakeiboService.GetInstance();
             ChangeKakoRireki(sv);
@@ -420,7 +418,7 @@ namespace Sample
 
         private void ChangeKakoRireki(FormKakeiboService sv)
         {
-            logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
+            Logger.WriteLine($"{MethodBase.GetCurrentMethod().Name}");
 
             if (cmbRirekiFiles.SelectedIndex >= 0)
             {

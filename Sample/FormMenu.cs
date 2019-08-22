@@ -12,6 +12,8 @@ namespace Sample
 {
     public partial class FormMenu : Form
     {
+        private readonly List<Form> formList = new List<Form>();
+
         public FormMenu()
         {
             InitializeComponent();
@@ -46,6 +48,7 @@ namespace Sample
         private void CustomButton2_Click(object sender, EventArgs e)
         {
             Form f = new FormDiffBmp();
+            formList.Add(f);
             //モードレスでフォームを表示
             f.Show();
         }
@@ -63,15 +66,24 @@ namespace Sample
         private void CustomButton5_Click(object sender, EventArgs e)
         {
             Form f = new FormTcpClient();
+            formList.Add(f);
             //モードレスでフォームを表示
-            f.Show();            
+            f.Show();
         }
 
         private void CustomButton6_Click(object sender, EventArgs e)
         {
-            Form f = new FormTcpServer();
-            //モードレスでフォームを表示
-            f.Show();
+            Form formTcpServer = new FormTcpServer();
+            formList.Add(formTcpServer);
+            formTcpServer.Show();
+        }
+
+        private void FormMenu_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            foreach (Form form in formList)
+            {
+                form.Dispose();
+            }
         }
     }
 }
