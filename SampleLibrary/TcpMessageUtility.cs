@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SampleLibrary
 {
-    public class TcpMessageManager
+    public class TcpMessageUtility
     {
         public const string HeaderAllMsg = "ALLMSG";
         public const string HeaderTargetMsg = "TARGETMSG";
@@ -33,11 +33,11 @@ namespace SampleLibrary
         /// </summary>
         public string Value { get; set; }
 
-        public TcpMessageManager()
+        public TcpMessageUtility()
         {
         }
 
-        public TcpMessageManager(string readMessage)
+        public TcpMessageUtility(string readMessage)
         {
             string[] message = readMessage.Split(new char[] { ',' }, 4);
             Header = message[0];
@@ -46,7 +46,7 @@ namespace SampleLibrary
             Value = message[3];
         }
 
-        public TcpMessageManager(string header, string fromName, string toName, string value) : this()
+        public TcpMessageUtility(string header, string fromName, string toName, string value) : this()
         {
             Header = header;
             SendFromTarget = fromName;

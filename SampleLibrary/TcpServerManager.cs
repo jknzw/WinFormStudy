@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SampleLibrary
 {
-    public class TcpServerUtility : IDisposable
+    public class TcpServerManager : IDisposable
     {
         private readonly Logger logger;
 
@@ -23,17 +23,17 @@ namespace SampleLibrary
         /// [key]IP:Port
         /// [Value]ClientManager
         /// </summary>
-        private readonly Dictionary<string, ClientManager> dicClient = new Dictionary<string, ClientManager>();
+        private readonly Dictionary<string, ClientInfo> dicClient = new Dictionary<string, ClientInfo>();
 
         private readonly Encoding _enc;
 
-        public class ClientManager
+        public class ClientInfo
         {
             public string Name { get; set; } = null;
             public TcpClient Client { get; }
             public Task ReadTask { get; set; } = null;
 
-            public ClientManager(TcpClient client)
+            public ClientInfo(TcpClient client)
             {
                 Client = client;
             }
@@ -54,7 +54,7 @@ namespace SampleLibrary
             }
         }
 
-        public TcpServerUtility(string ipString = null, int port = 2001, string encoding = null)
+        public TcpServerManager(string ipString = null, int port = 2001, string encoding = null)
         {
             logger = Logger.GetInstance(GetType().Name);
 
@@ -116,7 +116,7 @@ namespace SampleLibrary
             listener.Start();
         }
 
-        public async Task<ClientManager> Accept()
+        public async Task<ClientInfo> Accept()
         {
             logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
@@ -124,7 +124,7 @@ namespace SampleLibrary
             {
                 TcpClient client = await listener.AcceptTcpClientAsync();
 
-                ClientManager mgr = new ClientManager(client);
+                ClientInfo mgr = new ClientInfo(client);
 
                 // 接続先(クライアント)
                 string clientIp = mgr.GetClientIp();
@@ -247,7 +247,7 @@ namespace SampleLibrary
 
         public void SendAll(string sendMsg)
         {
-            foreach (ClientManager mgr in dicClient.Values)
+            foreach (ClientInfo mgr in dicClient.Values)
             {
                 TcpClient tcpClient = mgr.Client;
                 Send(tcpClient, sendMsg);
@@ -256,7 +256,7 @@ namespace SampleLibrary
 
         public void SendTarget(string targetClientIpAndPort, string sendMsg)
         {
-            ClientManager mgr = dicClient[targetClientIpAndPort];
+            ClientInfo mgr = dicClient[targetClientIpAndPort];
             TcpClient tcpClient = mgr.Client;
             Send(tcpClient, sendMsg);
         }
@@ -302,7 +302,7 @@ namespace SampleLibrary
                     listener.Stop();
 
                     // ClientのClose
-                    foreach (ClientManager mgr in dicClient.Values)
+                    foreach (ClientInfo mgr in dicClient.Values)
                     {
                         TcpClient client = mgr.Client;
                         client.GetStream().Close();

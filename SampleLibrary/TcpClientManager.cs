@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SampleLibrary
 {
-    public class TcpClientUtility : IDisposable
+    public class TcpClientManager : IDisposable
     {
         private readonly Logger logger;
 
@@ -28,7 +28,7 @@ namespace SampleLibrary
         ///// </summary>
         //private BlockingCollection<string> _que = new BlockingCollection<string>();
 
-        public TcpClientUtility(string ipString = null, int port = 2001, string encoding = "UTF-8")
+        public TcpClientManager(string ipString = null, int port = 2001, string encoding = "UTF-8")
         {
             logger = Logger.GetInstance(GetType().Name);
             logger.WriteLine(MethodBase.GetCurrentMethod().Name);

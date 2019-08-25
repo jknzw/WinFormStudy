@@ -22,7 +22,7 @@ namespace Sample
 
         private Task readLoopTask = null;
 
-        public TcpClientUtility TcpClientUtil { get; set; } = null;
+        public TcpClientManager TcpClientUtil { get; set; } = null;
         public CancellationTokenSource ReadCancelTokenSource { get; set; } = null;
 
         public Logger Logger { get; } = null;
@@ -118,13 +118,13 @@ namespace Sample
 
             try
             {
-                TcpClientUtil = new TcpClientUtility(ip, port);
+                TcpClientUtil = new TcpClientManager(ip, port);
 
                 listViewLog.Items.Add($"接続しました。{TcpClientUtil.GetClientIpAndPort()}->{TcpClientUtil.GetServerIpAndPort()}");
 
                 // 名前を送信
                 string name = tboxName.Text;
-                TcpMessageManager mgr = new TcpMessageManager(TcpMessageManager.HeaderConnect, name, TcpMessageManager.TargetAll, name);
+                TcpMessageUtility mgr = new TcpMessageUtility(TcpMessageUtility.HeaderConnect, name, TcpMessageUtility.TargetAll, name);
                 TcpClientUtil.Send(mgr.GetSendMessage());
             }
             catch (SocketException ex)
@@ -160,10 +160,10 @@ namespace Sample
                         {
                             Logger.WriteLine(text);
 
-                            TcpMessageManager mgr = new TcpMessageManager(text);
+                            TcpMessageUtility mgr = new TcpMessageUtility(text);
                             switch (mgr.Header)
                             {
-                                case TcpMessageManager.HeaderConnect:
+                                case TcpMessageUtility.HeaderConnect:
                                     // 申請した名前が登録できたか判定する
                                     // Connect,IP:Port,送信した名前,登録した名前
                                     if (TcpClientUtil.GetClientIpAndPort().Equals(mgr.SendFromTarget))
@@ -195,7 +195,7 @@ namespace Sample
                                         cboxTarget.Items.Add(mgr.Value);
                                     }));
                                     break;
-                                case TcpMessageManager.HeaderName:
+                                case TcpMessageUtility.HeaderName:
                                     // リストに追加する
                                     Invoke((Action)(() =>
                                     {
@@ -203,13 +203,13 @@ namespace Sample
                                         cboxTarget.Items.Add(mgr.Value);
                                     }));
                                     break;
-                                case TcpMessageManager.HeaderTargetMsg:
+                                case TcpMessageUtility.HeaderTargetMsg:
                                     Invoke((Action)(() =>
                                     {
                                         listViewLog.Items.Add(mgr.GetRecvTargetMessage());
                                     }));
                                     break;
-                                case TcpMessageManager.HeaderAllMsg:
+                                case TcpMessageUtility.HeaderAllMsg:
                                 default:
                                     Invoke((Action)(() =>
                                     {
@@ -304,14 +304,14 @@ namespace Sample
             string sendMsg = tboxMessage.Text;
             string toName = cboxTarget.Text;
             string fromName = tboxName.Text;
-            TcpMessageManager mgr;
+            TcpMessageUtility mgr;
             if (toName.Equals("全員"))
             {
-                mgr = new TcpMessageManager(TcpMessageManager.HeaderAllMsg, fromName, TcpMessageManager.TargetAll, sendMsg);
+                mgr = new TcpMessageUtility(TcpMessageUtility.HeaderAllMsg, fromName, TcpMessageUtility.TargetAll, sendMsg);
             }
             else
             {
-                mgr = new TcpMessageManager(TcpMessageManager.HeaderTargetMsg, fromName, toName, sendMsg);
+                mgr = new TcpMessageUtility(TcpMessageUtility.HeaderTargetMsg, fromName, toName, sendMsg);
             }
 
             if (!TcpClientUtil.Send(mgr.GetSendMessage()))

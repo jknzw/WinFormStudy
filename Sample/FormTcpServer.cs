@@ -24,10 +24,10 @@ namespace Sample
         /// [key]名前 or IP:Port
         /// [Value] TcpServerUtility.ClientManager
         /// </summary>
-        private readonly Dictionary<string, TcpServerUtility.ClientManager> dicTcpClient = new Dictionary<string, TcpServerUtility.ClientManager>();
+        private readonly Dictionary<string, TcpServerManager.ClientInfo> dicTcpClient = new Dictionary<string, TcpServerManager.ClientInfo>();
         private readonly int taskTimeOut = 10 * 1000;
 
-        public TcpServerUtility TcpServerUtil { get; set; } = null;
+        public TcpServerManager TcpServerUtil { get; set; } = null;
 
         public Logger Logger { get; } = null;
         public CancellationTokenSource CancelTokenSource { get; set; } = null;
@@ -121,7 +121,7 @@ namespace Sample
             // Listen
             string ip = tboxIP.Text;
             int.TryParse(tboxPort.Text, out int port);
-            TcpServerUtil = new TcpServerUtility(ip, port);
+            TcpServerUtil = new TcpServerManager(ip, port);
 
             listViewLog.Items.Add($"Listenを開始しました。IP[{ip}] Port[{port}]");
 
@@ -145,7 +145,7 @@ namespace Sample
             {
                 while (!cToken.IsCancellationRequested)
                 {
-                    TcpServerUtility.ClientManager mgr = await TcpServerUtil.Accept().ConfigureAwait(false);
+                    TcpServerManager.ClientInfo mgr = await TcpServerUtil.Accept().ConfigureAwait(false);
 
                     string acceptClientName = mgr.GetClientIpAndPort();
 
@@ -160,7 +160,7 @@ namespace Sample
                     // 既に接続してるメンバー情報を送信
                     foreach (string clientName in dicTcpClient.Keys)
                     {
-                        TcpMessageManager sendMsgMgr = new TcpMessageManager(TcpMessageManager.HeaderName, clientName, acceptClientName, clientName);
+                        TcpMessageUtility sendMsgMgr = new TcpMessageUtility(TcpMessageUtility.HeaderName, clientName, acceptClientName, clientName);
                         TcpServerUtil.SendTarget(mgr.GetClientIpAndPort(), sendMsgMgr.GetSendMessage());
                     }
 
@@ -175,7 +175,7 @@ namespace Sample
             Logger.EndMethod(nameof(AcceptLoop));
         }
 
-        private async Task ReadLoop(TcpServerUtility.ClientManager tcpClientMgr, CancellationToken cToken)
+        private async Task ReadLoop(TcpServerManager.ClientInfo tcpClientMgr, CancellationToken cToken)
         {
             Logger.StartMethod(nameof(ReadLoop));
 
@@ -199,11 +199,11 @@ namespace Sample
                                 listViewLog.Items.Add($"[Read]{text}");
                             }));
 
-                            TcpMessageManager recvMsgMgr = new TcpMessageManager(text);
-                            TcpMessageManager sendMsgMgr;
+                            TcpMessageUtility recvMsgMgr = new TcpMessageUtility(text);
+                            TcpMessageUtility sendMsgMgr;
                             switch (recvMsgMgr.Header)
                             {
-                                case TcpMessageManager.HeaderConnect:
+                                case TcpMessageUtility.HeaderConnect:
                                     // 名前設定
                                     // 辞書のキーの変更
                                     dicTcpClient.Remove(tcpClientMgr.GetClientIpAndPort());
@@ -238,12 +238,12 @@ namespace Sample
 
                                     // 全体に接続情報を送信
                                     // Connect,IP:Port,受信した名前,登録した名前
-                                    sendMsgMgr = new TcpMessageManager(TcpMessageManager.HeaderConnect, tcpClientMgr.GetClientIpAndPort(), recvMsgMgr.Value, tcpClientMgr.Name);
+                                    sendMsgMgr = new TcpMessageUtility(TcpMessageUtility.HeaderConnect, tcpClientMgr.GetClientIpAndPort(), recvMsgMgr.Value, tcpClientMgr.Name);
                                     TcpServerUtil.SendAll(sendMsgMgr.GetSendMessage());
                                     break;
-                                case TcpMessageManager.HeaderTargetMsg:
+                                case TcpMessageUtility.HeaderTargetMsg:
                                     // 送信元を設定
-                                    sendMsgMgr = new TcpMessageManager(TcpMessageManager.HeaderTargetMsg, tcpClientMgr.Name, recvMsgMgr.SendToTarget, recvMsgMgr.Value);
+                                    sendMsgMgr = new TcpMessageUtility(TcpMessageUtility.HeaderTargetMsg, tcpClientMgr.Name, recvMsgMgr.SendToTarget, recvMsgMgr.Value);
 
                                     Invoke((Action)(() =>
                                     {
@@ -260,10 +260,10 @@ namespace Sample
                                     string fromTarget = tcpClientMgr.GetClientIpAndPort();
                                     TcpServerUtil.SendTarget(fromTarget, sendMsgMgr.GetSendMessage());
                                     break;
-                                case TcpMessageManager.HeaderAllMsg:
+                                case TcpMessageUtility.HeaderAllMsg:
                                 default:
                                     // 送信元を設定
-                                    sendMsgMgr = new TcpMessageManager(TcpMessageManager.HeaderAllMsg, tcpClientMgr.Name, recvMsgMgr.SendToTarget, recvMsgMgr.Value);
+                                    sendMsgMgr = new TcpMessageUtility(TcpMessageUtility.HeaderAllMsg, tcpClientMgr.Name, recvMsgMgr.SendToTarget, recvMsgMgr.Value);
 
                                     Invoke((Action)(() =>
                                     {
@@ -347,14 +347,14 @@ namespace Sample
             string fromName = tboxName.Text;
             string toName = cboxTarget.Text;
 
-            TcpMessageManager sendMsgMgr;
+            TcpMessageUtility sendMsgMgr;
             if (toName.Equals("全員"))
             {
-                sendMsgMgr = new TcpMessageManager(TcpMessageManager.HeaderAllMsg, fromName, TcpMessageManager.TargetAll, sendMsg);
+                sendMsgMgr = new TcpMessageUtility(TcpMessageUtility.HeaderAllMsg, fromName, TcpMessageUtility.TargetAll, sendMsg);
             }
             else
             {
-                sendMsgMgr = new TcpMessageManager(TcpMessageManager.HeaderTargetMsg, fromName, toName, sendMsg);
+                sendMsgMgr = new TcpMessageUtility(TcpMessageUtility.HeaderTargetMsg, fromName, toName, sendMsg);
             }
 
             TcpServerUtil.SendAll(sendMsgMgr.GetSendMessage());
@@ -455,7 +455,7 @@ namespace Sample
             {
                 waitTasks.Add(acceptLoopTask);
             }
-            foreach (TcpServerUtility.ClientManager mgr in dicTcpClient.Values)
+            foreach (TcpServerManager.ClientInfo mgr in dicTcpClient.Values)
             {
                 waitTasks.Add(mgr.ReadTask);
             }
