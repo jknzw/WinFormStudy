@@ -7,22 +7,22 @@ namespace SampleLibrary
 {
     public class MySQLManager : IDataBaseManager
     {
-        public int BeginTransaction()
+        public void BeginTransaction()
         {
             throw new NotImplementedException();
         }
 
-        public int Close()
+        public void Close()
         {
             throw new NotImplementedException();
         }
 
-        public int Commit()
+        public void Commit()
         {
             throw new NotImplementedException();
         }
 
-        public int Connect()
+        public void Connect()
         {
             throw new NotImplementedException();
         }
@@ -37,7 +37,7 @@ namespace SampleLibrary
             throw new NotImplementedException();
         }
 
-        public int RollBack()
+        public void RollBack()
         {
             throw new NotImplementedException();
         }

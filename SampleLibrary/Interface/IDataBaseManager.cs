@@ -7,18 +7,18 @@ namespace SampleLibrary
 {
     interface IDataBaseManager : IDisposable
     {
-        int Connect();
+        void Connect();
 
-        int BeginTransaction();
+        void BeginTransaction();
 
         DataTable Fill();
 
         int Execute();
 
-        int Commit();
+        void Commit();
 
-        int RollBack();
+        void RollBack();
 
-        int Close();
+        void Close();
     }
 }
