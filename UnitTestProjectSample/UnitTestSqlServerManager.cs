@@ -10,7 +10,7 @@ namespace UnitTestProjectSample
         [TestMethod]
         public void TestSQLServerConnect()
         {
-            using (SQLServerManager mgr = new SQLServerManager())
+            using (SQLServerUtility mgr = new SQLServerUtility())
             {
                 mgr.Connect();
                 mgr.BeginTransaction();

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace SampleLibrary
 {
-    public class SQLServerManager : IDataBaseManager
+    public class SQLServerUtility : IDataBaseUtility
     {
         private readonly string dataSource = "localhost";
         private readonly string dataBase = "SampleDb";
@@ -17,23 +17,31 @@ namespace SampleLibrary
         private SqlConnection con;
         private SqlTransaction tran;
 
-        private readonly Logger logger = Logger.GetInstance(nameof(SQLServerManager));
-        public SQLServerManager()
+        private readonly Logger logger;
+
+        public SQLServerUtility()
         {
+            logger = Logger.GetInstance(nameof(SQLServerUtility));
         }
 
         public void BeginTransaction()
         {
+            logger.StartMethod(MethodBase.GetCurrentMethod().Name);
+
             tran = con.BeginTransaction();
         }
 
         public void Commit()
         {
+            logger.StartMethod(MethodBase.GetCurrentMethod().Name);
+
             tran.Commit();
         }
 
         public void Connect()
         {
+            logger.StartMethod(MethodBase.GetCurrentMethod().Name);
+
             string conStr = $@"Data Source={dataSource};"
                 + $@"Initial Catalog={dataBase};"
                 + $@"Connect Timeout=60;Persist Security Info=True;"
@@ -44,22 +52,39 @@ namespace SampleLibrary
             con.Open();
         }
 
-        public int Execute()
+        public int Execute(string sql, Dictionary<string, dynamic> parameters)
         {
-            throw new NotImplementedException();
+            logger.StartMethod(MethodBase.GetCurrentMethod().Name);
+
+            // SQLの実行
+            SqlCommand command = new SqlCommand(sql, con);
+
+            foreach (string key in parameters.Keys)
+            {
+                SqlParameter parameter = new SqlParameter($"@{key}", parameters[key]);
+                command.Parameters.Add(parameter);
+            }
+
+            return command.ExecuteNonQuery();
         }
 
         public DataTable Fill()
         {
+            logger.StartMethod(MethodBase.GetCurrentMethod().Name);
+
             throw new NotImplementedException();
         }
 
         public void RollBack()
         {
+            logger.StartMethod(MethodBase.GetCurrentMethod().Name);
+
             tran.Rollback();
         }
         public void Close()
         {
+            logger.StartMethod(MethodBase.GetCurrentMethod().Name);
+
             tran.Rollback();
             tran.Dispose();
             con.Close();
@@ -71,6 +96,8 @@ namespace SampleLibrary
 
         protected virtual void Dispose(bool disposing)
         {
+            logger.StartMethod(MethodBase.GetCurrentMethod().Name, disposing.ToString());
+
             if (!disposedValue)
             {
                 if (disposing)

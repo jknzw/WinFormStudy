@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SampleLibrary
 {
-    interface IDataBaseManager : IDisposable
+    interface IDataBaseUtility : IDisposable
     {
         void Connect();
 
@@ -13,7 +13,7 @@ namespace SampleLibrary
 
         DataTable Fill();
 
-        int Execute();
+        int Execute(string sql, Dictionary<string, dynamic> parameters);
 
         void Commit();
 

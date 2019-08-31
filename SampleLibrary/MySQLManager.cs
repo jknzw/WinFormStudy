@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SampleLibrary
 {
-    public class MySQLManager : IDataBaseManager
+    public class MySQLManager : IDataBaseUtility
     {
         public void BeginTransaction()
         {
@@ -27,7 +27,7 @@ namespace SampleLibrary
             throw new NotImplementedException();
         }
 
-        public int Execute()
+        public int Execute(string sql, Dictionary<string, dynamic> parameters)
         {
             throw new NotImplementedException();
         }

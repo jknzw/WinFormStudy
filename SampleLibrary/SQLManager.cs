@@ -6,30 +6,30 @@ using System.Text;
 
 namespace SampleLibrary
 {
-    public class SQLService : ISQLService
+    public class SQLManager : ISQLManager
     {
         public enum DataBaseType
         {
             SQLServer,
         }
 
-        private IDataBaseManager mgr;
-        private Logger logger;
+        private IDataBaseUtility mgr;
+        private readonly Logger logger;
 
-        private SQLService()
+        private SQLManager()
         {
             logger = Logger.GetInstance(GetType().Name);
         }
-        public static SQLService GetInstance(DataBaseType type)
+        public static SQLManager GetInstance(DataBaseType type)
         {
-            SQLService service = new SQLService();
+            SQLManager service = new SQLManager();
             service.logger.StartMethod(MethodBase.GetCurrentMethod().Name);
 
             switch (type)
             {
                 case DataBaseType.SQLServer:
                 default:
-                    service.mgr = new SQLServerManager();
+                    service.mgr = new SQLServerUtility();
                     break;
             }
 
@@ -40,46 +40,45 @@ namespace SampleLibrary
             return service;
         }
 
-        public int Delete(string sql, List<(string key, dynamic value)> param)
+        public int Insert(string sql, Dictionary<string, dynamic> parameters)
+        {
+            logger.StartMethod(MethodBase.GetCurrentMethod().Name);
+
+            return Update(sql, parameters);
+        }
+
+        public DataTable Search(string sql, Dictionary<string, dynamic> parameters)
+        {
+            logger.StartMethod(MethodBase.GetCurrentMethod().Name);
+
+            throw new NotImplementedException();
+        }
+        public DataTable Lock(string sql, Dictionary<string, dynamic> parameters)
         {
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
 
             throw new NotImplementedException();
         }
 
-        public int Insert(string sql, List<(string key, dynamic value)> param)
+        public int Update(string sql, Dictionary<string, dynamic> parameters)
         {
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
 
-            throw new NotImplementedException();
+            return mgr.Execute(sql, parameters);
         }
 
-        public DataTable Lock(string sql, List<(string key, dynamic value)> param)
+        public int Delete(string sql, Dictionary<string, dynamic> parameters)
         {
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
 
-            throw new NotImplementedException();
+            return Update(sql, parameters);
         }
 
-        public DataTable Search(string sql, List<(string key, dynamic value)> param)
+        public int Call(string sql, Dictionary<string, dynamic> parameters)
         {
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
 
-            throw new NotImplementedException();
-        }
-
-        public int Update(string sql, List<(string key, dynamic value)> param)
-        {
-            logger.StartMethod(MethodBase.GetCurrentMethod().Name);
-
-            throw new NotImplementedException();
-        }
-
-        public int Call(string sql, List<(string key, dynamic value)> param)
-        {
-            logger.StartMethod(MethodBase.GetCurrentMethod().Name);
-
-            return 0;
+            return Update(sql, parameters);
         }
 
         public void Commit()
@@ -109,6 +108,8 @@ namespace SampleLibrary
                 {
                     // マネージ状態を破棄します (マネージ オブジェクト)。
                     mgr.Dispose();
+
+                    logger.Dispose();
                 }
 
                 // アンマネージ リソース (アンマネージ オブジェクト) を解放し、下のファイナライザーをオーバーライドします。
