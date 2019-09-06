@@ -85,5 +85,10 @@ namespace Sample
                 form.Dispose();
             }
         }
+
+        private void CustomButton7_Click(object sender, EventArgs e)
+        {
+            ShowDialog(new TestSqlForm());
+        }
     }
 }

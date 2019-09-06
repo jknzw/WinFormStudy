@@ -64,7 +64,7 @@ namespace Sample
         private void TestForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             // インスタンス破棄
-            log.Dispose();
+            log?.Dispose();
             log = null;
         }
     }

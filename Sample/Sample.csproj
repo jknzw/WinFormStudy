@@ -111,6 +111,12 @@
     <Compile Include="Service\Form1Service.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestSqlForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestSqlForm.Designer.cs">
+      <DependentUpon>TestSqlForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="TestForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -154,6 +160,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="TestSqlForm.resx">
+      <DependentUpon>TestSqlForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TestForm.resx">
       <DependentUpon>TestForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -193,6 +202,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Doc\kakeibo.sql" />
     <Content Include="Doc\memo.txt" />
     <Content Include="Doc\Sample.png" />
   </ItemGroup>

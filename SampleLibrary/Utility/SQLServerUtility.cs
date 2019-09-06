@@ -24,6 +24,14 @@ namespace SampleLibrary
             logger = Logger.GetInstance(nameof(SQLServerUtility));
         }
 
+        public SQLServerUtility(string dataSource, string dataBase, string userId, string password) : this()
+        {
+            this.dataSource = dataSource;
+            this.dataBase = dataBase;
+            this.userId = userId;
+            this.password = password;
+        }
+
         public void BeginTransaction()
         {
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
@@ -56,8 +64,15 @@ namespace SampleLibrary
         {
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
 
+            SqlCommand command = CreateCommand(sql, parameters);
+
+            return command.ExecuteNonQuery();
+        }
+
+        private SqlCommand CreateCommand(string sql, Dictionary<string, dynamic> parameters)
+        {
             // SQLの実行
-            SqlCommand command = new SqlCommand(sql, con);
+            SqlCommand command = new SqlCommand(sql, con, tran);
 
             foreach (string key in parameters.Keys)
             {
@@ -65,14 +80,25 @@ namespace SampleLibrary
                 command.Parameters.Add(parameter);
             }
 
-            return command.ExecuteNonQuery();
+            return command;
         }
 
-        public DataTable Fill()
+        public DataTable Fill(string sql, Dictionary<string, dynamic> parameters)
         {
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
 
-            throw new NotImplementedException();
+            DataTable dt = new DataTable();
+
+            SqlCommand command = CreateCommand(sql, parameters);
+
+            SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(command);
+
+            // ret:DataSet で正常に追加または更新された行数。 これには、行を返さないステートメントの影響を受ける行は含まれません。
+            int ret = sqlDataAdapter.Fill(dt);
+            sqlDataAdapter.Dispose();
+
+            logger.EndMethod(MethodBase.GetCurrentMethod().Name, $"ret:{ret}");
+            return dt;
         }
 
         public void RollBack()

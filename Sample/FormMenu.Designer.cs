@@ -34,6 +34,7 @@
             this.customButton4 = new WindowsFormsControlLibrary.CustomButton();
             this.customButton5 = new WindowsFormsControlLibrary.CustomButton();
             this.customButton6 = new WindowsFormsControlLibrary.CustomButton();
+            this.customButton7 = new WindowsFormsControlLibrary.CustomButton();
             this.SuspendLayout();
             // 
             // customButton1
@@ -81,7 +82,7 @@
             this.customButton5.Location = new System.Drawing.Point(117, 12);
             this.customButton5.Name = "customButton5";
             this.customButton5.Size = new System.Drawing.Size(99, 23);
-            this.customButton5.TabIndex = 0;
+            this.customButton5.TabIndex = 4;
             this.customButton5.Text = "FormTcpClient";
             this.customButton5.UseVisualStyleBackColor = true;
             this.customButton5.Click += new System.EventHandler(this.CustomButton5_Click);
@@ -91,10 +92,20 @@
             this.customButton6.Location = new System.Drawing.Point(117, 41);
             this.customButton6.Name = "customButton6";
             this.customButton6.Size = new System.Drawing.Size(99, 23);
-            this.customButton6.TabIndex = 0;
+            this.customButton6.TabIndex = 5;
             this.customButton6.Text = "FormTcpServer";
             this.customButton6.UseVisualStyleBackColor = true;
             this.customButton6.Click += new System.EventHandler(this.CustomButton6_Click);
+            // 
+            // customButton7
+            // 
+            this.customButton7.Location = new System.Drawing.Point(117, 99);
+            this.customButton7.Name = "customButton7";
+            this.customButton7.Size = new System.Drawing.Size(99, 23);
+            this.customButton7.TabIndex = 7;
+            this.customButton7.Text = "TestSqlForm";
+            this.customButton7.UseVisualStyleBackColor = true;
+            this.customButton7.Click += new System.EventHandler(this.CustomButton7_Click);
             // 
             // FormMenu
             // 
@@ -102,6 +113,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 161);
             this.Controls.Add(this.customButton2);
+            this.Controls.Add(this.customButton7);
             this.Controls.Add(this.customButton3);
             this.Controls.Add(this.customButton4);
             this.Controls.Add(this.customButton6);
@@ -122,5 +134,6 @@
         private WindowsFormsControlLibrary.CustomButton customButton4;
         private WindowsFormsControlLibrary.CustomButton customButton5;
         private WindowsFormsControlLibrary.CustomButton customButton6;
+        private WindowsFormsControlLibrary.CustomButton customButton7;
     }
 }

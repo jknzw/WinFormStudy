@@ -11,7 +11,7 @@ namespace SampleLibrary
 
         void BeginTransaction();
 
-        DataTable Fill();
+        DataTable Fill(string sql, Dictionary<string, dynamic> parameters);
 
         int Execute(string sql, Dictionary<string, dynamic> parameters);
 

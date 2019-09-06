@@ -32,7 +32,7 @@ namespace SampleLibrary
             throw new NotImplementedException();
         }
 
-        public DataTable Fill()
+        public DataTable Fill(string sql, Dictionary<string, dynamic> parameters)
         {
             throw new NotImplementedException();
         }
@@ -65,6 +65,7 @@ namespace SampleLibrary
         {
             Dispose(true);
         }
+
         #endregion
     }
 }

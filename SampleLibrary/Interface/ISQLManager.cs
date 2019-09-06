@@ -9,7 +9,7 @@ namespace SampleLibrary
 {
     public interface ISQLManager : IDisposable
     {
-        DataTable Search(string sql, Dictionary<string, dynamic> parameters);
+        DataTable Select(string sql, Dictionary<string, dynamic> parameters);
         int Insert(string sql, Dictionary<string, dynamic> parameters);
 
         DataTable Lock(string sql, Dictionary<string, dynamic> parameters);

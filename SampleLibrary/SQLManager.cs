@@ -13,14 +13,20 @@ namespace SampleLibrary
             SQLServer,
         }
 
-        private IDataBaseUtility mgr;
-        private readonly Logger logger;
+        private IDataBaseUtility dbUtil;
+        private Logger logger;
 
         private SQLManager()
         {
             logger = Logger.GetInstance(GetType().Name);
         }
-        public static SQLManager GetInstance(DataBaseType type)
+
+        public static SQLManager GetInstance(string dataSource, string dataBase, string userId, string password)
+        {
+            return GetInstance(DataBaseType.SQLServer, dataSource, dataBase, userId, password);
+        }
+
+        private static SQLManager GetInstance(DataBaseType type, string dataSource, string dataBase, string userId, string password)
         {
             SQLManager service = new SQLManager();
             service.logger.StartMethod(MethodBase.GetCurrentMethod().Name);
@@ -29,12 +35,12 @@ namespace SampleLibrary
             {
                 case DataBaseType.SQLServer:
                 default:
-                    service.mgr = new SQLServerUtility();
+                    service.dbUtil = new SQLServerUtility(dataSource, dataBase, userId, password);
                     break;
             }
 
-            service.mgr.Connect();
-            service.mgr.BeginTransaction();
+            service.dbUtil.Connect();
+            service.dbUtil.BeginTransaction();
 
             service.logger.EndMethod(MethodBase.GetCurrentMethod().Name);
             return service;
@@ -47,24 +53,24 @@ namespace SampleLibrary
             return Update(sql, parameters);
         }
 
-        public DataTable Search(string sql, Dictionary<string, dynamic> parameters)
+        public DataTable Select(string sql, Dictionary<string, dynamic> parameters)
         {
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
 
-            throw new NotImplementedException();
+            return dbUtil.Fill(sql, parameters);
         }
         public DataTable Lock(string sql, Dictionary<string, dynamic> parameters)
         {
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
 
-            throw new NotImplementedException();
+            return Select(sql, parameters);
         }
 
         public int Update(string sql, Dictionary<string, dynamic> parameters)
         {
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
 
-            return mgr.Execute(sql, parameters);
+            return dbUtil.Execute(sql, parameters);
         }
 
         public int Delete(string sql, Dictionary<string, dynamic> parameters)
@@ -78,6 +84,9 @@ namespace SampleLibrary
         {
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
 
+            // TODO:outパラメータを受け取る
+            // TODO:outパラメータにDictionaryを追加する
+
             return Update(sql, parameters);
         }
 
@@ -85,16 +94,16 @@ namespace SampleLibrary
         {
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
 
-            mgr.Commit();
-            mgr.BeginTransaction();
+            dbUtil.Commit();
+            dbUtil.BeginTransaction();
         }
 
         public void RollBack()
         {
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
 
-            mgr.RollBack();
-            mgr.BeginTransaction();
+            dbUtil.RollBack();
+            dbUtil.BeginTransaction();
         }
 
         #region IDisposable Support
@@ -107,14 +116,16 @@ namespace SampleLibrary
                 if (disposing)
                 {
                     // マネージ状態を破棄します (マネージ オブジェクト)。
-                    mgr.Dispose();
+                    dbUtil?.RollBack();
+                    dbUtil?.Dispose();
 
-                    logger.Dispose();
+                    logger?.Dispose();
                 }
 
                 // アンマネージ リソース (アンマネージ オブジェクト) を解放し、下のファイナライザーをオーバーライドします。
                 // 大きなフィールドを null に設定します。
-                mgr = null;
+                dbUtil = null;
+                logger = null;
 
                 disposedValue = true;
             }

@@ -15,6 +15,7 @@
         {
             if (disposing && (components != null))
             {
+                log?.Dispose();
                 components.Dispose();
             }
             base.Dispose(disposing);

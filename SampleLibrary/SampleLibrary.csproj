@@ -48,13 +48,13 @@
     <Compile Include="Interface\IFileManager.cs" />
     <Compile Include="Interface\ISQLManager.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="SQLServerUtility.cs" />
+    <Compile Include="Utility\SQLServerUtility.cs" />
     <Compile Include="MySQLManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReturnInfo.cs" />
     <Compile Include="SQLManager.cs" />
     <Compile Include="TcpClientManager.cs" />
-    <Compile Include="TcpMessageUtility.cs" />
+    <Compile Include="Utility\TcpMessageUtility.cs" />
     <Compile Include="TcpServerManager.cs" />
     <Compile Include="Utility\StringUtility.cs" />
   </ItemGroup>
