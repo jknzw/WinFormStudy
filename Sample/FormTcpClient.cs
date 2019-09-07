@@ -428,12 +428,12 @@ namespace Sample
         {
             // 受信キャンセル
             ReadCancelTokenSource.Cancel();
-            readLoopTask.Wait(10 * 1000);
-            readLoopTask.Dispose();
+            readLoopTask?.Wait(1 * 1000);
+            readLoopTask?.Dispose();
             readLoopTask = null;
 
             // TCP破棄
-            TcpClientUtil.Dispose();
+            TcpClientUtil?.Dispose();
             TcpClientUtil = null;
         }
         #endregion

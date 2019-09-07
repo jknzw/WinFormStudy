@@ -283,6 +283,7 @@ namespace SampleLibrary
                                 {
                                     if (_que.TryTake(out string item, 1 * 1000))
                                     {
+                                        // 書き終わるまで処理を待つ
                                         await sw.WriteLineAsync(item);
                                     }
                                     else

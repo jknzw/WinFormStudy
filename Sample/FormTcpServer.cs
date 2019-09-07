@@ -25,7 +25,7 @@ namespace Sample
         /// [Value] TcpServerUtility.ClientManager
         /// </summary>
         private readonly Dictionary<string, TcpServerManager.ClientInfo> dicTcpClient = new Dictionary<string, TcpServerManager.ClientInfo>();
-        private readonly int taskTimeOut = 10 * 1000;
+        private readonly int taskTimeOut = 1 * 1000;
 
         public TcpServerManager TcpServerUtil { get; set; } = null;
 
@@ -130,7 +130,7 @@ namespace Sample
             CancellationToken cToken = CancelTokenSource.Token;
 
             // Accept Loop Start
-            acceptLoopTask = Task.Run(() => AcceptLoop(cToken), cToken);
+            acceptLoopTask = AcceptLoop(cToken);
 
             // ボタンの有効無効を設定
             SetButtonEnabled(ActionMode.Listen);
@@ -145,7 +145,9 @@ namespace Sample
             {
                 while (!cToken.IsCancellationRequested)
                 {
+                    // Acceptを非同期待機
                     TcpServerManager.ClientInfo mgr = await TcpServerUtil.Accept().ConfigureAwait(false);
+                    // Accept完了後、後続処理が動く
 
                     string acceptClientName = mgr.GetClientIpAndPort();
 
@@ -155,7 +157,7 @@ namespace Sample
                     }));
 
                     // Read Loop Start
-                    mgr.ReadTask = Task.Run(() => ReadLoop(mgr, cToken), cToken);
+                    mgr.ReadTask = ReadLoop(mgr, cToken);
 
                     // 既に接続してるメンバー情報を送信
                     foreach (string clientName in dicTcpClient.Keys)
@@ -185,7 +187,7 @@ namespace Sample
                 while (!cToken.IsCancellationRequested)
                 {
                     // メッセージ受信
-                    string texts = await TcpServerUtil.ReadAsync(client, cToken);
+                    string texts = await TcpServerUtil.ReadAsync(client, cToken).ConfigureAwait(false);
 
                     if (texts != null)
                     {
