@@ -441,7 +441,7 @@ namespace Sample
         }
 
         #region Close
-        private void FormTcpServer_FormClosing(object sender, FormClosingEventArgs e)
+        private async void FormTcpServer_FormClosing(object sender, FormClosingEventArgs e)
         {
             CancelTokenSource?.Cancel();
 
@@ -458,10 +458,7 @@ namespace Sample
             {
                 waitTasks.Add(mgr.ReadTask);
             }
-            if (Task.WhenAll(waitTasks).Wait(taskTimeOut))
-            {
-                Logger.WriteLine("Task Timeout");
-            }
+            await Task.WhenAll(waitTasks);
 
             // Logger Dispose
             Logger?.Dispose();

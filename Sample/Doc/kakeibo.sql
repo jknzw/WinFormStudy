@@ -3,23 +3,23 @@
 
 create table kakeibo_rireki
 (
-	hiduke date,
+	hiduke date default getdate(),
 	naiyou varchar(20),
 	nyukin int,
 	shukkin int,
 	bikou varchar(200),
 	insuser varchar(20),
-	instime date,
+	instime datetime default getdate(),
 	upduser varchar(20),
-	updtime date,
+	updtime datetime default getdate()
 );
 
 create table kakeibo_zankin
 (
 	zankin int,
 	insuser varchar(20),
-	instime date,
+	instime datetime default getdate(),
 	upduser varchar(20),
-	updtime date,
+	updtime datetime default getdate(),
 );
 

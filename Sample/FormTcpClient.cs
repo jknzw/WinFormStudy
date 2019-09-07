@@ -227,6 +227,7 @@ namespace Sample
                         {
                             listViewLog.Items.Add("切断されました。");
                         }));
+                        break;
                     }
                 }
             }
