@@ -116,7 +116,7 @@ namespace SampleLibrary
             listener.Start();
         }
 
-        public async Task<ClientInfo> Accept()
+        public async Task<ClientInfo> AcceptAsync()
         {
             logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 

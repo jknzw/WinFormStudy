@@ -146,7 +146,7 @@ namespace Sample
                 while (!cToken.IsCancellationRequested)
                 {
                     // Acceptを非同期待機
-                    TcpServerManager.ClientInfo mgr = await TcpServerUtil.Accept().ConfigureAwait(false);
+                    TcpServerManager.ClientInfo mgr = await TcpServerUtil.AcceptAsync().ConfigureAwait(false);
                     // Accept完了後、後続処理が動く
 
                     string acceptClientName = mgr.GetClientIpAndPort();
@@ -159,15 +159,12 @@ namespace Sample
                     // Read Loop Start
                     mgr.ReadTask = ReadLoop(mgr, cToken);
 
-                    // 既に接続してるメンバー情報を送信
+                    // 接続してきたクライアントに対し、既に接続している他のクライアントの情報を送信
                     foreach (string clientName in dicTcpClient.Keys)
                     {
                         TcpMessageUtility sendMsgMgr = new TcpMessageUtility(TcpMessageUtility.HeaderName, clientName, acceptClientName, clientName);
                         TcpServerUtil.SendTarget(mgr.GetClientIpAndPort(), sendMsgMgr.GetSendMessage());
                     }
-
-                    // 管理用辞書に追加
-                    dicTcpClient.Add(acceptClientName, mgr);
                 }
             }
             catch (Exception ex)

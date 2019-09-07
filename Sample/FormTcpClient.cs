@@ -137,14 +137,15 @@ namespace Sample
             // Task停止用のトークン発行
             ReadCancelTokenSource = new CancellationTokenSource();
             CancellationToken cToken = ReadCancelTokenSource.Token;
-            readLoopTask = Task.Run(() => ReadLoop(cToken), cToken);
+            readLoopTask = ReadLoop(cToken);
+            readLoopTask.ConfigureAwait(false);
 
             // ボタンの有効無効を設定
             SetControlEnabled(ActionMode.Connect);
             // ▲▲▲ 業務処理 ▲▲▲
         }
 
-        private async void ReadLoop(CancellationToken cToken)
+        private async Task ReadLoop(CancellationToken cToken)
         {
             Logger.WriteLine(MethodBase.GetCurrentMethod().Name);
 
@@ -152,7 +153,7 @@ namespace Sample
             {
                 while (!cToken.IsCancellationRequested)
                 {
-                    string texts = await TcpClientUtil.ReadAsync(cToken);
+                    string texts = await TcpClientUtil.ReadAsync(cToken).ConfigureAwait(false);
 
                     if (texts != null)
                     {
@@ -225,9 +226,7 @@ namespace Sample
                         Invoke((Action)(() =>
                         {
                             listViewLog.Items.Add("切断されました。");
-                            CloseAndInit();
                         }));
-                        return;
                     }
                 }
             }
@@ -424,17 +423,19 @@ namespace Sample
             SetControlEnabled(ActionMode.Init);
         }
 
-        private void CloseTcpClient()
+        private async void CloseTcpClient()
         {
-            // 受信キャンセル
-            ReadCancelTokenSource.Cancel();
-            readLoopTask?.Wait(1 * 1000);
-            readLoopTask?.Dispose();
-            readLoopTask = null;
-
             // TCP破棄
             TcpClientUtil?.Dispose();
             TcpClientUtil = null;
+
+            // キャンセル
+            ReadCancelTokenSource.Cancel();
+
+            // 受信スレッド終了待ち
+            await readLoopTask;
+            readLoopTask?.Dispose();
+            readLoopTask = null;
         }
         #endregion
     }
