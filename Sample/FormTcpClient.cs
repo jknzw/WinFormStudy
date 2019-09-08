@@ -86,10 +86,12 @@ namespace Sample
                     buttonF5.Enabled = true;
                     break;
                 case ActionMode.Init:
-                default:
                     buttonF1.Enabled = true;
                     buttonF2.Enabled = false;
                     buttonF5.Enabled = false;
+                    break;
+                default:
+                    Debug.Assert(false);
                     break;
             }
         }
@@ -129,6 +131,7 @@ namespace Sample
             }
             catch (SocketException ex)
             {
+                Debug.WriteLine(ex.ToString());
                 listViewLog.Items.Add(ex.Message);
                 return;
             }
@@ -231,21 +234,30 @@ namespace Sample
                     }
                 }
             }
-            catch (Exception ex)
+            catch (ObjectDisposedException ex) // EOF.
             {
-                try
+                Debug.WriteLine(ex.ToString());
+                Invoke((Action)(() =>
                 {
-                    Invoke((Action)(() =>
-                    {
-                        listViewLog.Items.Add(ex.Message);
-                    }));
-                }
-                catch (Exception ex2)
-                {
-                    Debug.WriteLine(ex.Message);
-                    Debug.WriteLine(ex2.Message);
-                }
+                    listViewLog.Items.Add("切断されました。");
+                }));
             }
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine(ex.ToString());
+            //    try
+            //    {
+            //        Invoke((Action)(() =>
+            //        {
+            //            listViewLog.Items.Add(ex.Message);
+            //        }));
+            //    }
+            //    catch (Exception ex2)
+            //    {
+            //        Debug.WriteLine(ex.Message);
+            //        Debug.WriteLine(ex2.Message);
+            //    }
+            //}
         }
 
         /// <summary>
@@ -257,7 +269,10 @@ namespace Sample
         {
             base.ButtonF2_Click(sender, e);
             // ▼▼▼ 業務処理 ▼▼▼
-
+            ReadCancelTokenSource.Cancel();
+            TcpClientUtil.Dispose();
+            TcpClientUtil = null;
+            SetControlEnabled(ActionMode.Init);
             // ▲▲▲ 業務処理 ▲▲▲
         }
 
@@ -439,5 +454,6 @@ namespace Sample
             readLoopTask = null;
         }
         #endregion
+
     }
 }

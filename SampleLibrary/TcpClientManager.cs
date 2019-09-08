@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -220,7 +221,8 @@ namespace SampleLibrary
             catch (SocketException ex)
             {
                 ret = false;
-                logger.WriteLine(ex.Message);
+                Debug.Print(ex.ToString());
+                logger.WriteLine(ex.ToString());
             }
             return ret;
         }

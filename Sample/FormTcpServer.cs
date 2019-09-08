@@ -169,6 +169,7 @@ namespace Sample
             }
             catch (Exception ex)
             {
+                Debug.WriteLine(ex.ToString());
                 Logger.WriteException(nameof(AcceptLoop), ex);
             }
             Logger.EndMethod(nameof(AcceptLoop));
@@ -279,12 +280,16 @@ namespace Sample
                     {
                         // 切断
                         Logger.WriteLine(nameof(ReadLoop), "切断されました。");
+                        string deleteTargetIpAndPort = tcpClientMgr.GetClientIpAndPort();
+                        _ = dicTcpClient.Remove(deleteTargetIpAndPort);
+                        TcpServerUtil.Delete(deleteTargetIpAndPort);
                         return;
                     }
                 }
             }
             catch (Exception ex)
             {
+                Debug.WriteLine(ex.ToString());
                 Logger.WriteException(nameof(ReadLoop), ex);
             }
 
