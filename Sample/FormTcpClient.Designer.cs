@@ -146,6 +146,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listViewLog.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colHeaderLog});
+            this.listViewLog.HideSelection = false;
             this.listViewLog.Location = new System.Drawing.Point(13, 36);
             this.listViewLog.Name = "listViewLog";
             this.listViewLog.Size = new System.Drawing.Size(803, 423);

@@ -150,9 +150,17 @@ namespace SampleLibrary
             }
             catch (SocketException ex)
             {
-                logger.WriteLine(ex.Message);
+                Debug.WriteLine(ex.ToString());
+                logger.WriteLine(ex.ToString());
             }
             return null;
+        }
+
+        public void Delete(String ipAndPort)
+        {
+            ClientInfo deleteTarget = dicClient[ipAndPort];
+            deleteTarget.Client.Dispose();
+            _ = dicClient.Remove(ipAndPort);
         }
 
         //private async void ReadLoopAsync(TcpClient client, CancellationToken token)
@@ -229,18 +237,22 @@ namespace SampleLibrary
 
                     //受信したデータを文字列に変換
                     resMsg = _enc.GetString(ms.GetBuffer(), 0, (int)ms.Length);
-
-                    // クローズ
-                    ms.Close();
+                    //// クローズ
+                    //ms.Close();
                 }
                 //末尾の\nを削除
                 resMsg = resMsg.TrimEnd('\n');
 
                 logger.WriteLine($"受信MSG[{resMsg}]");
             }
+            catch (ObjectDisposedException)
+            { // EOF!
+                return null;
+            }
             catch (Exception ex)
             {
-                logger.WriteLine(ex.Message);
+                Debug.WriteLine(ex.ToString());
+                logger.WriteLine(ex.ToString());
             }
             return resMsg;
         }
