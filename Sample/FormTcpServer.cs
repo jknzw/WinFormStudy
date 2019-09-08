@@ -25,7 +25,6 @@ namespace Sample
         /// [Value] TcpServerUtility.ClientManager
         /// </summary>
         private readonly Dictionary<string, TcpServerManager.ClientInfo> dicTcpClient = new Dictionary<string, TcpServerManager.ClientInfo>();
-        private readonly int taskTimeOut = 1 * 1000;
 
         public TcpServerManager TcpServerUtil { get; set; } = null;
 
@@ -340,24 +339,34 @@ namespace Sample
         protected override void ButtonF5_Click(object sender, EventArgs e)
         {
             base.ButtonF5_Click(sender, e);
-            // ▼▼▼ 業務処理 ▼▼▼
-
-            string sendMsg = tboxMessage.Text;
-            string fromName = tboxName.Text;
-            string toName = cboxTarget.Text;
-
-            TcpMessageUtility sendMsgMgr;
-            if (toName.Equals("全員"))
+            try
             {
-                sendMsgMgr = new TcpMessageUtility(TcpMessageUtility.HeaderAllMsg, fromName, TcpMessageUtility.TargetAll, sendMsg);
-            }
-            else
-            {
-                sendMsgMgr = new TcpMessageUtility(TcpMessageUtility.HeaderTargetMsg, fromName, toName, sendMsg);
-            }
+                // ▼▼▼ 業務処理 ▼▼▼
 
-            TcpServerUtil.SendAll(sendMsgMgr.GetSendMessage());
-            // ▲▲▲ 業務処理 ▲▲▲
+                string sendMsg = tboxMessage.Text;
+                string fromName = tboxName.Text;
+                string toName = cboxTarget.Text;
+
+                TcpMessageUtility sendMsgMgr;
+                if (toName.Equals("全員"))
+                {
+                    sendMsgMgr = new TcpMessageUtility(TcpMessageUtility.HeaderAllMsg, fromName, TcpMessageUtility.TargetAll, sendMsg);
+                }
+                else
+                {
+                    sendMsgMgr = new TcpMessageUtility(TcpMessageUtility.HeaderTargetMsg, fromName, toName, sendMsg);
+                }
+
+                TcpServerUtil.SendAll(sendMsgMgr.GetSendMessage());
+
+                // 画面上にログを追加
+                listViewLog.Items.Add(sendMsgMgr.GetRecvTargetMessage());
+                // ▲▲▲ 業務処理 ▲▲▲
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteException(MethodBase.GetCurrentMethod().Name, ex);
+            }
         }
 
         #region F6～F10 未使用
@@ -458,7 +467,8 @@ namespace Sample
             {
                 waitTasks.Add(mgr.ReadTask);
             }
-            await Task.WhenAll(waitTasks);
+
+            await Task.WhenAll(waitTasks).ConfigureAwait(false);
 
             // Logger Dispose
             Logger?.Dispose();

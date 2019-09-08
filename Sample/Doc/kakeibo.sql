@@ -3,23 +3,25 @@
 
 create table kakeibo_rireki
 (
-	hiduke date default getdate(),
-	naiyou varchar(20),
+	seq int IDENTITY(1,1) not null primary key, -- yyyyMMddHHmmss + seq6Œ…
+	hiduke date default getdate() not null,
+	naiyou varchar(255),
 	nyukin int,
 	shukkin int,
-	bikou varchar(200),
-	insuser varchar(20),
+	zankin int,
+	bikou varchar(255),
+	insuser varchar(255),
 	instime datetime default getdate(),
-	upduser varchar(20),
+	upduser varchar(255),
 	updtime datetime default getdate()
 );
 
 create table kakeibo_zankin
 (
 	zankin int,
-	insuser varchar(20),
+	insuser varchar(255),
 	instime datetime default getdate(),
-	upduser varchar(20),
+	upduser varchar(255),
 	updtime datetime default getdate(),
 );
 

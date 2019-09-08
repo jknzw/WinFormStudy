@@ -15,7 +15,7 @@ namespace SampleLibrary
         private readonly string password = "1234SampleUser";
 
         private SqlConnection con;
-        private SqlTransaction tran;
+        private SqlTransaction tran = null;
 
         private readonly Logger logger;
 
@@ -44,6 +44,8 @@ namespace SampleLibrary
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
 
             tran.Commit();
+            tran.Dispose();
+            tran = null;
         }
 
         public void Connect()
@@ -74,10 +76,13 @@ namespace SampleLibrary
             // SQLの実行
             SqlCommand command = new SqlCommand(sql, con, tran);
 
-            foreach (string key in parameters.Keys)
+            if (parameters != null)
             {
-                SqlParameter parameter = new SqlParameter($"@{key}", parameters[key]);
-                command.Parameters.Add(parameter);
+                foreach (string key in parameters.Keys)
+                {
+                    SqlParameter parameter = new SqlParameter($"@{key}", parameters[key]);
+                    command.Parameters.Add(parameter);
+                }
             }
 
             return command;
@@ -93,11 +98,12 @@ namespace SampleLibrary
 
             SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(command);
 
-            // ret:DataSet で正常に追加または更新された行数。 これには、行を返さないステートメントの影響を受ける行は含まれません。
             int ret = sqlDataAdapter.Fill(dt);
             sqlDataAdapter.Dispose();
 
+            // ret : 正常に追加または更新された行数。 行を返さないステートメントの影響を受ける行は含まれない。
             logger.EndMethod(MethodBase.GetCurrentMethod().Name, $"ret:{ret}");
+
             return dt;
         }
 
@@ -106,13 +112,15 @@ namespace SampleLibrary
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
 
             tran.Rollback();
+            tran.Dispose();
+            tran = null;
         }
         public void Close()
         {
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
 
-            tran.Rollback();
-            tran.Dispose();
+            tran?.Rollback();
+            tran?.Dispose();
             con.Close();
             con.Dispose();
         }

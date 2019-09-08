@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SampleLibrary
 {
-    public class MySQLManager : IDataBaseUtility
+    public class MySQLUtility : IDataBaseUtility
     {
         public void BeginTransaction()
         {

@@ -70,6 +70,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormKakeiboS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormKakeiboS.Designer.cs">
+      <DependentUpon>FormKakeiboS.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormTcpServer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -107,6 +113,7 @@
       <DependentUpon>FormSample.cs</DependentUpon>
     </Compile>
     <Compile Include="ProgramDiffBmp.cs" />
+    <Compile Include="Service\FormKakeiboSqlService.cs" />
     <Compile Include="Service\FormKakeiboService.cs" />
     <Compile Include="Service\Form1Service.cs" />
     <Compile Include="Program.cs" />
@@ -132,6 +139,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormKakeiboS.resx">
+      <DependentUpon>FormKakeiboS.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormTcpServer.resx">
       <DependentUpon>FormTcpServer.cs</DependentUpon>

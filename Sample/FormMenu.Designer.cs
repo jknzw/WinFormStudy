@@ -28,24 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.customButton1 = new WindowsFormsControlLibrary.CustomButton();
             this.customButton2 = new WindowsFormsControlLibrary.CustomButton();
+            this.customButton7 = new WindowsFormsControlLibrary.CustomButton();
             this.customButton3 = new WindowsFormsControlLibrary.CustomButton();
             this.customButton4 = new WindowsFormsControlLibrary.CustomButton();
-            this.customButton5 = new WindowsFormsControlLibrary.CustomButton();
             this.customButton6 = new WindowsFormsControlLibrary.CustomButton();
-            this.customButton7 = new WindowsFormsControlLibrary.CustomButton();
+            this.customButton5 = new WindowsFormsControlLibrary.CustomButton();
+            this.customButton1 = new WindowsFormsControlLibrary.CustomButton();
+            this.customButton8 = new WindowsFormsControlLibrary.CustomButton();
             this.SuspendLayout();
-            // 
-            // customButton1
-            // 
-            this.customButton1.Location = new System.Drawing.Point(12, 12);
-            this.customButton1.Name = "customButton1";
-            this.customButton1.Size = new System.Drawing.Size(99, 23);
-            this.customButton1.TabIndex = 0;
-            this.customButton1.Text = "Form1";
-            this.customButton1.UseVisualStyleBackColor = true;
-            this.customButton1.Click += new System.EventHandler(this.CustomButton1_Click);
             // 
             // customButton2
             // 
@@ -56,6 +47,16 @@
             this.customButton2.Text = "FormDiffBmp";
             this.customButton2.UseVisualStyleBackColor = true;
             this.customButton2.Click += new System.EventHandler(this.CustomButton2_Click);
+            // 
+            // customButton7
+            // 
+            this.customButton7.Location = new System.Drawing.Point(117, 99);
+            this.customButton7.Name = "customButton7";
+            this.customButton7.Size = new System.Drawing.Size(99, 23);
+            this.customButton7.TabIndex = 7;
+            this.customButton7.Text = "TestSqlForm";
+            this.customButton7.UseVisualStyleBackColor = true;
+            this.customButton7.Click += new System.EventHandler(this.CustomButton7_Click);
             // 
             // customButton3
             // 
@@ -77,16 +78,6 @@
             this.customButton4.UseVisualStyleBackColor = true;
             this.customButton4.Click += new System.EventHandler(this.CustomButton4_Click);
             // 
-            // customButton5
-            // 
-            this.customButton5.Location = new System.Drawing.Point(117, 12);
-            this.customButton5.Name = "customButton5";
-            this.customButton5.Size = new System.Drawing.Size(99, 23);
-            this.customButton5.TabIndex = 4;
-            this.customButton5.Text = "FormTcpClient";
-            this.customButton5.UseVisualStyleBackColor = true;
-            this.customButton5.Click += new System.EventHandler(this.CustomButton5_Click);
-            // 
             // customButton6
             // 
             this.customButton6.Location = new System.Drawing.Point(117, 41);
@@ -97,15 +88,35 @@
             this.customButton6.UseVisualStyleBackColor = true;
             this.customButton6.Click += new System.EventHandler(this.CustomButton6_Click);
             // 
-            // customButton7
+            // customButton5
             // 
-            this.customButton7.Location = new System.Drawing.Point(117, 99);
-            this.customButton7.Name = "customButton7";
-            this.customButton7.Size = new System.Drawing.Size(99, 23);
-            this.customButton7.TabIndex = 7;
-            this.customButton7.Text = "TestSqlForm";
-            this.customButton7.UseVisualStyleBackColor = true;
-            this.customButton7.Click += new System.EventHandler(this.CustomButton7_Click);
+            this.customButton5.Location = new System.Drawing.Point(117, 12);
+            this.customButton5.Name = "customButton5";
+            this.customButton5.Size = new System.Drawing.Size(99, 23);
+            this.customButton5.TabIndex = 4;
+            this.customButton5.Text = "FormTcpClient";
+            this.customButton5.UseVisualStyleBackColor = true;
+            this.customButton5.Click += new System.EventHandler(this.CustomButton5_Click);
+            // 
+            // customButton1
+            // 
+            this.customButton1.Location = new System.Drawing.Point(12, 12);
+            this.customButton1.Name = "customButton1";
+            this.customButton1.Size = new System.Drawing.Size(99, 23);
+            this.customButton1.TabIndex = 0;
+            this.customButton1.Text = "Form1";
+            this.customButton1.UseVisualStyleBackColor = true;
+            this.customButton1.Click += new System.EventHandler(this.CustomButton1_Click);
+            // 
+            // customButton8
+            // 
+            this.customButton8.Location = new System.Drawing.Point(12, 128);
+            this.customButton8.Name = "customButton8";
+            this.customButton8.Size = new System.Drawing.Size(99, 23);
+            this.customButton8.TabIndex = 8;
+            this.customButton8.Text = "FormKakeiboS";
+            this.customButton8.UseVisualStyleBackColor = true;
+            this.customButton8.Click += new System.EventHandler(this.CustomButton8_Click);
             // 
             // FormMenu
             // 
@@ -115,6 +126,7 @@
             this.Controls.Add(this.customButton2);
             this.Controls.Add(this.customButton7);
             this.Controls.Add(this.customButton3);
+            this.Controls.Add(this.customButton8);
             this.Controls.Add(this.customButton4);
             this.Controls.Add(this.customButton6);
             this.Controls.Add(this.customButton5);
@@ -135,5 +147,6 @@
         private WindowsFormsControlLibrary.CustomButton customButton5;
         private WindowsFormsControlLibrary.CustomButton customButton6;
         private WindowsFormsControlLibrary.CustomButton customButton7;
+        private WindowsFormsControlLibrary.CustomButton customButton8;
     }
 }

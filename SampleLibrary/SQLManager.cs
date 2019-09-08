@@ -53,7 +53,7 @@ namespace SampleLibrary
             return Update(sql, parameters);
         }
 
-        public DataTable Select(string sql, Dictionary<string, dynamic> parameters)
+        public DataTable Select(string sql, Dictionary<string, dynamic> parameters = null)
         {
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
 
@@ -116,7 +116,6 @@ namespace SampleLibrary
                 if (disposing)
                 {
                     // マネージ状態を破棄します (マネージ オブジェクト)。
-                    dbUtil?.RollBack();
                     dbUtil?.Dispose();
 
                     logger?.Dispose();

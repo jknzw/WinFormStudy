@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,6 +51,19 @@ namespace Sample
                         break;
                     case DateTimePicker dateTimePicker:
                         list = list.Append((dateTimePicker.Name,dateTimePicker.Value));
+                        break;
+                    case DataGridView dataGridView:
+                        DataTable dt;
+                        switch(dataGridView.DataSource)
+                        {
+                            case BindingSource bs:
+                                dt = bs.DataSource as DataTable;
+                                break;
+                            default:
+                                dt = dataGridView.DataSource as DataTable;
+                                break;
+                        }
+                        list = list.Append((dataGridView.Name, dt));
                         break;
                     default:
                         list = list.Concat(GetControlValue(ctrl.Controls));

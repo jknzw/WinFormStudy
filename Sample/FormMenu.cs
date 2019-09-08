@@ -90,5 +90,10 @@ namespace Sample
         {
             ShowDialog(new TestSqlForm());
         }
+
+        private void CustomButton8_Click(object sender, EventArgs e)
+        {
+            ShowDialog(new FormKakeiboS());
+        }
     }
 }
