@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SampleLibrary.Utility;
 using System.IO;
+using System.Reflection;
 
 namespace Sample.Service
 {
@@ -21,6 +22,9 @@ namespace Sample.Service
         private readonly string userId = "SampleUser";
         private readonly string password = "1234SampleUser";
 
+        private readonly Logger logger = Logger.GetInstance(nameof(FormKakeiboSqlService));
+
+        private static readonly object lockobj = new object();
         private enum ErrorCode : int
         {
             ZankinFileWriteError = -1,
@@ -63,30 +67,35 @@ namespace Sample.Service
         {
             using (SQLManager manager = SQLManager.GetInstance(dataSource, dataBase, userId, password))
             {
-                string sql = "select * from kakeibo_zankin";
-
-                DataTable dt = manager.Select(sql);
-
-                if (dt.Rows.Count > 0)
-                {
-                    string zankin = dt.Rows[0]["zankin"].ToString();
-                    int.TryParse(zankin, out int result);
-                    return result;
-                }
-                else
-                {
-                    return 0;
-                }
+                return GetZankin(manager);
             }
         }
 
-        public int WriteZankin(int zankin)
+        private int GetZankin(SQLManager manager)
+        {
+            string sql = @"
+                SELECT * FROM kakeibo_zankin
+                ";
+
+            DataTable dt = manager.Select(sql);
+
+            if (dt.Rows.Count > 0)
+            {
+                string zankin = dt.Rows[0]["zankin"].ToString();
+                int.TryParse(zankin, out int result);
+                return result;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public int WriteZankin(SQLManager manager, int zankin)
         {
             int count = -1;
 
-            using (SQLManager manager = SQLManager.GetInstance(dataSource, dataBase, userId, password))
-            {
-                string sql = @"
+            string sql = @"
                 update kakeibo_zankin 
                 set 
                     zankin = @zankin,
@@ -94,18 +103,18 @@ namespace Sample.Service
                     updtime = @updtime
                 ";
 
-                Dictionary<string, dynamic> parameters = new Dictionary<string, dynamic>();
+            Dictionary<string, dynamic> parameters = new Dictionary<string, dynamic>();
 
-                DateTime now = DateTime.Now;
-                parameters.Add("zankin", zankin);
-                parameters.Add("upduser", nameof(FormKakeiboSqlService));
-                parameters.Add("updtime", now);
+            DateTime now = DateTime.Now;
+            parameters.Add("zankin", zankin);
+            parameters.Add("upduser", nameof(FormKakeiboSqlService));
+            parameters.Add("updtime", now);
 
-                count = manager.Update(sql, parameters);
+            count = manager.Update(sql, parameters);
 
-                if (count == 0)
-                {
-                    sql = @"
+            if (count == 0)
+            {
+                sql = @"
                     insert into kakeibo_zankin (
                         zankin,
                         insuser,
@@ -121,13 +130,12 @@ namespace Sample.Service
                     )
                     ";
 
-                    parameters.Add("insuser", nameof(FormKakeiboSqlService));
-                    parameters.Add("instime", now);
+                parameters.Add("insuser", nameof(FormKakeiboSqlService));
+                parameters.Add("instime", now);
 
-                    count = manager.Insert(sql, parameters);
-                }
-
+                count = manager.Insert(sql, parameters);
             }
+
             return count;
         }
 
@@ -137,11 +145,17 @@ namespace Sample.Service
         //    return Directory.EnumerateFiles(rirekiFolderPath, "rireki*.csv");
         //}
 
-        public int GetKakeiboData(ModelKakeibo model)
+        public async Task<int> GetKakeiboData(ModelKakeibo model)
         {
-            model.Zankin = GetZankin();
-
             using (SQLManager manager = SQLManager.GetInstance(dataSource, dataBase, userId, password))
+            {
+                return await GetKakeiboData(manager, model);
+            }
+        }
+
+        private async Task<int> GetKakeiboData(SQLManager manager, ModelKakeibo model)
+        {
+            return await Task.Run(() =>
             {
                 string sql = @"
                     SELECT 
@@ -153,51 +167,34 @@ namespace Sample.Service
                         , zankin
                         , bikou
                     FROM kakeibo_rireki
+                    WHERE hiduke BETWEEN @from AND @to
                     ";
 
-                DataTable dtRireki = manager.Select(sql);
-                model.RirekiTable = dtRireki;
-                model.ShukeiTable = GetShukeiTable(dtRireki);
+                Dictionary<string, dynamic> parameters = new Dictionary<string, dynamic>
+                {
+                    { "from", ControlValuesDictionary["dtpFrom"].ToString("yyyy/MM/dd") },
+                    { "to", ControlValuesDictionary["dtpTo"].ToString("yyyy/MM/dd") },
+                };
 
-                int.TryParse(dtRireki.Compute("Sum(nyukin)", null).ToString(), out int sumShunyu);
-                int.TryParse(dtRireki.Compute("Sum(shukkin)", null).ToString(), out int sumShishutsu);
-                model.SumShunyu = sumShunyu;
-                model.SumShishutsu = sumShishutsu;
+                DataTable dtRireki = manager.Select(sql, parameters);
+
+                model.Zankin = GetZankin(manager);
+
+                model.RirekiTable = dtRireki;
+
+                SetShukeiData(model, dtRireki);
 
                 return dtRireki.Rows.Count;
-            }
+            });
+        }
 
-            //try
-            //{
-            //    // csvファイル読込
-            //    // ToListで読み込み処理を確定させる
-            //    CsvFileService csv = CsvFileService.GetInstance();
-
-            //    List<string[]> list = csv.CsvFileRead(model.RirekiFile, encoding)?.ToList();
-
-            //    if (list.First() == null)
-            //    {
-            //        return -1;
-            //    }
-
-            //    (DataTable dtRireki, int shunyu, int shishutsu) = ConvertToRirekiDataTable(list);
-            //    model.SumShunyu = shunyu;
-            //    model.SumShishutsu = shishutsu;
-
-            //    // 残金は履歴ファイルの最終行を設定
-            //    int.TryParse(list.Last()[EnumRireki.Zankin.GetInt()], out int zankin);
-            //    model.Zankin = zankin;
-
-            //    // データテーブルを設定
-            //    model.RirekiTable = dtRireki;
-            //    model.ShukeiTable = GetShukeiTable(dtRireki);
-            //}
-            //catch (Exception ex)
-            //{
-            //    // csvファイルのデータが0件・1件の場合 ArgumentNullException
-            //    Debug.WriteLine(ex.Message);
-            //}
-            //return 0;
+        private void SetShukeiData(ModelKakeibo model, DataTable dtRireki)
+        {
+            model.ShukeiTable = GetShukeiTable(dtRireki);
+            int.TryParse(dtRireki.Compute("Sum(nyukin)", null).ToString(), out int sumShunyu);
+            int.TryParse(dtRireki.Compute("Sum(shukkin)", null).ToString(), out int sumShishutsu);
+            model.SumShunyu = sumShunyu;
+            model.SumShishutsu = sumShishutsu;
         }
 
         public DataTable GetShukeiTable(DataTable dtRireki, string mode = null)
@@ -235,9 +232,9 @@ namespace Sample.Service
 
             foreach (DataRow row in rirekiTable.Rows)
             {
-                string ymd = row[EnumRireki.Ymd.GetInt()].ToString();
-                int shunyu = row[EnumRireki.Shunyu.GetInt()].GetInt();
-                int shishutsu = row[EnumRireki.Shishutsu.GetInt()].GetInt();
+                string ymd = Convert.ToDateTime(row["hiduke"]).ToString("yyyy/MM/dd");
+                int shunyu = row["nyukin"].GetInt();
+                int shishutsu = row["shukkin"].GetInt();
 
                 if (dic.ContainsKey(ymd))
                 {
@@ -273,9 +270,9 @@ namespace Sample.Service
 
             foreach (DataRow row in rirekiTable.Rows)
             {
-                string youto = row[EnumRireki.Youto.GetInt()].ToString();
-                int shunyu = row[EnumRireki.Shunyu.GetInt()].GetInt();
-                int shishutsu = row[EnumRireki.Shishutsu.GetInt()].GetInt();
+                string youto = row["naiyou"].ToString();
+                int shunyu = row["nyukin"].GetInt();
+                int shishutsu = row["shukkin"].GetInt();
 
                 if (dic.ContainsKey(youto))
                 {
@@ -311,10 +308,10 @@ namespace Sample.Service
 
             foreach (DataRow row in rirekiTable.Rows)
             {
-                string ymd = row[EnumRireki.Ymd.GetInt()].ToString();
-                string youto = row[EnumRireki.Youto.GetInt()].ToString();
-                int shunyu = row[EnumRireki.Shunyu.GetInt()].GetInt();
-                int shishutsu = row[EnumRireki.Shishutsu.GetInt()].GetInt();
+                string ymd = Convert.ToDateTime(row["hiduke"]).ToString("yyyy/MM/dd");
+                string youto = row["naiyou"].ToString();
+                int shunyu = row["nyukin"].GetInt();
+                int shishutsu = row["shukkin"].GetInt();
 
                 if (dic.ContainsKey((ymd, youto)))
                 {
@@ -346,7 +343,7 @@ namespace Sample.Service
         /// <summary>
         /// 登録
         /// </summary>
-        /// <returns>0:正常 負数:エラー</returns>
+        /// <returns>登録件数</returns>
         public int Touroku()
         {
             DateTime inputDateTime = ControlValuesDictionary["dateTimePicker1"];
@@ -354,27 +351,40 @@ namespace Sample.Service
 
             string type = ControlValuesDictionary["comboBoxType"];
             int.TryParse(ControlValuesDictionary["customTextBoxKingaku"], out int kingaku);
-            int.TryParse(ControlValuesDictionary["customReadOnlyTextBoxZankin"], out int zankin);
-            string shunyu = string.Empty;
-            string shishutsu = string.Empty;
-            if (type.Equals("支出"))
-            {
-                shishutsu = kingaku.ToString();
-                zankin -= kingaku;
-            }
-            else
-            {
-                // 収入
-                shunyu = kingaku.ToString();
-                zankin += kingaku;
-            }
+            dynamic shunyu = DBNull.Value;
+            dynamic shishutsu = DBNull.Value;
 
             string biko = ControlValuesDictionary["customTextBoxBiko"];
 
             int count = -1;
-            using (SQLManager manager = SQLManager.GetInstance(dataSource, dataBase, userId, password))
+
+            lock (lockobj)
             {
-                Dictionary<string, dynamic> parameters = new Dictionary<string, dynamic>
+                using (SQLManager manager = SQLManager.GetInstance(dataSource, dataBase, userId, password))
+                {
+                    // 残金の計算
+                    int zankin = GetZankin(manager);
+                    if (type.Equals("支出"))
+                    {
+                        shishutsu = kingaku.ToString();
+                        zankin -= kingaku;
+                    }
+                    else
+                    {
+                        // 収入
+                        shunyu = kingaku.ToString();
+                        zankin += kingaku;
+                    }
+
+                    // 残金の更新
+                    int ret = WriteZankin(manager, zankin);
+                    if (ret != 1)
+                    {
+                        // 残金の更新に失敗
+                        return -1;
+                    }
+
+                    Dictionary<string, dynamic> parameters = new Dictionary<string, dynamic>
                 {
                     { "hiduke", inputDateTime },
                     { "naiyou", youto },
@@ -386,7 +396,7 @@ namespace Sample.Service
                     { "upduser", nameof(Touroku) }
                 };
 
-                string sql = @"
+                    string sql = @"
                     INSERT INTO kakeibo_rireki (
                         hiduke
                         , naiyou
@@ -408,7 +418,12 @@ namespace Sample.Service
                     )
                     ";
 
-                count = manager.Insert(sql, parameters);
+                    count = manager.Insert(sql, parameters);
+                    if (count == 1)
+                    {
+                        manager.Commit();
+                    }
+                }
             }
             return count;
         }
@@ -422,8 +437,16 @@ namespace Sample.Service
                 row.EndEdit();
             }
 
+            // 更新対象を抽出
             DataTable dtModified = dtRireki.GetChanges(DataRowState.Modified);
             DataTable dtDeleted = dtRireki.GetChanges(DataRowState.Deleted);
+            int updcount = dtModified?.Rows.Count ?? 0;
+            updcount += dtDeleted?.Rows.Count ?? 0;
+            if (updcount == 0)
+            {
+                // 更新対象が無い場合はreturn
+                return 0;
+            }
 
             int count = 0;
             using (SQLManager manager = SQLManager.GetInstance(dataSource, dataBase, userId, password))
@@ -464,18 +487,9 @@ namespace Sample.Service
 
                 if (dtDeleted != null)
                 {
-                    string sql = @"
-                    DELETE FROM kakeibo_rireki
-                    WHERE
-                        seq = @seq
-                    ";
                     foreach (DataRow row in dtDeleted.Rows)
                     {
-                        Dictionary<string, dynamic> parameters = new Dictionary<string, dynamic>
-                        {
-                            { "seq", row["seq"] }
-                        };
-                        count += manager.Delete(sql, parameters);
+                        count += Delete(manager, row["seq"]);
                     }
                 }
 
@@ -486,6 +500,54 @@ namespace Sample.Service
             dtRireki.AcceptChanges();
 
             return count;
+        }
+
+        private int Delete(SQLManager manager, dynamic seq)
+        {
+            string sql = @"
+                DELETE FROM kakeibo_rireki
+                WHERE
+                    seq = @seq
+                ";
+
+            Dictionary<string, dynamic> parameters = new Dictionary<string, dynamic>
+            {
+                { "seq", seq }
+            };
+
+            int count = manager.Delete(sql, parameters);
+            return count;
+        }
+
+        public int Delete(DataGridView dataGridView)
+        {
+            logger.StartMethod(MethodBase.GetCurrentMethod().Name);
+
+            // 選択行がある場合
+            int deletecount = 0;
+            int selectcount = 0;
+            if (dataGridView.Rows.GetRowCount(DataGridViewElementStates.Selected) > 0)
+            {
+                using (SQLManager manager = SQLManager.GetInstance(dataSource, dataBase, userId, password))
+                {
+                    // 選択行をデータベースから削除
+                    foreach (DataGridViewRow row in dataGridView.SelectedRows)
+                    {
+                        int.TryParse(row.Cells["seq"].Value.ToString(), out int seq);
+                        deletecount += Delete(manager, seq);
+                    }
+                    // コミット
+                    manager.Commit();
+                }
+            }
+            else
+            {
+                // 選択0件
+            }
+
+            logger.EndMethod(MethodBase.GetCurrentMethod().Name, $"delete:{deletecount}", $"select:{selectcount}");
+
+            return deletecount;
         }
     }
 }

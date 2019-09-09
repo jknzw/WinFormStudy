@@ -11,7 +11,11 @@ namespace Sample.Utility
     {
         public static void ScrollToLast(this DataGridView dg)
         {
-            dg.FirstDisplayedScrollingRowIndex = dg.Rows.GetLastRow(DataGridViewElementStates.None);
+            int index = dg.Rows.GetLastRow(DataGridViewElementStates.None);
+            if (index >= 0)
+            {
+                dg.FirstDisplayedScrollingRowIndex = index;
+            }
         }
     }
 }

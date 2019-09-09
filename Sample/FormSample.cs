@@ -1,8 +1,10 @@
-﻿using System;
+﻿using SampleLibrary;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
@@ -10,8 +12,12 @@ namespace Sample
 {
     public partial class FormSample : Sample.Base.BaseForm
     {
+        private readonly Logger logger;
+
         public FormSample()
         {
+            logger = Logger.GetInstance(GetType().Name);
+
             InitializeComponent();
 
             // 使わないボタンを非表示にする
@@ -45,6 +51,8 @@ namespace Sample
         /// <param name="mode"></param>
         private void SetButtonEnabled(ActionMode mode)
         {
+            logger.StartMethod(MethodBase.GetCurrentMethod().Name, $"ActionMode:{mode}");
+
             // まず全てのボタンを無効にする
             SetAllBaseButtonEnabled(false);
 

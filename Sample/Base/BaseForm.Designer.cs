@@ -16,6 +16,9 @@ namespace Sample.Base
         {
             if (disposing && (components != null))
             {
+                // ▼▼▼ ADD ▼▼▼
+                logger?.Dispose();
+                // ▲▲▲ ADD ▲▲▲
                 components.Dispose();
             }
             base.Dispose(disposing);

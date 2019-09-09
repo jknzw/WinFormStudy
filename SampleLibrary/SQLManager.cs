@@ -56,6 +56,7 @@ namespace SampleLibrary
         public DataTable Select(string sql, Dictionary<string, dynamic> parameters = null)
         {
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
+            WriteSqlLog(sql, parameters);
 
             return dbUtil.Fill(sql, parameters);
         }
@@ -69,8 +70,22 @@ namespace SampleLibrary
         public int Update(string sql, Dictionary<string, dynamic> parameters)
         {
             logger.StartMethod(MethodBase.GetCurrentMethod().Name);
+            WriteSqlLog(sql, parameters);
 
             return dbUtil.Execute(sql, parameters);
+        }
+
+        private void WriteSqlLog(string sql, Dictionary<string, dynamic> parameters)
+        {
+            string debugsql = sql;
+            if (parameters != null)
+            {
+                foreach (string key in parameters.Keys)
+                {
+                    debugsql = debugsql.Replace("@" + key, parameters[key].ToString());
+                }
+            }
+            logger.WriteLine(debugsql);
         }
 
         public int Delete(string sql, Dictionary<string, dynamic> parameters)
